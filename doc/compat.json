@@ -1,0 +1,102 @@
+COMPAT
+----------------------------------------------
+
+// ----- audioContext.createMediaElementSource(this.audio)      
+//          ou sinon audioContext.createMediaStreamSource ?
+
+// ----- await channel.source.getMediaStream()
+
+// ----- analyser
+
+// ----- gain
+
+// ----- channel splitter
+
+// ----- AudioContext -----
+
+// use: AudioContext = window.AudioContext || window.webkitAudioContext
+
+    {
+        "chrome": [
+        {
+            "version_added": "35"
+        },
+        {
+            "prefix": "webkit",
+            "version_added": "14",
+            "version_removed": "57"
+        }
+        ],
+        "chrome_android": "mirror",
+        "edge": {
+        "version_added": "12"
+        },
+        "firefox": {
+        "version_added": "25"
+        },
+        "firefox_android": "mirror",
+        "oculus": "mirror",
+        "opera": "mirror",
+        "opera_android": "mirror",
+        "safari": [
+        {
+            "version_added": "14.1"
+        },
+        {
+            "prefix": "webkit",
+            "version_added": "6",
+            "version_removed": "14.1"
+        }
+        ],
+        "safari_ios": "mirror",
+        "samsunginternet_android": "mirror",
+        "webview_android": "mirror",
+        "webview_ios": "mirror"
+    }
+
+    IOS:
+    FIREFOX     ?
+    CHROME      ?
+    SAFARI      OK
+    WEBVIEW     OK
+
+// ----- new Audio() -----
+
+    {
+        "chrome": {
+              "version_added": "4"
+        },
+        "chrome_android": "mirror",
+        "edge": {
+            "version_added": "12"
+        },
+        "firefox": {
+            "version_added": "3.5"
+        },
+        "firefox_android": "mirror",
+        "ie": {
+            "version_added": "9"
+        },
+        "oculus": "mirror",
+        "opera": {
+            "version_added": "≤12.1"
+        },
+        "opera_android": {
+            "version_added": "≤12.1"
+        },
+        "safari": {
+            "version_added": "3.1"
+        },
+        "safari_ios": {
+            "version_added": "3"
+        },
+        "samsunginternet_android": "mirror",
+        "webview_android": "mirror",
+        "webview_ios": "mirror"
+    }
+
+    IOS:
+    FIREFOX     NO  -------------
+    CHROME      ?
+    SAFARI      OK
+    WEBVIEW     OK

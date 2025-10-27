@@ -1,0 +1,30 @@
+franc@raspberrypi:/LCD-show-master $ sudo ./MPI3508-show
+cp: cannot stat '/etc/rc.local': No such file or directory
+(2025-04-30)
+./MPI3508-show: line 57: test: (2025-04-30): integer expression expected
+need to update touch configuration
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  xserver-xorg-input-evdev
+0 upgraded, 1 newly installed, 0 to remove and 283 not upgraded.
+Need to get 120 kB of archives.
+After this operation, 183 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main arm64 xserver-xorg-input-evdev arm64 1:2.10.6-2+b1 [120 kB]
+Fetched 120 kB in 6s (20.1 kB/s)
+Selecting previously unselected package xserver-xorg-input-evdev.
+(Reading database ... 129085 files and directories currently installed.)
+Preparing to unpack .../xserver-xorg-input-evdev_1%3a2.10.6-2+b1_arm64.deb ...
+Unpacking xserver-xorg-input-evdev (1:2.10.6-2+b1) ...
+Setting up xserver-xorg-input-evdev (1:2.10.6-2+b1) ...
+Processing triggers for man-db (2.11.2-2) ...
+
+-----------------------------------------------------------------
+
+cp: cannot stat './.system_backup/rc.local': No such file or directory
+(Reading database ... 129095 files and directories currently installed.)
+Removing xserver-xorg-input-evdev (1:2.10.6-2+b1) ...
+Processing triggers for man-db (2.11.2-2) ...
+The system has been restored
+now reboot

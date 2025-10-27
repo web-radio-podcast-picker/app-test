@@ -1,0 +1,3 @@
+User-agent: *
+Allow: *
+Sitemap: https://https://web-radio-podcast-picker.github.io/app/sitemap.xml

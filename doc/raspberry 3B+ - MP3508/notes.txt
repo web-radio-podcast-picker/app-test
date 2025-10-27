@@ -1,0 +1,160 @@
+    1  ipconfig
+    2  ifconfig
+    3  ll
+    4  alias 'll=ls -la'
+    5  ll
+    6  dir Documents/
+    7  dir
+    8  cd ..
+    9  dir
+   10  ll
+   11  cd ..
+   12  ll
+   13  ps
+   14  ps -fe
+   15  reboot
+   16  sudo reboot
+   17  alias 'll=ls -la'
+   18  ll
+   19  pwd
+   20  ll /
+   21  ll /boot
+   22  cd /boot
+   23  more config
+   24  ll
+   25  more config.txt
+   26  more /boot/firmware/config.txt
+   27  wget
+   28  cd ..
+   29  ll
+   30  wget https://www.lcdwiki.com/res/RaspDriver/LCD-show.tar.gz
+   31  sudo wget https://www.lcdwiki.com/res/RaspDriver/LCD-show.tar.gz
+   32  ll
+   33  tar -xzf LCD-show.tar.gz -C /LCD-show
+   34  sudo tar -xzf LCD-show.tar.gz -C /LCD-show
+   35  mkdir LCD-show
+   36  sudo mkdir LCD-show
+   37  sudo tar -xzf LCD-show.tar.gz -C /LCD-show
+   38  cd LCD-show/
+   39  ll
+   40  cd ..
+   41  sudo rm -rf LCD-show
+   42  sudo tar -xzf LCD-show.tar.gz
+   43  cd LCD-show-master/
+   44  ll
+   45  cd ..
+   46  sudo chmod -R 755 LCD-show
+   47  ll
+   48  sudo chmod -R 755 LCD-show-master
+   49  cd LCD-show-master/
+   50  ll
+   51  cd ..
+   52  ll
+   53  ll!
+   54  !
+   55  ll
+   56  history
+   57  history | grep more
+   58  vi /boot/firmware/config.txt
+   59  more /boot/firmware/config.txt
+   60  :vi
+   61  vi /boot/firmware/config.txt
+   62  sudo vi /boot/firmware/config.txt
+   63  ll
+   64  cd /
+   65  alias 'll=ls -la'
+   66  ll
+   67  history | grep more
+   68  more /boot/firmware/config.txt
+   69  ll
+   70  cd LCD-show-master/
+   71  ll
+   72  more ./MPI3508-show
+   73  more ./system_config.sh
+   74  lsb_release -r | awk -F ' '  '{printf $NF}'
+   75  cat /etc/debian_version | tr -d '\n'
+   76  tr -d '\0' < /proc/device-tree/model
+   77  $(getconf WORD_BIT)
+   78  getconf WORD_BIT
+   79  getconf LONG_BIT
+   80  more ./config-nomal-12.1-32.txt
+   81  ll
+   82  ll boot
+   83  more ./boot/config-nomal-12.1-32.txt
+   84  more /boot/firmware/config.txt
+   85  ll
+   86  more /boot/firmware/config.txt
+   87  more ./boot/config-nomal-12.1-32.txt
+   88  sudo vi ./boot/config-nomal-12.1-32.txt
+   89  ll
+   90  more ./system_config.sh
+   91  more ./boot/config-nomal-11.4-64.txt
+   92  cat /etc/os-release
+   93  history
+   94  more ./MPI3508-show
+   95  history
+
+---------------------------------------------------------
+
+sudo apt-get install evtest
+sudo evtest
+
+xmin=200,xmax=3900,ymin=200,ymax=3900
+
+---------------------------------------------------------
+
+/etc/lightdm/lightdm.conf       -> disable power saving
+/usr/share/dispsetup.sh
+
+scp 192.168.1.43:/usr/share/plymouth/themes/pix/splash.png .
+C:\Users\franc\source\repos\web-radio\img> scp ./splash.png 192.168.1.43:/home/franc 
+# not the good theme ?
+
+sudo plymouth-set-default-theme --rebuild-initrd pix
+
+---------------------------------------------------------
+
+uname -a
+Linux raspberrypi 6.12.25+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64 GNU/Linux
+
+-------------------------------------------------------
+
+xrandr
+kmsprint -l 
+xrandr -s 640x480
+
+xrandr --newmode $(gtf 480 320 75 | sed -ne 's/"//g;s/ Modeline //p')
+xrandr --addmode HDMI-1 480x320_75.00
+xrandr --output HDMI-1 --mode 480x320_75.00
+
+-------------------------------------------------------
+
+sudo apt purge wolfram-engine scratch scratch2 nuscratch sonic-pi idle3 -y
+sudo apt purge smartsim java-common minecraft-pi libreoffice* -y
+sudo apt clean
+sudo apt autoremove -y
+sudo apt update
+sudo apt upgrade
+
+    ---------------------------------------------------
+
+sudo nano /lib/systemd/system/kiosk.service
+nano ~/kiosk.sh
+
+sudo systemctl list-units --type target
+systemctl list-units --type target --all
+sudo systemctl stop kiosk.service
+sudo systemctl start kiosk.service
+systemctl get-default
+sudo systemctl disable kiosk.service
+systemctl daemon-reload
+
+kill /usr/sbin/lightdm ?
+/etc/X11/xorg.conf.d
+/usr/share/X11/xorg.conf.d
+$HOME/.config/openbox/autostart
+sudo usermod -aG tty,video <username>
+sudo chmod 666 /dev/tty0
+sudo chmod 0744 /dev/fb0
+
+-------------------------------------------------------

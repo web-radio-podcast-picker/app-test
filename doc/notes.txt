@@ -1,0 +1,135 @@
+//stereoAudioMediaURL: 'https://mixed-choize.stream.laut.fm/mixed-choize'
+//stereoAudioMediaURL: 'http://ice.stream.frequence3.net/frequence3ac-128.mp3'
+// tests
+//stereoAudioMediaURL: 'https://webaudioapi.com/samples/audio-tag/chrono.mp3'
+//stereoAudioMediaURL: 'https://www.youtube.com/watch?v=5cPdog1ZB48&ab_channel=EWUBodycam'   NOPE: unaceppted CORS (null) from YT
+//stereoAudioMediaURL: './audio/chrono.mp3'     NOPE: CORS fail -null) coz no cors unapplyable to file://
+
+MPI3508: 480x320        r = 1.5     = 3/2
+actual wrp: 600x448     r = 1.33    = 4/3
+
+OOO     OOOO
+OOO     OOOO
+        0000
+
+---------------------------------------------------------------------
+DBS
+
+podcasts
+https://podcastindex.org/
+
+radios
+all_stations.m3u    ?
+---------------------------------------------------------------------
+
+
+rsc:
+
+- power button
+Par SimpleIcon http://www.simpleicon.com/ — http://www.flaticon.com/packs/simpleicon-interface, Domaine public, https://commons.wikimedia.org/w/index.php?curid=47382056
+https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Simpleicons_Interface_power-symbol-1.svg/langfr-800px-Simpleicons_Interface_power-symbol-1.svg.png
+
+- connect anim
+par Icons8
+
+select * from podcasts where language='FR' or language='FR-fr' or language='Fr' or language='French' or language='Fran├ºais' or language='French (' or language='French-f'
+
+.headers on
+.mode csv
+.once podcasts-fr.csv
+query
+
+Select-String -Path output.csv -Pattern 'legend"'
+
+.\sqlite3.exe .\podcastindex_feeds.db 'select count(*) from podcasts' > count.txt
+
+.\sqlite3.exe .\podcastindex_feeds.db 'select distinct language as lng from podcasts order by lng' > languages.txt
+
+.\sqlite3.exe .\podcastindex_feeds.db .schema > schema.txt
+
+.\sqlite3.exe .\podcastindex_feeds.db 'select concat(''"'',language,''"'',''|'', count(*),'','') from podcasts group by language' > languages2.txt
+
+.\sqlite3.exe .\podcastindex_feeds.db 'select concat(''["'',language,''",'',count(*),''],'') from podcasts group by language' > languages.js
+
+
+ios safari 18.6.2                       !!SON OK!!
+                                        PAS DE DATA (Analyser)
+Mozilla/5.0 (iPhone; CPU iPhone OS 18_6_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1
+
+firefox 142.1 (60552)                   RIEN
+
+chrome
+version 140.0.7339.101                  RIEN
+
+chromium                                
+ok sur raspberry
+
+
+pb IOS
+Audio element permet le son
+safari,chrome & firefox ont des 0 sur l'analyser. 
+il ne controle pas la sortie son (bouton pause non fonctionnel)
+looks like it works if using xmlhttprequest. can stream it ?
+
+1. correction event 'canplay' par 'canplaythrough'
+
+display
+
+1. use overflow: clip to avoid overlays (left/right cols) when window size too small
+
+
+________________________________________________________________
+
+MediaElementAudioSourceNode Restrictions
+If you're using MediaElementAudioSourceNode, note that iOS has limitations when connecting it to an AnalyserNode. 
+Instead, consider using AudioBufferSourceNode:
+
+Load the audio file via fetch or XMLHttpRequest.
+Decode it using audioContext.decodeAudioData.
+Play it through an AudioBufferSourceNode.
+
+fetch('audio-file.mp3')
+  .then(response => response.arrayBuffer())
+  .then(data => audioContext.decodeAudioData(data))
+  .then(buffer => {
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    const analyser = audioContext.createAnalyser();
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+    source.start();
+  });
+
+----------------------------------------------------------
+
+createMediaElementSource
+
+MediaElementAudioSourceNode         ## pb here on ios
+
+----------------------------------------------------------
+
+webapp:
+-------
+
+first install & first launch on windows : url not set to startUrl
+  ==> flag 'app' is missing 
+
+sur iphone: autoplay: false. should invert pause button on restore UI with RDItem != null
+
+sur iphone: plateform == iPhone
+mobile: false
+
+iphone: pas pause on start , play must be on the block
+plateform==iphone (minus) -> mobile
+..
+-done-pour le web : si iphone inverser le test 'rotate your screen'
+
+iphone: restore UI with raditem : no pause button, show play. but play button that launch the connection
+
+-done- iphone: please rotate your device doit être activé tt le temps, mais a l'endroit
+mode landscape demandé marche pas. donc autoriser le rotate (mais à l'envers)
+
+--------------------------------------
+
+local web server
+python -m http.server --bind 127.0.0.1 9000
