@@ -438,11 +438,15 @@ class PodcastsLists {
                     pItem.stores,
                     null
                 )
+            tagItem.id = c[0]   // here id == title (no id in podcasts)
             tagItem.url = c[1].trim()       // coz see \r in results
             tagItem.store = store
             tagItem.page = page
             tagItem.pItem = pItem
+            // make it compatible with favorites management
             tagItem.favLists = []   // TODO: keep favorites in store and réinit here
+            tagItem.pdc = true      // indicates it's a pdc, not a station
+
             pdcItems[tagItem.name] = tagItem
 
             this.podcasts.pdcItems = pdcItems

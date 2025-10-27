@@ -146,6 +146,7 @@ class Podcasts {
             || (selection.letter != null ? Pdc_List_Letter : null)
             || (selection.tag != null ? Pdc_List_Tag : null)
             || (selection.lang != null ? Pdc_List_Lang : null)
+            || Pdc_List_Lang
         return slistId
     }
 
@@ -190,6 +191,7 @@ class Podcasts {
                 this.availableLists.push(selection.pdcSubListId)
 
             var slistId = this.getMoreFocusableListId()
+
             if (targetListId !== undefined && targetListId != null)
                 slistId = targetListId
 
