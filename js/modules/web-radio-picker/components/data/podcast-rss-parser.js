@@ -111,11 +111,13 @@ class PodcastRSSParser {
 
             if (settings.debug.debug)
                 console.log(podcast)
+
+                    return podcast
+            
         } catch (parseError) {
             throw new Error('parse RSS error')
         }
-
-        return podcast
+        return null
     }
 
 

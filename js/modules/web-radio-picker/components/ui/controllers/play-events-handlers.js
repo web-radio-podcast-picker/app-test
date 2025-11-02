@@ -29,10 +29,10 @@ class PlayEventsHandlers {
     onLoadError(err, audio) {
         // CORS <=> {code: 4, message: 'MEDIA_ELEMENT_ERROR: Format error'}
         var st = 'no connection'
-        
-        if (err?.code==4)
-            st = 'blocked by CORS'
-                
+
+        if (err?.code == 4)
+            st += ' (CORS)'      // the most probable
+
         if (settings.debug.debug) {
             logger.log(st)
         }
