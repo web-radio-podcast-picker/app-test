@@ -3,17 +3,17 @@
   "name": "Web Radio Podcast Picker",
   "icons": [
     {
-      "src": "/app/img/icon.ico",
+      "src": "/app-test/img/icon.ico",
       "type": "image/ico",
       "sizes": "256x256"
     },
     {
-      "src": "/app/rsc/icon-snap.png",
+      "src": "/app-test/rsc/icon-snap.png",
       "type": "image/png",
       "sizes": "546x546"
     }
   ],
-  "id": "/app/index.html",
+  "id": "/app-test/index.html",
   "start_url": "./index.html?flags=app",
   "background_color": "black",
   "display": "fullscreen",
@@ -27,20 +27,20 @@
       "description": "Online web radios & podcasts",
       "url": "./index.html?flags=app",
       "icons": [
-        { "src": "/app/rsc/icon-snap.png", 
+        { "src": "/app-test/rsc/icon-snap.png", 
           "sizes": "546x546" }
         ]
     }
   ],
   "screenshots": [
     {
-      "src": "/app/img/screenshot.png",
+      "src": "/app-test/img/screenshot.png",
       "type": "image/png",
       "sizes": "1920x1080",
       "form_factor": "narrow"
     },
     {
-      "src": "/app/img/screenshot.png",
+      "src": "/app-test/img/screenshot.png",
       "type": "image/png",
       "sizes": "1920x1080",
       "form_factor": "wide"
@@ -49,7 +49,7 @@
   "description": "Online web radios & podcasts",
   "related_applications": [{
     "platform": "webapp",
-    "url": "/app/manifest.json",
-    "id": "./app/index.html"
+    "url": "/app-test/manifest.json",
+    "id": "./app-test/index.html"
   }]
 }
