@@ -56,6 +56,7 @@ class RemoteDataStore {
                     }
                 }) // you can use response body here
                 .catch(error => {
+                    // exception. eg CORS
                     logger.error(error)
                     if (errCallback)
                         return errCallback(error.message, error)
