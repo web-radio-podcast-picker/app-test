@@ -495,7 +495,7 @@ class Podcasts {
     buildEpiMediaView(item) {
 
         // TODO: use a rdMediaImage
-        const img = item.rss.image || item.rss.itunes.image
+        const img = item.logo // item.rss.image || item.rss.itunes.image
 
         $('#wrp_pdc_epim_img')[0].src = img == null ?
             transparentPixel        // TODO: this have councerns: image resetted, never reinitialized
@@ -527,7 +527,9 @@ class Podcasts {
         // get rss datas
         try {
             const o = this.rssParser.parse(data)
-            item.rss = o
+
+            item.rss = o    // Must be deleted when not needed (too big for storage)
+            item.logo = item.rss.image || item.rss.itunes.image
 
             if (settings.debug.debug)
                 window.rss = o
@@ -551,6 +553,9 @@ class Podcasts {
                     this.autoOpenedEpiList = true
                     $('#wrp_pdc_prv_em_button').click()
                 }
+            }
+            else {
+                item.rss = null
             }
 
             this.buildPdcPreviewCount++

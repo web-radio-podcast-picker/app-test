@@ -31,7 +31,7 @@ class PlayEventsHandlers {
         var st = 'no connection'
 
         if (err?.code == 4)
-            st += ' (CORS)'      // the most probable
+            st = ' not allowed (cors)'      // the most probable
 
         if (settings.debug.debug) {
             logger.log(st)

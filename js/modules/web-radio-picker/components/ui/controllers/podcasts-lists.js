@@ -227,6 +227,8 @@ class PodcastsLists {
                 $clkb.click()
             }
         }
+
+        item.rss = null
     }
 
     openList(
@@ -583,7 +585,7 @@ class PodcastsLists {
             // epi items props
             epiItem.url = rssItem.audioUrl
             epiItem.pItem = item
-            epiItem.rss = rssItem
+            //epiItem.rss = rssItem       // TODO: avoid store RSS (too big)
 
             // state datas
             //epiItem.selCnt = 0
@@ -599,9 +601,13 @@ class PodcastsLists {
             epiItem.metadata = {}
             epiItem.pdc = true      // indicates it's a pdc, not a station
 
+            epiItem.pubDate = rssItem.pubDate
+
             epiItems[epiItem.name] = epiItem
 
         })
+
+        item.rss = null
 
         self.podcasts.epiItems = {}
         const keys = Object.getOwnPropertyNames(epiItems)
@@ -610,10 +616,10 @@ class PodcastsLists {
             var r = a.localeCompare(b)
             const o1 = epiItems[a]
             const o2 = epiItems[b]
-            if (o1?.rss.pubDate && o2?.rss.pubDate) {
+            if (o1?./*rss.*/pubDate && o2 ?/*.rss*/pubDate) {
                 try {
-                    const d1 = new Date(o1.rss.pubDate)
-                    const d2 = new Date(o2.rss.pubDate)
+                    const d1 = new Date(/*o1.rss*/pubDate)
+                    const d2 = new Date(/*o2.rss*/pubDate)
                     r = d1 <= d2
                 }
                 catch { }
