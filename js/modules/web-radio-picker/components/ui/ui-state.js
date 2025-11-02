@@ -122,8 +122,8 @@ class UIState {
         this.currentRDList = newList
         if (skipSave !== true && !this.disableSave)
             settings.dataStore.saveUIState()
-        if (settings.debug.trace)
-            logger.log('currentRDList=' + JSON.stringify(this.currentRDList))
+        if (settings.debug.debug)
+            console.log('currentRDList=' + JSON.stringify(this.currentRDList))
     }
 
     getCurrentRDLists() {
@@ -167,7 +167,16 @@ class UIState {
     }
 
     getCurrentUIState() {
-        return {
+        const hasRss = podcasts.selection.pdc?.item?.rss
+        const rss = hasRss ? podcasts.selection.pdc?.item?.rss : null
+        if (hasRss)
+            podcasts.selection.pdc.item.rss = null
+        const hasCRDIRss = uiState.currentRDItem?.pItem
+        const crdiRss = hasCRDIRss ? uiState.currentRDItem?.pItem : null
+        if (hasCRDIRss)
+            uiState.currentRDItem.pItem = null
+
+        const r = {
             currentRDList: {
                 listId: this.currentRDList?.listId || null,
                 name: this.currentRDList?.name || null
@@ -183,6 +192,19 @@ class UIState {
             currentRDItem: this.currentRDItem,
             podcastSelection: podcasts.selection
         }
+
+        if (settings.debug.debug) {
+            console.warn('save ui state: currentRDItem=' + this.currentRDItem?.name)
+        }
+
+        const str = JSON.stringify(r)
+
+        if (hasRss)
+            podcasts.selection.pdc.item.rss = rss
+        if (hasCRDIRss)
+            uiState.currentRDItem.pItem = crdiRss
+
+        return str
     }
 
     restoreUIState(state) {
@@ -202,6 +224,13 @@ class UIState {
         if (state.currentRDItem != null)
             this.#setRDItem(state.currentRDItem)
 
+        if (settings.debug.debug) {
+            console.warn('restore UI state: ')
+            console.warn(state)
+            console.warn(this)
+            window.state = state
+        }
+
         this.disableSave = false
     }
 
@@ -215,7 +244,8 @@ class UIState {
 
     toJSON() {
         const state = this.getCurrentUIState()
-        return JSON.stringify(state)
+        ////return JSON.stringify(state)
+        return state
     }
 
     fromJSON(s) {

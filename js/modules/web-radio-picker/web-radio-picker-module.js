@@ -44,6 +44,11 @@ var radsItems = null
 var rdMediaImage = null
 
 /**
+ * @type {RdMediaImage}
+ */
+var pdcPrvImage = null
+
+/**
  * @type {ListsBuilder}
  */
 var listsBuilder = null
@@ -171,7 +176,24 @@ class WebRadioPickerModule extends ModuleBase {
         remoteDataStore = new RemoteDataStore()
         dialogs = new Dialogs()
         radsItems = new RadsItems()
-        rdMediaImage = new RdMediaImage()
+
+        rdMediaImage = new RdMediaImage(
+            {
+                imgId: 'wrp_img',
+                paneId: 'left-pane',
+                noImgSrc: './img/icon.ico',
+                tabId: 'btn_wrp_logo',
+                noImageSelfClass: 'wrp-img-half'
+            }
+        )
+        pdcPrvImage = new RdMediaImage(
+            {
+                imgId: 'wrp_pdc_prv_img',
+                paneId: 'wrp_pdc_st_list_container',
+                noImgSrc: transparentPixel
+            }
+        )
+
         listsBuilder = new ListsBuilder()
         radListBuilder = new RadListBuilder()
         playHistory = new PlayHistory()
@@ -209,6 +231,20 @@ class WebRadioPickerModule extends ModuleBase {
                     rdMediaImage.noImage()
                 else
                     rdMediaImage.showImage()
+            })
+
+        $('#wrp_pdc_prv_img')
+            .on('error', () => {
+                pdcPrvImage.noImage()
+            })
+            .on('load', () => {
+                const img = $('#wrp_pdc_prv_img')[0]
+                /*if (img.width < 1 || img.height < 1)
+                    pdcPrvImage.noImage()
+                else*/ {
+                    pdcPrvImage.resetImage()
+                    pdcPrvImage.showImage()
+                }
             })
 
         const thisPath = 'app.moduleLoader.getModuleById("' + this.id + '").'
@@ -413,6 +449,16 @@ class WebRadioPickerModule extends ModuleBase {
                 break
         }
         return res
+    }
+
+    // { domElement, id }
+    getPdcListItem(item) {
+        return radiosLists.findListItemByName(item.name, 'opts_wrp_podcast_pdc')
+    }
+
+    // { domElement, id }
+    getEpiListItem(item) {
+        return radiosLists.findListItemByName(item.name, 'opts_wrp_podcast_epi')
     }
 
     // { domElement, id }

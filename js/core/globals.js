@@ -115,3 +115,9 @@ const Class_Icon_Disabled = 'but-icon-disabled'
 const Class_Item_Selected = 'item-selected'
 
 const Class_Hidden = 'hidden'
+
+// -----
+
+const transparentPixel =
+    'data:image/png;base64,' +
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';

@@ -17,7 +17,8 @@ class TabsController {
         'btn_wrp_podcast_lang',
         'btn_wrp_podcast_tag',
         'btn_wrp_podcast_alpha',
-        'btn_wrp_podcast_pdc'
+        'btn_wrp_podcast_pdc',
+        'btn_wrp_podcast_epi'
     ]
 
     infTabs = ['btn_wrp_inf', 'btn_wrp_set', 'btn_log_pane']
@@ -42,6 +43,16 @@ class TabsController {
             onPostChange: $c => {
                 const tabId = $c.attr('id')
                 const listId = podcasts.getListIdByTabId(tabId)
+
+                // flip back from epi list visible and viz tab opened
+                if (this.openingVizWithEpiListVisible) {
+                    $('#opts_wrp_logo').addClass('hidden')
+                    $('#cnv_oscillo').addClass('hidden')
+                    $('#btn_wrp_logo').removeClass('selected')
+                    ui.vizTabActivated = false
+                    this.openingVizWithEpiListVisible = false
+                }
+
                 podcasts.selectTab(
                     podcasts.selection,
                     listId
@@ -50,7 +61,9 @@ class TabsController {
         })
 
         ui.tabs.initTabs(this.infTabs, {
+
             onPostChange: ($c) => {
+                podcasts.setEpiListVisible(false)
                 this.onInfTabChanged($c)
             }
         })
@@ -70,8 +83,17 @@ class TabsController {
 
     onTabChange($tab) {
         const tabId = ui.tabs.selectedTabId(this.tabs)
+        const newTabId = $tab.attr('id')
+
         if (tabId != null && tabId != 'btn_wrp_podcast')
             this.tabBeforeOpenPdc = tabId
+
+        if (podcasts.isEpiListVisible() && newTabId != 'btn_wrp_logo'
+            && newTabId != 'btn_wrp_podcast')
+            podcasts.setEpiListVisible(false)
+
+        if (newTabId == 'btn_wrp_podcast')
+            podcasts.podcastsLists.isOpenPdcFromTabSelect = true
     }
 
     onTabChanged($tab) {
@@ -80,6 +102,21 @@ class TabsController {
         const $cnv = $(app.canvas)
 
         // #region close or activate podcast menu
+
+        this.openingVizWithEpiListVisible = false
+
+        // hide pdc channel preview in case of
+        if (podcasts.isPdcPreviewVisible() /*&& cid != 'btn_wrp_logo'*/) {
+            podcasts.setPdcPreviewVisible(false)
+            podcasts.podcastsLists.resetPdcItemsClickState()
+        }
+        if (podcasts.isEpiListVisible()) {
+            if (cid != 'btn_wrp_logo') {
+                podcasts.setEpiListVisible(false)
+            }
+            else
+                this.openingVizWithEpiListVisible = true
+        }
 
         if (cid == 'btn_wrp_podcast') {
             // reclick on 'podcast' -> close podcast menu
@@ -97,7 +134,7 @@ class TabsController {
                 this.pdcTabSelected = true
             }
         } else
-            this.pdcTabSelected = false
+            this.pdcTabSelected = this.openingVizWithEpiListVisible
 
         if (this.pdcTabSelected)
             this.showPDCTabs()
@@ -150,6 +187,8 @@ class TabsController {
         $('#btn_wrp_podcast').removeClass('selected')
         $('#opts_wrp_podcast').addClass('hidden')       // fix for tag path button not hidding pdc pane
 
+        $('#btn_wrp_podcast').text('Podcasts')
+
         uiState.updateCurrentTab(cid)
         //settings.dataStore.saveUIState()
     }
@@ -159,15 +198,22 @@ class TabsController {
             $('#' + tabId).addClass('hidden')
         })
         this.pdcTabs.forEach(tabId => {
-            $('#' + tabId).removeClass('hidden')
+            $('#' + tabId).addClass('hidden')
         })
+        $('#btn_wrp_podcast_lang').removeClass('hidden')
         $('#btn_wrp_podcast')
             .removeClass('hidden')
             .removeClass('selected')
         $('#btn_wrp_logo').removeClass('hidden')
 
+        $('#btn_wrp_podcast').text('<<<')
+
         uiState.updateCurrentTab('btn_wrp_podcast')
         podcasts.openPodcasts()
+    }
+
+    showPlayingRdItemViz() {
+        $('#btn_wrp_logo').click()
     }
 
     // #endregion

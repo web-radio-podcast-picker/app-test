@@ -78,6 +78,7 @@ class PlayEventsHandlers {
         radsItems
             .updateLoadingRadItem(st)
             .setLoadingItemMetadata('startTime', Date.now())
+        tabsController.showPlayingRdItemViz()
     }
 
     onPauseStateChanged(updateRadItemStatusText, item, $item) {

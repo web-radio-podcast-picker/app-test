@@ -16,6 +16,8 @@ class PodcastsLists {
         this.listIdToPaneId[Pdc_List_Tag] = 'opts_wrp_podcast_tag'
         this.listIdToPaneId[Pdc_List_Letter] = 'opts_wrp_podcast_alpha'
         this.listIdToPaneId[Pdc_List_Pdc] = 'opts_wrp_podcast_pdc'
+        //this.listIdToPaneId[Pdc_List_Epi] = 'wrp_radio_list'
+        this.listIdToPaneId[Pdc_List_Epi] = 'opts_wrp_podcast_epi'
     }
 
     $getPanel(listId) {
@@ -37,7 +39,7 @@ class PodcastsLists {
                 listsBuilder.buildNamesItems(
                     paneId,
                     self.podcasts.langItems,
-                    RadioList_Podcast,
+                    listId,
                     self.openLang,
                     (name, data) => data.qty
                 )
@@ -46,7 +48,7 @@ class PodcastsLists {
                 listsBuilder.buildNamesItems(
                     paneId,
                     self.podcasts.tagItems,
-                    RadioList_Podcast,
+                    listId,
                     self.openTag,
                     (name, data) => data.qty,
                     firstCharToUpper
@@ -56,7 +58,7 @@ class PodcastsLists {
                 listsBuilder.buildNamesItems(
                     paneId,
                     self.podcasts.letterItems,
-                    RadioList_Podcast,
+                    listId,
                     self.openLetter,
                     (name, data) => data.qty
                 )
@@ -65,9 +67,18 @@ class PodcastsLists {
                 listsBuilder.buildNamesItems(
                     paneId,
                     self.podcasts.pdcItems,
-                    RadioList_Podcast,
+                    listId,
                     self.openPdc,
-                    (name, data) => ''
+                    (name, data) => data.qty
+                )
+                break
+            case Pdc_List_Epi:
+                listsBuilder.buildNamesItems(
+                    paneId,
+                    self.podcasts.epiItems,
+                    listId,
+                    self.openEpi,
+                    null
                 )
                 break
             default:
@@ -113,8 +124,32 @@ class PodcastsLists {
         )
     }
 
+    resetPdcItemsClickState(exceptItem) {
+        for (const pdcKey in podcasts.pdcItems) {
+            const pdcItem = podcasts.pdcItems[pdcKey]
+            if (pdcItem != exceptItem)
+                pdcItem.selCnt = 0
+        }
+    }
+
+    // pdc preview / open list
     openPdc(e, $item) {
-        podcasts.podcastsLists.openList(
+
+        const self = podcasts.podcastsLists
+        const name = $item.attr('data-text')
+        const item = podcasts.pdcItems[name]
+
+        if (!self.fromSelectItem /*&& !self.isOpenPdcFromTabSelect*/)   // avoid double call
+        {
+            podcasts.shouldRestoreEpiVisibleState = item == podcasts.selection.pdc?.item
+        }
+        self.fromSelectItem = false
+        self.isOpenPdcFromTabSelect = false
+
+        // reset all other pdc items click state
+        self.resetPdcItemsClickState(item)
+
+        self.openList(
             e,
             $item,
             Pdc_List_Pdc,
@@ -123,10 +158,86 @@ class PodcastsLists {
             selection => selection.pdcSubListId,
             true, true
         )
+
+        if (/*true ||*/ item.selCnt == 0) {
+            // open preview : at first select
+            podcasts.openPdcPreview(item, $item)   // open & show
+        }
+        else
+            item.selCnt++
     }
 
-    openList(e, $item, listId, getItemFunc, updateSelectionFunc, getSubListIdFunc,
-        noList, unfoldSelection
+    openEpi(e) {
+        const self = podcasts.podcastsLists
+        const item = podcasts.selection.pdc.item
+
+        const $epiItem = $(e.currentTarget).parent()
+        const name = $epiItem.attr('data-text')
+        const epiItem = podcasts.epiItems[name]
+
+        if (settings.debug.debug) {
+            logger.log('open episode: ' + epiItem.name)
+            console.log(epiItem)
+        }
+
+        const list = uiState.RDList(RadioList_Podcast, Pdc_List_Epi, $epiItem)
+        if (uiState.currentRDList?.listId != RadioList_Podcast)
+            uiState.updateCurrentRDList(list)
+
+        const $rad = $('#opts_wrp_podcast_epi')
+        podcasts.selection.epi = { item: epiItem }
+        radListBuilder.onClickItemRad($rad, $epiItem, epiItem)
+    }
+
+    // open episods list
+    clickOpenEpiList(e) {
+        const self = podcasts.podcastsLists
+        if (this.pdcPreviewItem == null) { // better: memorize in the pane (serialization)
+            this.pdcPreviewItem = podcasts.selection.pdc.item
+        }
+        const item = this.pdcPreviewItem
+
+        const fitem = wrpp.getPdcListItem(item)
+        if (this.$pdcPreviewItem == null)
+            this.$pdcPreviewItem = $(fitem.item)
+        const $item = this.$pdcPreviewItem
+
+        self.openList(
+            e,
+            $item,
+            Pdc_List_Epi,
+            name => podcasts.pdcItems[name],
+            (selection, item) => { /*selection.epi = { item: item } */ },
+            selection => Pdc_List_Epi
+            //, true, true
+        )
+        podcasts.buildEpiMediaView(item)
+
+        if (podcasts.autoOpenedEpiList) {
+            podcasts.autoOpenedEpiList = false
+
+            const epiItem = self.podcasts.selection.epi?.item
+
+            if (epiItem != null) {
+                if (settings.debug.debug)
+                    logger.log('auto open epi: ' + epiItem.name)
+                const $epiItem = $(wrpp.getEpiListItem(epiItem)?.item)
+                const $clkb = $epiItem
+                    .find('.wrp-list-item-text-container')
+                $clkb.click()
+            }
+        }
+    }
+
+    openList(
+        e,
+        $item,
+        listId,
+        getItemFunc,
+        updateSelectionFunc,
+        getSubListIdFunc,
+        noList,
+        unfoldSelection
     ) {
         const name = $item.attr('data-text')
         const item = getItemFunc(name)
@@ -138,6 +249,7 @@ class PodcastsLists {
         const { $e, isDisabled, isSelected, isAccepted } = self.getItemProps(e, $item)
         if (isDisabled) return
 
+        // TODO: do not rebuild selected item in case of opening epi list
         // #region select item
         wrpp.clearContainerSelection(self.paneId)
         // fold any unfolded list item
@@ -154,6 +266,7 @@ class PodcastsLists {
                 true,
                 listId
             )
+        // TODO: favorite icon lost after that ...
         $item.addClass('item-selected')
         // #endregion
 
@@ -161,9 +274,11 @@ class PodcastsLists {
         const selection = podcasts.selection
         updateSelectionFunc(selection, item)
 
-        podcasts
-            .resetSelectionsById(listId)
-            .updateSelectionSubListsIds(selection)
+        if (podcasts.initializingPodcasts < 0) {
+            podcasts
+                .resetSelectionsById(listId)
+                .updateSelectionSubListsIds(selection)
+        }
 
         if (noList !== true) {
             // switch to tab
@@ -180,7 +295,6 @@ class PodcastsLists {
         settings.dataStore.saveUIState()
     }
 
-
     findListItemInView(paneId, item) {
         const $panel = $('#' + paneId)
         const $item = $panel.find('[data-text="' + item.name + '"]')
@@ -193,8 +307,10 @@ class PodcastsLists {
         // fold any unfolded list item
         radsItems.unbuildFoldedItems(paneId)
         if (item == null) return
+
         // TODO: if emmission item, should be foldable
         // TODO: also if add a text under the name for some particular purpose (eg. description)
+
         const $item = this.findListItemInView(paneId, item)
         $item.addClass('item-selected')
 
@@ -213,6 +329,13 @@ class PodcastsLists {
 
         if ($item.length > 0)
             $item[0].scrollIntoView(ScrollIntoViewProps)
+
+        // if must show prv
+        if (listId == Pdc_List_Pdc) {
+            const $b = $item.find('.wrp-list-item-text-container')
+            this.fromSelectItem = true
+            $b.click()
+        }
     }
 
     getItemProps(e, $item) {
@@ -252,8 +375,13 @@ class PodcastsLists {
                 if (selection.letter != null)
                     subListId = Pdc_List_Pdc
                 break
-            // TODO: no subs for pdc at the moment. later must add the parsed emission list by podcast
             case Pdc_List_Pdc:
+                if (selection.pdc != null)
+                    subListId = Pdc_List_Epi
+                break
+            case Pdc_List_Epi:
+                //if (selection.epi != null)
+                subListId = null
                 break
         }
         return subListId
@@ -280,13 +408,15 @@ class PodcastsLists {
         const index = self.podcasts.index
         switch (listId) {
             case Pdc_List_Lang: self.buildLangItems(index)
-                return
+                break
             case Pdc_List_Tag: self.buildTagsItems(index)
-                return
+                break
             case Pdc_List_Letter: self.buildLettersItems(index)
                 break
             case Pdc_List_Pdc: self.getAndBuildPdcItems(index)
                 return true
+            case Pdc_List_Epi: self.buildEpiItems(index)
+                break
             default:
                 break
         }
@@ -415,6 +545,86 @@ class PodcastsLists {
         )
     }
 
+    buildEpiItems(index) {
+        const self = podcasts.podcastsLists
+        const item = this.pdcPreviewItem || podcasts.selection.pdc.item //podcasts.selection.pdc.item
+        var epiItems = {}
+        var index = 1
+        var prfx = ''
+
+        item.rss.episodes.forEach(rssItem => {
+
+            const epiItem = this.podcastItem(
+                null,
+                rssItem.title,
+                '',
+                null,
+                null
+            )
+
+            if (epiItems[epiItem.name]) {
+                // duplicated name
+                epiItem.name += ' ' + prfx + index
+                index++
+                if (index > 9) {
+                    prfx += '9.'
+                    index = 1
+                }
+            }
+
+            // item details
+            epiItem.subText2 = rssItem.duration
+            try {
+                const d = new Date(rssItem.pubDate)
+                epiItem.subText =
+                    d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            } catch { }
+
+            // epi items props
+            epiItem.url = rssItem.audioUrl
+            epiItem.pItem = item
+            epiItem.rss = rssItem
+
+            // state datas
+            //epiItem.selCnt = 0
+
+            // make it compatible with favorites management
+            epiItem.id = epiItem.name   // here id == title (no id in podcasts)
+            epiItem.favLists = []   // TODO: keep favorites in store and réinit here
+
+            // compat with favorites & rdItem management
+            //epiItem.logo = item.rss.image || item.rss.itunes.image
+            epiItem.logo = rssItem.image ||
+                item.rss.image || item.rss.itunes.image
+            epiItem.metadata = {}
+            epiItem.pdc = true      // indicates it's a pdc, not a station
+
+            epiItems[epiItem.name] = epiItem
+
+        })
+
+        self.podcasts.epiItems = {}
+        const keys = Object.getOwnPropertyNames(epiItems)
+        // alpha sort
+        keys.sort((a, b) => {
+            var r = a.localeCompare(b)
+            const o1 = epiItems[a]
+            const o2 = epiItems[b]
+            if (o1?.rss.pubDate && o2?.rss.pubDate) {
+                try {
+                    const d1 = new Date(o1.rss.pubDate)
+                    const d2 = new Date(o2.rss.pubDate)
+                    r = d1 <= d2
+                }
+                catch { }
+            }
+            return r
+        })
+        keys.forEach(k => {
+            self.podcasts.epiItems[k] = epiItems[k]
+        })
+    }
+
     buildPdcItems(pItem, store, page, data) {
         const pdcItems = {}
         if (settings.debug.debug)
@@ -438,13 +648,22 @@ class PodcastsLists {
                     pItem.stores,
                     null
                 )
-            tagItem.id = c[0]   // here id == title (no id in podcasts)
+
+            // pdc item props
             tagItem.url = c[1].trim()       // coz see \r in results
             tagItem.store = store
             tagItem.page = page
             tagItem.pItem = pItem
+
+            // state datas
+            tagItem.selCnt = 0
+
             // make it compatible with favorites management
+            tagItem.id = c[0]   // here id == title (no id in podcasts)
             tagItem.favLists = []   // TODO: keep favorites in store and réinit here
+
+            // compat with favorites & rdItem management
+            tagItem.metadata = {}
             tagItem.pdc = true      // indicates it's a pdc, not a station
 
             pdcItems[tagItem.name] = tagItem

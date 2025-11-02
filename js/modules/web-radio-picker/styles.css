@@ -56,6 +56,10 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     align-self: center;
 }
 
+/*wrp_pdc_st_list {
+    align-self: center;
+}*/
+
 .bt-bar-img-but {
     vertical-align: baseline;
     margin-top: 0.7em;
@@ -128,7 +132,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
 }
 
 .wrp-scroll-pane {
-    overflow-y: scroll;
+    overflow-y: auto; /* scroll;*/
     overflow-x: hidden;
     /* max-height: 300px; */
     /* min-height: 300px; */
@@ -189,6 +193,43 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     grid-column: 1;
     padding: 0.5em;
     overflow-wrap: anywhere;
+}
+
+.wrp-list-item-subtext-container {
+    grid-row: 1;
+    grid-column: 1;
+    font-size: 0.8rem;
+    padding: 0.5em;
+    overflow-wrap: anywhere;
+    /* margin-top: 2.5em; */
+    /* margin-left: 0.2em; */
+    color: #FFFF00DD;
+    line-height: 1em;
+    padding-left: 0.1em;
+    padding-bottom: 0.2em;
+    margin-bottom: 0em;
+    padding-top: 0em;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.wrp-list-item.item-selected > div.wrp-list-item-subtext-container {
+    padding-top: 1em;
+    padding-bottom: 1.5em;
+    margin-top: 2.8em;
+    padding-left: 0.6em;
+}
+
+.wrp-list-item-subtext1 {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: left;
+}
+
+.wrp-list-item-subtext2 {
+    grid-row: 1;
+    grid-column: 2;
+    text-align: right;
 }
 
 .wrp-list-item-history-favs {
@@ -257,7 +298,114 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     /* align-content: space-around; */
 }
 
-#wrp_rad_list_ref {
+.align-bottom {
+    align-content: end;
+}
+
+#wrp_pdc_prv_em_button {
+    padding: 0.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-size: 1.3em;
+}
+
+#wrp_pdc_st_list, #wrp_pdc_epim_list {
+    /*display: flex;
+    flex-direction: column;*/
+    padding: 2em;
+    display: grid;
+    grid-template-rows: min-content auto min-content;
+    /* align-content: space-between; */
+    /*padding-bottom: 200%;*/
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.wrp_pdc_prv_button {
+    border: #000000A0 solid 2px !important;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin-bottom: 1rem;
+}
+
+#wrp_pdc_prv_img_container, #wrp_pdc_epim_img_container {
+    background-color: darkblue !important;
+    grid-row: 1;
+    grid-column: 1;
+    /*max-height: 50%;*/
+}
+
+.wrp_pdc_prv_noimg {
+    background-image: url('../../../img/bgbleu.webp');
+    background-size: cover;
+}
+
+.wrp_pdc_prv_row {
+    background-color: #000000BF;
+    padding: 1em;
+    /* padding-bottom: 0em; */
+    padding-left: 2em;
+    padding-right:2em;
+}
+
+.wrp_pdc_prv_row_d {
+    padding-bottom: 1rem;
+    display: block;    
+}
+
+.wrp_pdc_prv_slider {
+    margin-bottom: Calc(100% + 10em);
+}
+
+.wrp_pdc_prv_row_sep_dw {
+    padding-bottom: 1em;
+    /* margin-top: 1em; */
+    padding-top: 1em;
+}
+
+#wrp_pdc_prv_name, #wrp_pdc_epim_name {
+    font-size: 1.7em;
+    padding-left: 1.3em;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.4rem;
+    display: block;
+}
+
+#wrp_pdc_prv_desc,#wrp_pdc_epim_desc {
+    line-height: 1.6em;
+    padding-top: 1rem;
+    overflow-wrap: anywhere;
+}
+
+#wrp_pdc_prv_author {
+    
+}
+
+.wrp_pdc_prv_author_text {
+    font-size: 1.2rem;
+    /* padding-bottom: 0em; */
+    position: relative;
+    /* top: -1.5rem; */
+    color: #FFFF00AA;
+    /* line-height: 0.5rem; */
+    padding-top: 0.5rem;
+}
+
+#wrp_pdc_prv_img_container {
+
+}
+
+#wrp_pdc_btn_bar {
+    align-content: center;
+    grid-template-columns: min-content auto min-content min-content min-content;
+    align-items: unset;
+    /*background-color: black;*/
+}
+
+#wrp_rad_list_ref,
+#wrp_pdc_list_ref {
     text-wrap: nowrap;
     text-wrap-mode: nowrap;
     /*text-wrap-mode: wrap;
@@ -266,7 +414,8 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     align-content: space-around;
 }
 
-#wrp_rad_list_ref_name {
+#wrp_rad_list_ref_name,
+#wrp_pdc_list_ref_name {
     text-wrap: wrap;
     text-wrap-mode: wrap;
     word-break: break-word;
@@ -643,4 +792,8 @@ h1 {
     font-size: 1.3em;
     color: #FFFF00DD;
     /* text-decoration: underline; */
+}
+
+.align-self-center {
+    align-self: center;
 }

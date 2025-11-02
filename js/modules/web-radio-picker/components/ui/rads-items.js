@@ -75,19 +75,51 @@ class RadsItems {
         this.setTitleIconsVisibility($item, false)
     }
 
-    updateRadItemView(item, $item) {
+    updateRadItemView(item, $item, opts) {
         if (item === undefined || item == null) return
         if ($item === undefined || $item == null) return
+        if (opts === undefined) opts = null
+
         const $butOn = $item.find('img[name="heart_on"]')
         const $butOff = $item.find('img[name="heart_off"]')
         const $text2 = $item.find('.wrp-item-info-text2')
         const $text = $item.find('.wrp-list-item-text-container')
         const $statusText = $item.find('.wrp-item-info-text')
+
+        // ----
+        const $subTextBox = $item.find('.wrp-list-item-subtext-container')
+        const $subt1 = $subTextBox.find('.wrp-list-item-subtext1')
+        const $subt2 = $subTextBox.find('.wrp-list-item-subtext2')
+
         $text.text(item.name)
+        $text.append($subTextBox)
+        // ----
+
         wrpp.checkMetaData(item)
+
         $statusText.text(item.metadata.statusText)
+
         const favName = favorites.getFavName(item) || ''
         $text2.text(favName)
+
+        if (opts?.countFunc) {
+            const $tbox = $item.find('.wrp-list-item-box')
+            $tbox.text(opts.countFunc(item))
+        }
+
+        $subt1.text(item.subText)
+        $subt2.text(item.subText2)
+
+        if (item.subText && item.subText != '')
+            $subt1.removeClass('hidden')
+        else
+            $subt1.addClass('hidden')
+
+        if (item.subText2 && item.subText2 != '')
+            $subt2.removeClass('hidden')
+        else
+            $subt2.addClass('hidden')
+
         this.updateRadItem(item, $item, $butOn, $butOff)
     }
 

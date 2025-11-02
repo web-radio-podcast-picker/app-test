@@ -271,6 +271,11 @@ ui = {
         this.popups.updatePopupsPositionAndSize()
     },
 
+    hideError() {
+        const $e = $('#err_txt')
+        $e.text('')
+    },
+
     showError(messOrEvent, src, line, col, err) {
         window.err = {
             messOrEvent: messOrEvent,

@@ -88,6 +88,13 @@ You should have received a copy of the GNU General Public License along with thi
         txt(cpy.replaceAll('\n', '<br>'), 'wrp-inf-val')
     }
 
+    isVisibleInfosPane() {
+        return $('#btn_wrp_infos').hasClass('selected')
+    }
+
+    lastPdcPreviewVisibleState = false
+    lastEpiListVisibleState = false
+
     toggleInfos() {
         const $but = $('#btn_wrp_infos')
         const $pane = $('#wrp_inf_pane')
@@ -98,12 +105,27 @@ You should have received a copy of the GNU General Public License along with thi
         var scPane = null
         var rd = null
         if (!$pane.hasClass('hidden')) {
+
+            // is visible
+
+            this.lastPdcPreviewVisibleState = podcasts.isPdcPreviewVisible()
+            this.lastEpiListVisibleState = podcasts.isEpiListVisible()
+
+            podcasts.setPdcPreviewVisible(false)
+
             $('#opts_wrp_inf').empty()
             this.initInfoPane()
             scPane = 'opts_wrp_inf'
             rd = uiState.RDList(RadioList_Info, null, null)
         }
         else {
+
+            // is hidden
+
+            if (uiState.currentTab.listId == RadioList_Podcast
+                && !this.lastEpiListVisibleState
+            )
+                podcasts.setPdcPreviewVisible(this.lastPdcPreviewVisibleState)
             scPane = 'wrp_radio_list'
             rd = uiState.currentRDList_Back
         }

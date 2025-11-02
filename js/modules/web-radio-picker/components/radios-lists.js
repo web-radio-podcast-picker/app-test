@@ -125,8 +125,9 @@ class RadiosLists {
         return res
     }
 
-    findListItemByName(name, containerId) {
+    /*findListItemByName(name, containerId) {
         const $items = $('#' + containerId).find('.wrp-list-item')
+        console.log('1111111111111111111')
         // TODO: use 'some' operator to speed up this
         const t = $items.map((i, e) => {
             return {
@@ -136,7 +137,7 @@ class RadiosLists {
         })
         const r = t.filter((i, x) => x.name == name)
         return (r.length == 0) ? null : r[0]
-    }
+    }*/
 
     findListItemById(id, containerId) {
         const $items = $('#' + containerId).find('.wrp-list-item')

@@ -25,20 +25,37 @@ class RemoteDataStore {
         this.get(url, callback)
     }
 
+    getPodcastChannelRss(url, callback, errCallback) {
+        this.get(url, callback, errCallback)
+    }
+
     storeUrl(index) {
         const url = settings.dataProvider.baseUrl
             + 'data' + index + '/'
         return url
     }
 
-    get(url, callback) {
+    get(url, callback, errCallback) {
         if (settings.debug.debug)
             logger.log('GET ' + url)
         fetch(url)
             .then(response => {
                 if (response.ok) return response.text()
-                else throw new Error(response.statusText + ' ' + response.url)
+                else {
+                    if (errCallback)
+                        errCallback(response.statusText, response)
+                    else
+                        throw new Error(response.statusText + ' ' + response.url)
+                }
             })
-            .then(data => callback(data)) // you can use response body here
+            .then(data => {
+                window.rssData = data
+                callback(data)
+            }) // you can use response body here
+            .catch(error => {
+                logger.error(error)
+                if (errCallback)
+                    errCallback(error)
+            })
     }
 }

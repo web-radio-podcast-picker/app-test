@@ -127,6 +127,7 @@ class ListsBuilder {
         const keys = Object.keys(itemsByName)
         var j = 0
         keys.forEach(name => {
+            const dataItem = itemsByName[name]
             const { item, $item } = radListBuilder.buildListItem(
                 name,
                 j,
@@ -134,9 +135,9 @@ class ListsBuilder {
                 {
                     count: ''
                 },
-                null,
-                null,
-                null,
+                dataItem,
+                RadioList_Podcast,
+                listId,
                 textViewFunc
             )
             j++
@@ -148,7 +149,7 @@ class ListsBuilder {
 
         keys.forEach(name => {
             const cnt =
-                countFunc === undefined ?
+                (countFunc === undefined || countFunc == null) ?
                     itemsByName[name].length
                     : countFunc(name, itemsByName[name])
             this.setupItemOptions(

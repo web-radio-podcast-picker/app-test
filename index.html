@@ -121,6 +121,7 @@
     <script src="./js/modules/web-radio-picker/components/data/radio-data-builder.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/m3u-data-builder.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/radio-data-parser.js?hash=q"></script>
+    <script src="./js/modules/web-radio-picker/components/data/podcast-rss-parser.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/radios-lists.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/ui-state.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/rdmedia-image.js?hash=q"></script>
@@ -293,6 +294,10 @@
                 <div class="gr1 gc1 padding-small border-light">
                     <!-- top buttons -->
                     <div class="channel-menu-pane">
+
+                        <span id="btn_wrp_podcast"
+                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Podcasts</span>
+
                         <span id="btn_wrp_tag_list"
                             class="gr1 menu-item menu-item-blue onoff-small-height no-width selected">Tags</span>
                         <span id="btn_wrp_lang_list"
@@ -300,8 +305,6 @@
                         <span id="btn_wrp_art_list"
                             class="gr1 menu-item menu-item-blue onoff-small-height no-width spc-left">Artists</span>
 
-                        <span id="btn_wrp_podcast"
-                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Podcasts</span>
                         <span id="btn_wrp_podcast_lang"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">Langs</span>
                         <span id="btn_wrp_podcast_tag"
@@ -309,7 +312,9 @@
                         <span id="btn_wrp_podcast_alpha"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">Letters</span>
                         <span id="btn_wrp_podcast_pdc"
-                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">List</span>
+                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">Channels</span>
+                        <span id="btn_wrp_podcast_epi"
+                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">Epi</span>
 
                         <span id="btn_wrp_play_list"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Favs</span>
@@ -338,6 +343,24 @@
                         <div id="opts_wrp_podcast_alpha" class="wrp-scroll-pane no-vscroll hidden">
                         </div>
                         <div id="opts_wrp_podcast_pdc" class="wrp-scroll-pane no-vscroll hidden">
+                        </div>
+                        <!-- episode media -->
+                        <div id="opts_wrp_podcast_epi_media" class="gridh100p wrp-scroll-pane no-vscroll hidden">
+                            <div id="wrp_pdc_epim_img_container" class="wrp_pdc_prv_noimg wrp-img-holder">
+                                <img id="wrp_pdc_epim_img" alt="channel image">
+                            </div>
+                            <div id="wrp_pdc_epim_list" class="wrp-scroll-pane">
+                                <div class="gr1 gc1">
+                                    <span class="wrp_pdc_prv_row" id="wrp_pdc_epim_name"></span>
+                                </div>
+                                <div class="gr2 gc1 align-center align-self-center">
+
+                                </div>
+                                <div class="gr3 gc1 align-bottom">
+                                    <span class="hidden wrp_pdc_prv_row wrp_pdc_prv_row_d"
+                                        id="wrp_pdc_epim_desc"></span>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -474,9 +497,18 @@
 
                 </div>
 
+                <div id="wrp_pdc_btn_bar" class="hidden gr1 gc1 padding-small border-light grid">
+                    <div id="wrp_pdc_list_ref" class="gr1 gc1" class="align-left">
+                        <!-- top pdc path : list id -->
+                    </div>
+                    <div id="wrp_pdc_list_ref_name" class="gr1 gc2" class="align-left">
+                        <!-- top fav path : name -->
+                    </div>
+                </div>
+
                 <!-- radio list -->
 
-                <div class="gr2 gc1 border-light margin-top gridh100p lim-height">
+                <div id="wrp_radio_list_container" class="gr2 gc1 border-light margin-top gridh100p lim-height">
                     <div id="wrp_radio_list" class="wrp-scroll-pane">
                     </div>
                 </div>
@@ -484,6 +516,34 @@
                     class="hidden gr2 gc1 top-arrow arrow-up">
                 <img id="rdl_btm" alt="radio list down" src="./img/arrow-50.png"
                     class="hidden gr2 gc1 btm-arrow arrow-down">
+
+                <!-- episodes list -->
+
+                <div id="wrp_pdc_epi_list_container"
+                    class="hidden gr2 gc1 border-light margin-top gridh100p lim-height">
+                    <div id="opts_wrp_podcast_epi" class="wrp-scroll-pane no-vscroll hidden">
+                    </div>
+                </div>
+
+                <!-- pdc channel preview -->
+
+                <div id="wrp_pdc_st_list_container" class="hidden gr2 gc1 border-light margin-top gridh100p lim-height">
+                    <div id="wrp_pdc_prv_img_container" class="wrp_pdc_prv_noimg wrp-img-holder">
+                        <img id="wrp_pdc_prv_img" alt="channel image">
+                    </div>
+                    <div id="wrp_pdc_st_list" class="wrp-scroll-pane">
+                        <div class="gr1 gc1">
+                            <span class="wrp_pdc_prv_row" id="wrp_pdc_prv_name"></span>
+                        </div>
+                        <div class="gr2 gc1 align-center align-self-center">
+                            <span id="wrp_pdc_prv_em_button"
+                                class="wrp_pdc_prv_button nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Podcasts</span>
+                        </div>
+                        <div class="gr3 gc1 align-bottom">
+                            <span class="gr2 gc1 wrp_pdc_prv_row wrp_pdc_prv_row_d" id="wrp_pdc_prv_desc"></span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- infos pane -->
 
