@@ -38,24 +38,30 @@ class RemoteDataStore {
     get(url, callback, errCallback) {
         if (settings.debug.debug)
             logger.log('GET ' + url)
-        fetch(url)
-            .then(response => {
-                if (response.ok) return response.text()
-                else {
+        try {
+            fetch(url)
+                .then(response => {
+                    if (response.ok) return response.text()
+                    else {
+                        if (errCallback)
+                            return errCallback(response.statusText, response)
+                        else
+                            throw new Error(response.statusText + ' ' + response.url)
+                    }
+                })
+                .then(data => {
+                    if (data !== undefined) {
+                        window.rssData = data
+                        return callback(data)
+                    }
+                }) // you can use response body here
+                .catch(error => {
+                    logger.error(error)
                     if (errCallback)
-                        errCallback(response.statusText, response)
-                    else
-                        throw new Error(response.statusText + ' ' + response.url)
-                }
-            })
-            .then(data => {
-                window.rssData = data
-                callback(data)
-            }) // you can use response body here
-            .catch(error => {
-                logger.error(error)
-                if (errCallback)
-                    errCallback(error)
-            })
+                        return errCallback(error.message, error)
+                })
+        } catch (errf) {
+            console.log(errf)
+        }
     }
 }

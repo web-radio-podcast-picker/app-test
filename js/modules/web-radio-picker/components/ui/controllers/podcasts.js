@@ -391,11 +391,12 @@ class Podcasts {
         remoteDataStore.getPodcastChannelRss(
             item.url,
             data => this.buildPdcPreview(item, $item, data),
-            (err, response) => this.openPdcPreviewError(item, $item, err, response)
+            (mess, response) => this.openPdcPreviewError(item, $item, mess, response)
         )
     }
 
-    openPdcPreviewError(item, $item, err, response) {
+    openPdcPreviewError(item, $item, mess, response) {
+        console.log(response)
         this.podcastsLists.pdcPreviewItem = this.backPdcPreviewItem
         this.podcastsLists.$pdcPreviewItem = this.back$pdcPreviewItem
         const text = 'channel not found'
@@ -524,34 +525,39 @@ class Podcasts {
         radListBuilder.pathBuilder.buildPdcTopPath(item, $item)
 
         // get rss datas
-        const o = this.rssParser.parse(data)
-        item.rss = o
+        try {
+            const o = this.rssParser.parse(data)
+            item.rss = o
 
-        if (settings.debug.debug)
-            window.rss = o
+            if (settings.debug.debug)
+                window.rss = o
 
-        this.populatePdcPreview(item, $item, o)
+            this.populatePdcPreview(item, $item, o)
 
-        if (infosPane.isVisibleInfosPane())
-            // hide preview if infos pane is opened
-            infosPane.toggleInfos()
+            if (infosPane.isVisibleInfosPane())
+                // hide preview if infos pane is opened
+                infosPane.toggleInfos()
 
-        if (!this.isEpiListVisible()) {
-            this.setPdcPreviewVisible(true)
-            if (this.selection.epiOpen && this.buildPdcPreviewCount < 1) {
-                //this.selection.epiOpening = true
+            if (!this.isEpiListVisible()) {
+                this.setPdcPreviewVisible(true)
+                if (this.selection.epiOpen && this.buildPdcPreviewCount < 1) {
+                    //this.selection.epiOpening = true
 
-                // case on start
+                    // case on start
 
-                if (settings.debug.debug)
-                    logger.log('opening epi list')
+                    if (settings.debug.debug)
+                        logger.log('opening epi list')
 
-                this.autoOpenedEpiList = true
-                $('#wrp_pdc_prv_em_button').click()
+                    this.autoOpenedEpiList = true
+                    $('#wrp_pdc_prv_em_button').click()
+                }
             }
-        }
 
-        this.buildPdcPreviewCount++
+            this.buildPdcPreviewCount++
+        } catch (parseError) {
+            const st = 'parse error'
+            radsItems.updateLoadingRadItem(st)
+        }
     }
 
     buildPdcPreviewCount = 0

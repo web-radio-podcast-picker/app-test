@@ -74,9 +74,9 @@ class RadListPathBuilder {
         const $p2 = $('#wrp_pdc_list_ref_name')
         $p2[0].innerHTML = ''
 
-        const $pdcBut = this.buildPdcPathButton(Pdc_List_Pdc, item.name, 'Podcast', true, false)
+        /*const $pdcBut = this.buildPdcPathButton(Pdc_List_Pdc, item.name, 'Podcast', true, false)
         $p.append($pdcBut)
-        $p.append(this.buildRightChevron().addClass('right-chevron-extended'))
+        $p.append(this.buildRightChevron().addClass('right-chevron-extended'))*/
         const sel = podcasts.selection
 
         const $langBut = this.buildPdcPathButton(Pdc_List_Lang, sel.lang.item.name, sel.lang.item.name, true, true)
@@ -101,10 +101,10 @@ class RadListPathBuilder {
         }
         $p2.append(this.buildRightChevron().addClass('right-chevron-extended'))
         const $nameBut = this.buildPdcPathButton(Pdc_List_Pdc, item.name, item.name, true, false)
-        $nameBut.addClass('selected')
+        //$nameBut.addClass('selected')
         $p2.append($nameBut)
 
-        $pdcBut.on('click', e => {
+        $nameBut.on('click', e => {
             $('#btn_wrp_podcast_pdc').click()
         })
     }
