@@ -27,10 +27,12 @@ class RadListBuilder {
         // radio name
         const $textBox = $('<div class="wrp-list-item-text-container">' + str + '</div>')
 
+        // TODO: FIX :: listId == listName == null on startup ?!
         // eventually sub text
-        if (listId == RadioList_Podcast && (listName == Pdc_List_Pdc
-            || listName == Pdc_List_Epi)
-        ) {
+        if ((listId == RadioList_Podcast
+            && (listName == Pdc_List_Pdc
+                || listName == Pdc_List_Epi))
+            || listId == RadioList_List) {
             const $subt1 = $('<div class="wrp-list-item-subtext1"></div>')
             const $subt2 = $('<div class="wrp-list-item-subtext2"></div>')
 
@@ -142,16 +144,23 @@ class RadListBuilder {
             const it = wrpp.getRadListItem(citem)
             const $item = $(it?.item)
             if ($item.length > 0) {
-                const item = wrpp.findRadItem(citem)
-                this.restorePlayingRDItemInView(
-                    radsItems.$loadingRDItem,   // last known current
-                    item,
-                    $item,
-                    listId,
-                    listName,
-                    {},
-                    true
-                )
+                // currentRDItem might be a clone (coming from history)
+                const item =
+                    citem.pdc ? citem    // not foundable if pdc
+                        : wrpp.findRadItem(citem)   // TODO: should avoid use of allItems : here find from wrpp.allItems
+
+                if (item != null) {
+                    // restore current playing rd item in view
+                    this.restorePlayingRDItemInView(
+                        radsItems.$loadingRDItem,   // last known current
+                        item,
+                        $item,
+                        listId,
+                        listName,
+                        {},
+                        true
+                    )
+                }
             }
         }
         else
@@ -214,13 +223,20 @@ class RadListBuilder {
         radsItems.setTitleIconsVisibility($prevItem, true)
         radsItems.setTitleIconsVisibility($item, false)
 
+        if (o.pdc && !o.epi) {
+            const sel = sclone(o.sel)
+            sel.pdc = { item: o }
+            podcasts.changePodcasts(sel)
+            return
+        }
+
         // update radio view with new current item
         wrpp.setupRadioView(o)
+
+        // setup up media image
         const $i = $('#wrp_img')
         $i.attr('data-w', null)
         $i.attr('data-h', null)
-
-        // setup up media image
         if (o.logo != null && o.logo !== undefined && o.logo != '') {
             // get img
             $i.addClass('hidden')

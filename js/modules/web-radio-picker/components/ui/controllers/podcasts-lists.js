@@ -542,7 +542,7 @@ class PodcastsLists {
             letterk,
             (data) => {
                 podcasts.podcastsLists.buildPdcItems(
-                    item, storeIndex, sel.noPage, data)
+                    item, storeIndex, sel.noPage, data, sel)
             }
         )
     }
@@ -585,6 +585,7 @@ class PodcastsLists {
             // epi items props
             epiItem.url = rssItem.audioUrl
             epiItem.pItem = item
+            epiItem.sel = sclone(item.sel)
             //epiItem.rss = rssItem       // TODO: avoid store RSS (too big)
 
             // state datas
@@ -600,6 +601,7 @@ class PodcastsLists {
                 item.rss.image || item.rss.itunes.image
             epiItem.metadata = {}
             epiItem.pdc = true      // indicates it's a pdc, not a station
+            epiItem.epi = true      // indicates it's a pdc episode, not a channel
 
             epiItem.pubDate = rssItem.pubDate
 
@@ -616,7 +618,7 @@ class PodcastsLists {
             var r = a.localeCompare(b)
             const o1 = epiItems[a]
             const o2 = epiItems[b]
-            if (o1?./*rss.*/pubDate && o2 ?/*.rss*/pubDate) {
+            if (o1?./*rss.*/pubDate && o2?./*.rss*/pubDate) {
                 try {
                     const d1 = new Date(/*o1.rss*/pubDate)
                     const d2 = new Date(/*o2.rss*/pubDate)
@@ -631,7 +633,7 @@ class PodcastsLists {
         })
     }
 
-    buildPdcItems(pItem, store, page, data) {
+    buildPdcItems(pItem, store, page, data, sel) {
         const pdcItems = {}
         if (settings.debug.debug)
             window.data = data
@@ -639,14 +641,14 @@ class PodcastsLists {
         if (settings.debug.debug) {
             console.log(pItem)
             console.log('store = ' + store + ', page = ' + page)
-            //console.log(data)
+            console.log(sel)
         }
         const t = data.trim()       // coz there is empty lines
             .split('\n')
 
         t.forEach(row => {
             const c = row.split(settings.dataProvider.columnSeparator)
-            const tagItem =
+            const pdcItem =
                 this.podcastItem(
                     null,
                     c[0],
@@ -656,23 +658,25 @@ class PodcastsLists {
                 )
 
             // pdc item props
-            tagItem.url = c[1].trim()       // coz see \r in results
-            tagItem.store = store
-            tagItem.page = page
-            tagItem.pItem = pItem
+            pdcItem.url = c[1].trim()       // coz see \r in results
+            pdcItem.store = store
+            pdcItem.page = page
+            pdcItem.pItem = pItem
+            pdcItem.sel = sclone(sel)
+            ////pdcItem.sel.pdc = { item: pdcItem }
 
             // state datas
-            tagItem.selCnt = 0
+            pdcItem.selCnt = 0
 
             // make it compatible with favorites management
-            tagItem.id = c[0]   // here id == title (no id in podcasts)
-            tagItem.favLists = []   // TODO: keep favorites in store and réinit here
+            pdcItem.id = c[0]   // here id == title (no id in podcasts)
+            pdcItem.favLists = []   // TODO: keep favorites in store and réinit here
 
             // compat with favorites & rdItem management
-            tagItem.metadata = {}
-            tagItem.pdc = true      // indicates it's a pdc, not a station
+            pdcItem.metadata = {}
+            pdcItem.pdc = true      // indicates it's a pdc, not a station
 
-            pdcItems[tagItem.name] = tagItem
+            pdcItems[pdcItem.name] = pdcItem
 
             this.podcasts.pdcItems = pdcItems
         })

@@ -132,13 +132,13 @@ class Podcasts {
     updateInitializedStatusFromSelection() {
         const s = this.selection
         if (s.tag == null)
-            this.initializedLists[Pdc_List_Tag] = false
+            this.initializedLists[Pdc_List_Tag] = null
         if (s.letter == null)
-            this.initializedLists[Pdc_List_Letter] = false
+            this.initializedLists[Pdc_List_Letter] = null
         if (s.pdc == null)
-            this.initializedLists[Pdc_List_Pdc] = false
+            this.initializedLists[Pdc_List_Pdc] = null
         if (s.epi == null)
-            this.initializedLists[Pdc_List_Epi] = false
+            this.initializedLists[Pdc_List_Epi] = null
         return this
     }
 
@@ -242,7 +242,7 @@ class Podcasts {
                 if (settings.debug.debug)
                     logger.log('add pdc list: ' + listId)
 
-                if (!this.initializedLists[listId]) {
+                if (!this.isListInitialized(listId, selection)) {
 
                     this.onReady(() => {
                         if (slistId == listId) {
@@ -264,6 +264,53 @@ class Podcasts {
             }
         })
     }
+
+    resetInitializedLists() {
+        // can preserve Lang
+        this.initializedLists[Pdc_List_Tag] = null
+        this.initializedLists[Pdc_List_Letter] = null
+        this.initializedLists[Pdc_List_Pdc] = null
+        this.initializedLists[Pdc_List_Epi] = null
+    }
+
+    changePodcasts(selection) {
+        this.selection = selection
+        this.resetInitializedLists()
+        $('#btn_wrp_podcast').click()
+    }
+
+    isListInitialized(listId, sel) {
+
+        if (!this.initializedLists[listId]) return false
+
+        /*const isInit = (sel1, sel2) => {
+            if (sel1 == null) return false
+            if (sel2 == null) return false
+            if (sel1.name == sel2.name
+                && sel1.
+            )
+        }
+
+        const o = this.initializedLists[listId]
+        if (!o) return false
+        if (sel.lang != null && sel.lang != o.lang) {
+            return o.lang = o.tag = o.letter = o.pdc = o.epi = null
+        }
+        if (sel.tag != null && sel.tag != o.tag) {
+            return o.tag = o.letter = o.pdc = o.epi = null
+        }
+        if (sel.letter != null && sel.letter != o.letter) {
+            return o.letter = o.pdc = o.epi = null
+        }
+        if (sel.pdc != null && sel.pdc != o.pdc) {
+            return o.pdc = o.epi = null
+        }
+        if (sel.epi != null && sel.epi != o.epi) {
+            return o.epi = null
+        }*/
+    }
+
+
 
     asyncInitTab(slistId) {
 

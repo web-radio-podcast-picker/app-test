@@ -40,7 +40,12 @@ class PlayHistory {
         }
 
         history.unshift(o)
+
+        //const hasRss = o.rss != null && o.rss !== undefined
+        //const rss = hasRss ? o.rss : null
+        //o.rss = null
         settings.dataStore.saveAll()
+        //if (hasRss) o.rss = rss
 
         // update views
         const list = listsBuilder.updateListsItems()

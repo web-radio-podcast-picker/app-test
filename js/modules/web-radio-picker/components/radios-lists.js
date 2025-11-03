@@ -255,8 +255,16 @@ class RadiosLists {
     }
 
     toJSON(applyFormat) {
-        return !applyFormat ? JSON.stringify(this.lists)
-            : JSON.stringify(this.lists, null, 2)
+
+        const selFn = (k, v) => {
+            if (serializeField(k))
+                return v
+            else return null
+        }
+
+        return !applyFormat ?
+            JSON.stringify(this.lists, selFn)
+            : JSON.stringify(this.lists, selFn, 2)
     }
 
     fromJSON(str) {

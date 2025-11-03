@@ -156,3 +156,8 @@ function getSortedNames(t) {
     names.sort((a, b) => a.localeCompare(b))
     return names
 }
+
+function sclone(o) {
+    const str = JSON.stringify(o)
+    return JSON.parse(str)
+}

@@ -121,3 +121,45 @@ const Class_Hidden = 'hidden'
 const transparentPixel =
     'data:image/png;base64,' +
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
+
+// -----------
+
+const serializeField = f => f != 'sel' && f != 'rss'
+
+/*serializableFields = [
+    //---- rd lists/tab
+    'listId', 'name',
+    //---- rd item
+    'artist',
+    'channels',
+    'country',
+    'description',
+    'favLists',
+    'groupTitle',
+    'groups',
+    'id',
+    'lang',
+    'logo',
+    'metadata',
+    'duration',
+    'endTime',
+    'startTime',
+    'statusText',
+    'name',
+    'ref',
+    'url',
+    //---- pdc item
+    'code',
+    'page',
+    'pdc',
+    /// no rss , sel
+    'store',
+    'subText',
+    'url',
+    //---- epi item
+    'epi',
+    'listenDate',
+    'pubDate',
+    'qty',
+    'subText2'
+]*/
