@@ -144,7 +144,13 @@ class ListsBuilder {
             btns[name] = $item
             this.initListItem($container, item, $item, itemsByName[name],
                 uiState.RDList(listId, name, $item), onClick)
-            $container.append($item)
+            try {
+                $container.append($item)
+            } catch (err)
+            {
+                // TODO: check this case (seems not catchable)
+                console.warn(err)
+            }
         })
 
         keys.forEach(name => {

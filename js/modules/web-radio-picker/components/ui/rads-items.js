@@ -136,7 +136,7 @@ class RadsItems {
         const canEmpty = !isRdItem && isFavList
 
         // TODO: manage an internal and stored favlists of pdc
-        const existsInFavorites = isRdItem &&
+        const existsInFavorites = isRdItem && rdItem.favLists != null &&
             (rdItem.favLists.length == 0 ? false :
                 (rdItem.favLists.length == 1 && rdItem.favLists[0] != RadioList_History)
                 || rdItem.favLists.length > 1)

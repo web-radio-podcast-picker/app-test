@@ -32,6 +32,7 @@ class PodcastsLists {
 
         const paneId = self.listIdToPaneId[listId]
         const $pl = $('#' + paneId)
+        // clear pane
         $pl[0].innerHTML = ''
 
         switch (listId) {
@@ -87,6 +88,10 @@ class PodcastsLists {
 
         if (!self.podcasts.initializedLists[listId])
             self.podcasts.initializedLists[listId] = true
+
+        const $loadingPane = $('#opts_wrp_pane_loading')
+        $loadingPane.addClass('hidden')
+
         podcasts.asyncInitTab(listId)
 
     }
@@ -244,8 +249,10 @@ class PodcastsLists {
         const name = $item.attr('data-text')
         const item = getItemFunc(name)
 
-        if (settings.debug.debug)
+        if (settings.debug.debug) {
+            console.log('## open list: ' + listId)
             console.log('select \'' + listId + '\' item: ' + name)
+        }
 
         const self = podcasts.podcastsLists
         const { $e, isDisabled, isSelected, isAccepted } = self.getItemProps(e, $item)
@@ -262,7 +269,7 @@ class PodcastsLists {
                 item,
                 $item,
                 RadioList_Podcast,
-                Pdc_List_Pdc,
+                Pdc_List_Pdc,       // TODO: ??
                 '',
                 true,
                 true,
@@ -285,10 +292,14 @@ class PodcastsLists {
         if (noList !== true) {
             // switch to tab
             const targetTabId = podcasts.listIdToTabId[getSubListIdFunc(selection)]
+            if (settings.debug.debug)
+                console.log('## open list: switch to tab: ' + targetTabId)
             $('#' + targetTabId).click()
         }
         else {
             const slistId = podcasts.getMoreFocusableListId()
+            if (settings.debug.debug)
+                console.log('## open list: auto focus: ' + slistId)
             if (slistId != listId)
                 // simply focus selection if different list
                 $item[0].scrollIntoView(ScrollIntoViewProps)
@@ -301,6 +312,47 @@ class PodcastsLists {
         const $panel = $('#' + paneId)
         const $item = $panel.find('[data-text="' + item.name + '"]')
         return $item
+    }
+
+    compareItems($item1, $item2) {
+        return $item1.attr('data-text') == $item2.attr('data-text')
+    }
+
+    selectFoldableItem(item, $item, listId) {
+        radsItems.buildFoldableItem(
+            item,
+            $item,
+            RadioList_Podcast,
+            Pdc_List_Pdc,       // TODO: ??
+            '',
+            true,
+            true,
+            listId)
+        $item.addClass('item-selected')
+    }
+
+    restoreSelection(listId, sel, isFoldable) {
+        const item = podcasts.getSelectionById(listId, sel)?.item
+        const paneId = this.listIdToPaneId[listId]
+        //const $pane = $('#' + paneId)
+        const $item = this.findListItemInView(paneId, item)
+        if ($item != null) {
+            const $selItem = wrpp.findSelectedListItem(paneId)
+            if (!this.compareItems($item, $selItem)) {
+                // unselect+unfold any other
+                wrpp.clearContainerSelection(paneId)
+                radsItems.unbuildFoldableItem($selItem)
+                // select new item
+                if (isFoldable)
+                    this.selectFoldableItem(
+                        item,
+                        $item,
+                        listId,
+                    )
+                else
+                    $item.addClass('item-selected')
+            }
+        }
     }
 
     selectItem(listId, item) {
@@ -404,7 +456,7 @@ class PodcastsLists {
     // returns true if async
     buildItems(listId) {
         if (settings.debug.debug)
-            logger.log('build items: ' + listId)
+            logger.log('## build items: ' + listId)
         const self = this//podcasts.podcastsLists
 
         const index = self.podcasts.index
@@ -442,6 +494,10 @@ class PodcastsLists {
     }
 
     buildLettersItems(index) {
+
+        const $pane = $('#' + this.listIdToPaneId[Pdc_List_Letter])
+        this.setListPaneLoadingStateEnabled($pane)
+
         const letterItems = {}
         const countPropName = settings.dataProvider.countPropName
         const storesPropName = settings.dataProvider.storesPropName
@@ -472,6 +528,10 @@ class PodcastsLists {
     }
 
     buildTagsItems(index) {
+
+        const $pane = $('#' + this.listIdToPaneId[Pdc_List_Tag])
+        this.setListPaneLoadingStateEnabled($pane)
+
         const tagItems = {}
         const countPropName = settings.dataProvider.countPropName
         const storesPropName = settings.dataProvider.storesPropName
@@ -517,6 +577,12 @@ class PodcastsLists {
         this.podcasts.tagItems = tagItems
     }
 
+    setListPaneLoadingStateEnabled($pane) {
+        $pane[0].innerHTML = ''
+        const $loadingPane = $('#opts_wrp_pane_loading')
+        $loadingPane.removeClass('hidden')
+    }
+
     getAndBuildPdcItems(index) {
         const sel = podcasts.selection
         const langk = sel.lang.item.code
@@ -533,7 +599,9 @@ class PodcastsLists {
         // erase list before async get
         // TODO: add a wait load/init message ...
         const $pane = $('#' + this.listIdToPaneId[Pdc_List_Pdc])
-        $pane[0].innerHTML = ''
+
+        //$pane[0].innerHTML = ''
+        this.setListPaneLoadingStateEnabled($pane)
 
         remoteDataStore.getPodcastsList(
             storeIndex,

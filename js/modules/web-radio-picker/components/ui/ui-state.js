@@ -195,9 +195,9 @@ class UIState {
             podcastSelection: podcasts.selection
         }
 
-        if (settings.debug.debug) {
-            console.warn('save ui state: currentRDItem=' + this.currentRDItem?.name)
-        }
+        /*if (settings.debug.debug) {
+            console.log('save ui state: currentRDItem=' + this.currentRDItem?.name)
+        }*/
 
         const str = JSON.stringify(r, (k, v) => {
             if (serializeField(k))
