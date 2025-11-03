@@ -387,7 +387,7 @@ class Podcasts {
         this.previousListId = slistId
 
         this.setEpiListVisible(slistId == Pdc_List_Epi
-            || this.shouldRestoreEpiVisibleState)
+            || this.shouldRestoreEpiVisibleState)   // TODO: check this
 
         if (infosPane.isVisibleInfosPane())
             // hide preview if infos pane is opened
@@ -549,7 +549,7 @@ class Podcasts {
 
             $('#opts_wrp_podcast_epi').addClass('hidden')
         }
-        this.setEpiListMediaVisible(isVisible)
+        this.setEpiListMediaVisible(isVisible && !this.forceHideEpiMediaView)
 
         if (settings.debug.debug)
             console.log('setEpiListVisible= ' + isVisible + ' -- initializingPodcasts= ' + this.initializingPodcasts)

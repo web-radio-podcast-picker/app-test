@@ -53,6 +53,10 @@ class TabsController {
                     this.openingVizWithEpiListVisible = false
                 }
 
+                if (podcasts.shouldRestoreEpiVisibleState) {
+                    podcasts.forceHideEpiMediaView = true
+                }
+
                 podcasts.selectTab(
                     podcasts.selection,
                     listId
