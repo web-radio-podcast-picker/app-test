@@ -69,6 +69,15 @@ class RadListPathBuilder {
     }
 
     goPdcPath(sel, tabId, listId) {
+
+        const restoreSelection = (listId, sel) => {
+            if (listId != null && listId !== undefined) {
+                if (settings.debug.debug)
+                    console.log('## restore selection')
+                podcasts.podcastsLists.restoreSelection(listId, sel)
+            }
+        }
+
         podcasts.changePodcasts(
             sel,
             {
@@ -79,22 +88,12 @@ class RadListPathBuilder {
                     podcasts.openOpts = {
                         onCompleted: () => {
                             console.error('## RE ON COMPLETED')
-                            if (listId != null && listId !== undefined) {
-                                if (settings.debug.debug)
-                                    console.log('## restore selection')
-                                podcasts.podcastsLists.restoreSelection(listId, sel)
-                            }
+                            restoreSelection(listId, sel)
                         }
                     }
 
                     $('#' + tabId).click()
-                    //ui.tabs.selectTab(tabId, tabsController.pdcTabs)
-
-                    if (listId != null && listId !== undefined) {
-                        if (settings.debug.debug)
-                            console.log('## restore selection')
-                        podcasts.podcastsLists.restoreSelection(listId, sel)
-                    }
+                    restoreSelection(listId, sel)
                 }
             }
         )
