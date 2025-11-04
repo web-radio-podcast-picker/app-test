@@ -39,11 +39,6 @@ class RadListPathBuilder {
         if (!item.groups) {
             // fix missing item groups for pdc/epi items
             item.groups = []
-            if (item.epi) {
-                const grp = item.sel.tag?.item?.name
-                if (grp != null)
-                    item.groups.push(grp)
-            }
         }
 
         // fav button
@@ -54,15 +49,15 @@ class RadListPathBuilder {
             $p.append($favBut)
         }
 
+        this.#addListsIcon($p)
+
         if (item.epi) {
-            this.buildEpiViewTagPath(item, $p)
+            this.#buildEpiViewTagPath(item, $p)
             return
         }
 
         // tag path / lang path / artists path
-        const w = 24
-        const $img = $(`<img name="fav_but" class="small-tag-icon" src="./img/icons8-tag-50.png" width="${w}" height="${w}" alt="fav_but">`)
-        $p.append($img)
+
         var i = 0
         item.groups.forEach(grp => {
             const $but = this.buildTagPathButton(item, grp, i > 0)
@@ -75,8 +70,35 @@ class RadListPathBuilder {
         $p.append(this.buildArtistButton(item.artist, false))
     }
 
-    buildEpiViewTagPath(item, $p) {
+    #buildEpiViewTagPath(item, $p) {
+        if (settings.debug.debug)
+            console.log(item.sel)
+        const pdc = item.sel.pdc?.item?.name
+        const selclone = sclone(item.sel)
+        //this.#addLangLetterTagEpiPathButtons(item.sel, selclone, $p, true)
+        if (pdc) this.#addPdcEpiPathButton(pdc, $p, selclone)
+        const $ctxt = this.buildRightChevron().addClass('right-chevron-small')
 
+        const $epiBut = this.buildPdcPathButton(Pdc_List_Epi, item.name, $ctxt[0].outerHTML, true, false)
+        $p.append($epiBut)
+        $epiBut.on('click', e => {
+            const selclone = sclone(item.sel)
+            selclone.epi = { item: item }
+            selclone.epiOpen = false
+            selclone.epiOpening = false
+            podcasts.changePodcasts(selclone, {
+                onCompleted: () => {
+                    //$('#wrp_pdc_prv_em_button').click()     // too early
+                    //podcasts.setEpiListVisible(true)
+                }
+            })
+        })
+    }
+
+    #addListsIcon($p) {
+        const w = 24
+        const $img = $(`<img name="fav_but" class="small-tag-icon" src="./img/icons8-tag-50.png" width="${w}" height="${w}" alt="fav_but">`)
+        $p.append($img)
     }
 
     buildHistorybutton() {
@@ -129,6 +151,28 @@ class RadListPathBuilder {
         const sel = podcasts.selection
         const selclone = sclone(sel)
 
+        this.#addLangLetterTagEpiPathButtons(sel, selclone, $p2, false)
+
+        this.#addBottomRightChevron($p2)
+
+        this.#addPdcEpiPathButton(item.name, $p2, selclone)
+    }
+
+    #addBottomRightChevron($p) {
+        $p.append(this.buildRightChevron().addClass('right-chevron-extended'))
+    }
+
+    #addPdcEpiPathButton(name, $p2, selclone) {
+        const $nameBut = this.buildPdcPathButton(Pdc_List_Pdc, name, name, true, true)
+        $p2.append($nameBut)
+        $nameBut.on('click', e => {
+            podcasts.changePodcasts(
+                selclone
+            )
+        })
+    }
+
+    #addLangLetterTagEpiPathButtons(sel, selclone, $p2, rightMargin) {
         const $langBut = this.buildPdcPathButton(Pdc_List_Lang, sel.lang.item.name, sel.lang.item.name, true, true)
         $p2.append($langBut)
         $langBut.on('click', e => {
@@ -136,7 +180,7 @@ class RadListPathBuilder {
         })
 
         if (sel.tag) {
-            const $tagBut = this.buildPdcPathButton(Pdc_List_Tag, sel.tag.item.name, firstCharToUpper(sel.tag.item.name), true, sel.letter)
+            const $tagBut = this.buildPdcPathButton(Pdc_List_Tag, sel.tag.item.name, firstCharToUpper(sel.tag.item.name), true, sel.letter || rightMargin)
             $p2.append($tagBut)
 
             $tagBut.on('click', e => {
@@ -144,23 +188,13 @@ class RadListPathBuilder {
             })
         }
         if (sel.letter) {
-            const $letterBut = this.buildPdcPathButton(Pdc_List_Letter, sel.letter.item.name, sel.letter.item.name, true, false)
+            const $letterBut = this.buildPdcPathButton(Pdc_List_Letter, sel.letter.item.name, sel.letter.item.name, true, rightMargin)
             $p2.append($letterBut)
 
             $letterBut.on('click', e => {
                 this.goPdcPath(selclone, 'btn_wrp_podcast_alpha', Pdc_List_Letter)
             })
         }
-        $p2.append(this.buildRightChevron().addClass('right-chevron-extended'))
-        const $nameBut = this.buildPdcPathButton(Pdc_List_Pdc, item.name, item.name, true, false)
-        //$nameBut.addClass('selected')
-        $p2.append($nameBut)
-
-        $nameBut.on('click', e => {
-            podcasts.changePodcasts(
-                selclone
-            )
-        })
     }
 
     buildTopFavPath(listId, listName) {

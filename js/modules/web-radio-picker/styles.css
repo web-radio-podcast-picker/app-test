@@ -759,6 +759,10 @@ background-color: #44AAffAA !important
     vertical-align: middle;
 }
 
+.right-chevron-small {
+    text-overflow: clip;
+}
+
 .right-chevron-extended {
     height: 2.5em;
     width: 1.7em;
