@@ -74,7 +74,7 @@ class RadListPathBuilder {
         if (settings.debug.debug)
             console.log(item.sel)
         const pdc = item.sel.pdc?.item?.name
-        const selclone = sclone(item.sel)
+        const selclone = cloneSelection(item.sel)
         //this.#addLangLetterTagEpiPathButtons(item.sel, selclone, $p, true)
         if (pdc) this.#addPdcEpiPathButton(pdc, $p, selclone)
         const $ctxt = this.buildRightChevron().addClass('right-chevron-small')
@@ -82,7 +82,7 @@ class RadListPathBuilder {
         const $epiBut = this.buildPdcPathButton(Pdc_List_Epi, item.name, $ctxt[0].outerHTML, true, false)
         $p.append($epiBut)
         $epiBut.on('click', e => {
-            const selclone = sclone(item.sel)
+            const selclone = cloneSelection(item.sel)
             selclone.epi = { item: item }
             selclone.epiOpen = false
             selclone.epiOpening = false
@@ -149,7 +149,7 @@ class RadListPathBuilder {
         $p2[0].innerHTML = ''
 
         const sel = podcasts.selection
-        const selclone = sclone(sel)
+        const selclone = cloneSelection(sel)
 
         this.#addLangLetterTagEpiPathButtons(sel, selclone, $p2, false)
 

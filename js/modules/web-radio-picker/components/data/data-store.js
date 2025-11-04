@@ -9,6 +9,8 @@ const ST_UIState = 'UIState'
 
 class DataStore {
 
+    saveDisabled = false
+
     constructor() {
 
     }
@@ -29,6 +31,7 @@ class DataStore {
     }
 
     saveRadiosLists() {
+        if (this.saveDisabled) return
         try {
             if (settings.debug.info)
                 logger.log('save radio lists')
@@ -40,6 +43,7 @@ class DataStore {
             const str = radiosLists.toJSON()
             localStorage.setItem(ST_RadiosLists, str)
         } catch (err) {
+            this.saveDisabled = true
             ui.showError('save lists failed', null, null, null, err)
         }
     }
@@ -75,6 +79,7 @@ class DataStore {
     }
 
     saveUIState() {
+        if (this.saveDisabled) return
         try {
             if (settings.debug.info)
                 logger.log('save UI state')
@@ -86,6 +91,7 @@ class DataStore {
             const str = uiState.toJSON()
             localStorage.setItem(ST_UIState, str)
         } catch (err) {
+            this.saveDisabled = true
             ui.showError('save UI failed', null, null, null, err)
         }
     }

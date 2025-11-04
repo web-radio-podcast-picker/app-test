@@ -168,16 +168,6 @@ class UIState {
 
     getCurrentUIState() {
 
-        /*const hasRss = podcasts.selection.pdc?.item?.rss
-        const rss = hasRss ? podcasts.selection.pdc?.item?.rss : null
-        if (hasRss)
-            podcasts.selection.pdc.item.rss = null
-
-        const hasCRDIRss = uiState.currentRDItem?.pItem
-        const crdiRss = hasCRDIRss ? uiState.currentRDItem?.pItem : null
-        if (hasCRDIRss)
-            uiState.currentRDItem.pItem = null*/
-
         const r = {
             currentRDList: {
                 listId: this.currentRDList?.listId || null,
@@ -195,20 +185,11 @@ class UIState {
             podcastSelection: podcasts.selection
         }
 
-        /*if (settings.debug.debug) {
-            console.log('save ui state: currentRDItem=' + this.currentRDItem?.name)
-        }*/
-
         const str = JSON.stringify(r, (k, v) => {
             if (serializeField(k))
                 return v
             else return null
         })
-
-        /*if (hasRss)
-            podcasts.selection.pdc.item.rss = rss
-        if (hasCRDIRss)
-            uiState.currentRDItem.pItem = crdiRss*/
 
         return str
     }

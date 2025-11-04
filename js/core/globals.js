@@ -124,6 +124,31 @@ const transparentPixel =
 
 // -----------
 
+const cloneSelection = sel => {
+    /*const o = cloneItem({ sel: sel })
+    return o.sel*/
+    return sclone(sel)
+}
+
+const cloneCleanupSelection = sel => {
+    const o = cloneItem({ sel: sel })
+    return o.sel
+}
+
+
+// cleanup & clone station/pdc item
+const cloneItem = item => {
+    if (item.sel) {
+        if (item.sel.pdc?.item?.sel)
+            item.sel.pdc.item.sel = null
+        if (item.sel.epi?.item?.sel)
+            item.sel.epi.item.sel = null
+        const o = sclone(item)
+        return o
+    }
+    return null
+}
+
 const serializeField = f => /*f != 'sel' &&*/ f != 'rss'
 
 /*serializableFields = [

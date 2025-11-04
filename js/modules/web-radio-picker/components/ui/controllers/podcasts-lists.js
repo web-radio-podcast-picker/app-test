@@ -197,14 +197,7 @@ class PodcastsLists {
     // open episods list
     clickOpenEpiList(e) {
         const self = podcasts.podcastsLists
-        if (this.pdcPreviewItem == null) { // better: memorize in the pane (serialization)
-            this.pdcPreviewItem = podcasts.selection.pdc.item
-        }
         const item = this.pdcPreviewItem
-
-        const fitem = wrpp.getPdcListItem(item)
-        if (this.$pdcPreviewItem == null)
-            this.$pdcPreviewItem = $(fitem.item)
         const $item = this.$pdcPreviewItem
 
         self.openList(
@@ -584,7 +577,7 @@ class PodcastsLists {
     }
 
     getAndBuildPdcItems(index) {
-        const sel = podcasts.selection
+        const sel = cloneSelection(podcasts.selection)  // TODO: seems not valid ??? - maybe clone is the sol -
         const langk = sel.lang.item.code
         const tagk = sel.tag.item.name
         const letterk = sel.letter?.item?.name
@@ -617,10 +610,14 @@ class PodcastsLists {
 
     buildEpiItems(index) {
         const self = podcasts.podcastsLists
-        const item = this.pdcPreviewItem || podcasts.selection.pdc.item //podcasts.selection.pdc.item
+
+        const item = this.pdcPreviewItem
+
         var epiItems = {}
         var index = 1
         var prfx = ''
+
+        const sel = cloneCleanupSelection(item.sel) // share accross items
 
         item.rss.episodes.forEach(rssItem => {
 
@@ -652,8 +649,8 @@ class PodcastsLists {
 
             // epi items props
             epiItem.url = rssItem.audioUrl
-            epiItem.pItem = item
-            epiItem.sel = sclone(item.sel)
+            //epiItem.pItem = item
+            epiItem.sel = sel
             //epiItem.rss = rssItem       // TODO: avoid store RSS (too big)
 
             // state datas
@@ -729,8 +726,8 @@ class PodcastsLists {
             pdcItem.url = c[1].trim()       // coz see \r in results
             pdcItem.store = store
             pdcItem.page = page
-            pdcItem.pItem = pItem
-            pdcItem.sel = sclone(sel)
+            //pdcItem.pItem = pItem
+            pdcItem.sel = cloneSelection(sel)
             ////pdcItem.sel.pdc = { item: pdcItem }
 
             // state datas

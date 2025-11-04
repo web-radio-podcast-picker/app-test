@@ -448,9 +448,6 @@ class Podcasts {
         this.selectTab(selection, null)
     }
 
-    backPdcPreviewItem = null
-    back$pdcPreviewItem = null
-
     // pdc channel rss & show pdc preview
     openPdcPreview(item, $item) {
 
@@ -463,21 +460,24 @@ class Podcasts {
         item.metadata.statusText = 'opening...'
         radsItems.updateRadItemView(item, $item)
 
-        this.backPdcPreviewItem = this.podcastsLists.pdcPreviewItem
-        this.back$pdcPreviewItem = this.podcastsLists.$pdcPreviewItem
+        // fix sel
+        const sel = cloneSelection(item.sel)
+        sel.pdc = { item: item }
+
+        // any clone here prevent any item update after loading! (buildPdcPreview)
+        const cItem = item //cloneItem(item)   // fix sel in item
+        //cItem.sel = cloneSelection(cItem.sel)
 
         // TODO: avoid ops after receipt if other request started after this one
         remoteDataStore.getPodcastChannelRss(
             item.url,
-            data => this.buildPdcPreview(item, $item, data),
+            data => this.buildPdcPreview(cItem, $item, data, sel),
             (mess, response) => this.openPdcPreviewError(item, $item, mess, response)
         )
     }
 
     openPdcPreviewError(item, $item, mess, response) {
         console.log(response)
-        this.podcastsLists.pdcPreviewItem = this.backPdcPreviewItem
-        this.podcastsLists.$pdcPreviewItem = this.back$pdcPreviewItem
         const text = 'channel not found'
         ui.showError(text)
         item.metadata.statusText = text
@@ -505,8 +505,6 @@ class Podcasts {
                 this.setEpiListVisible(true)
 
         } else {
-            this.podcastsLists.pdcPreviewItem =
-                this.podcastsLists.$pdcPreviewItem = null
 
             if (skipTogglePath !== true) {
                 $('#wrp_pdc_btn_bar').addClass('hidden')
@@ -590,9 +588,12 @@ class Podcasts {
     }
 
     // build pdc preview
-    buildPdcPreview(item, $item, data) {
-        this.podcastsLists.pdcPreviewItem =
-            this.podcastsLists.$pdcPreviewItem = null
+    buildPdcPreview(item, $item, data, sel) {
+
+        if (settings.debug.debug) {
+            console.log('[##] build pdc preview: ' + item.name)
+            console.log('[##]', sel)
+        }
 
         ui.hideError()
         item.metadata.statusText = ''
@@ -613,18 +614,27 @@ class Podcasts {
             if (settings.debug.debug)
                 window.rss = o
 
-            this.populatePdcPreview(item, $item, o)
+            this.populatePdcPreview(item, $item, o, sel)
+
+            // store opened item
+            //this.podcastsLists.pdcPreviewItem = item //= cloneItem(item)    // keep sel
+
+            if (settings.debug.debug)
+                console.log('[##]', this.podcastsLists.pdcPreviewItem)
+
+            this.podcastsLists.$pdcPreviewItem = $item
 
             if (infosPane.isVisibleInfosPane())
                 // hide preview if infos pane is opened
                 infosPane.toggleInfos()
 
+            // ----- AUTO OPEN EPI -----
             if (!this.isEpiListVisible()) {
                 this.setPdcPreviewVisible(true)
                 if (this.selection.epiOpen && this.buildPdcPreviewCount < 1) {
                     //this.selection.epiOpening = true
 
-                    // case on start
+                    // case on start TODO: ?? // why not generalize ???
 
                     if (settings.debug.debug)
                         logger.log('opening epi list')
@@ -646,7 +656,7 @@ class Podcasts {
 
     buildPdcPreviewCount = 0
 
-    populatePdcPreview(item, $item, o) {
+    populatePdcPreview(item, $item, o, sel) {
 
         $('#wrp_pdc_st_list')[0].scrollTop = 0
 
@@ -706,10 +716,13 @@ class Podcasts {
             }
         )
 
+        // update stored clone
+        this.podcastsLists.pdcPreviewItem = cloneItem(item)
+        this.podcastsLists.pdcPreviewItem.sel = sel
+
         this.previewInitizalized = true
         this.setPdcPreviewVisible(true)
-        //this.setEpiListVisible(false)
-
+        //this.setEpiListVisible(false)        
         //// prevent first switch to view visible when not initialized
         ////$('#wrp_pdc_st_list').removeClass('ptransparent')
     }
