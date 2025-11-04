@@ -124,7 +124,7 @@ const transparentPixel =
 
 // -----------
 
-const serializeField = f => f != 'sel' && f != 'rss'
+const serializeField = f => /*f != 'sel' &&*/ f != 'rss'
 
 /*serializableFields = [
     //---- rd lists/tab

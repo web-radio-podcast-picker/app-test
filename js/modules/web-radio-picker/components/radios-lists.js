@@ -184,7 +184,9 @@ class RadiosLists {
     exportToClipboard() {
         this.lists[FavoritesJSONExportValidatorTag]
             = FavoritesJSONExportValidatorTag
+
         const txt = this.toJSON(true)
+
         delete this.lists[FavoritesJSONExportValidatorTag]
         window.exportedFavorites = txt
         copyToClipboard(txt)
@@ -236,8 +238,17 @@ class RadiosLists {
                         if (settings.debug.info)
                             logger.log('add to favorite list "' + name + '" : ' + srcItem.name)
                     }
-                    else
-                        logger.warn('skip item not in db: ' + srcItem.name)
+                    else {
+                        if (srcItem.pdc) {
+                            logger.log('add PDC to favorite list "' + name + '" : ' + srcItem.name)
+                            tgtList.items.push(srcItem)
+                            importedItems++
+                        }
+                        else {
+                            logger.warn('skip item not in db: ' + srcItem.name)
+                            console.log(srcItem)
+                        }
+                    }
                 } else {
                     // already in target fav list. update favlist nevertheless
                     this.merge(srcItem.favLists, tgtItem.favLists)
@@ -262,9 +273,40 @@ class RadiosLists {
             else return null
         }
 
-        return !applyFormat ?
+        var js = !applyFormat ?
             JSON.stringify(this.lists, selFn)
             : JSON.stringify(this.lists, selFn, 2)
+
+        if (settings.debug.debug)
+            console.log('size=' + js.length)
+
+        this.purgeItems()
+
+        js = !applyFormat ?
+            JSON.stringify(this.lists, selFn)
+            : JSON.stringify(this.lists, selFn, 2)
+
+        if (settings.debug.debug)
+            console.log('purged.size=' + js.length)
+
+        return js
+    }
+
+    purgeItems() {
+        for (const name in this.lists) {
+            const list = this.lists[name]
+            if (list.items)
+                list.items.forEach(item => {
+                    if (item.sel) {
+                        if (item.sel.pdc?.item?.sel)
+                            item.sel.pdc.item.sel = null
+                        if (item.sel.epi?.item?.sel)
+                            item.sel.epi.item.sel = null
+                    }
+                })
+            else
+                console.warn('list "'+name+'" has no items prop')
+        }
     }
 
     fromJSON(str) {
@@ -280,15 +322,24 @@ class RadiosLists {
                 srcList.isSystem = srcList.name == RadioList_History
             // transfers props
             srcList.items.forEach(item => {
+                // TODO: this search in allItems . thus loose pdcs & epis
                 const newItem = wrpp.findRadItem(item)
 
-                // copy dynamic properties from storage                
+                // copy dynamic properties from storage
                 if (newItem != null) {
                     newItem.favLists = [...item.favLists]
                     // fix history fav
                     if (name == RadioList_History && !newItem.favLists.includes(RadioList_History))
                         newItem.favLists.push(RadioList_History)
                     substItems.push(newItem)
+                }
+                else {
+                    if (item.pdc) {
+                        substItems.push(item)
+                        // fix history fav
+                        if (name == RadioList_History && !item.favLists.includes(RadioList_History))
+                            item.favLists.push(RadioList_History)
+                    }
                 }
             })
             srcList.items = substItems

@@ -30,7 +30,7 @@ class WRPPWSMediaSource {
                 logger.log('Metadata loaded:', this.audio.src)
 
             if (WRPPMediaSource.onLoadSuccess != null)
-                WRPPMediaSource.onLoadSuccess(this.audio)
+                WRPPMediaSource.onLoadSuccess(this.audio, ev)
         })
 
         this.audio.addEventListener('error', () => {

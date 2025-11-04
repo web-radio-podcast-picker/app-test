@@ -8,7 +8,7 @@ class PlayEventsHandlers {
 
     initAudioSourceHandlers() {
         WRPPMediaSource.onLoadError = (err, audio) => this.onLoadError(err, audio)
-        WRPPMediaSource.onLoadSuccess = (audio) => this.onLoadSuccess(audio)
+        WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
         WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
     }
 
@@ -46,15 +46,17 @@ class PlayEventsHandlers {
         $('#err_holder').removeClass('hidden')
     }
 
-    onLoadSuccess(audio) {
+    onLoadSuccess(audio, ev) {
         const st = 'connected'
         app.channel.connected = true
         radsItems.updateLoadingRadItem(st)
+        radsItems.setLoadingItemMetadata('startTime', Date.now())
 
         // metatadata available: audio.duration
 
         if (settings.debug.debug) {
             logger.log(st)
+            console.log(ev)
             logger.log('duration:' + audio.duration)
         }
         $('#wrp_connect_icon').addClass('hidden')
@@ -67,9 +69,59 @@ class PlayEventsHandlers {
         if (o != null) {
 
             window.audio = audio
-            o.metadata = {
-                duration: audio.duration
+            var dur = audio.duration
+
+            if (!isNaN(dur)) {
+                try {
+                    // should be hh:mm:ss
+                    var h = Math.floor(parseFloat((parseFloat(dur) / (60 * 24)).toFixed(2)))
+                    const durM = dur - (h * 60 * 24)
+                    var m = Math.floor(parseFloat((parseFloat(durM) / 60).toFixed(2)))
+                    var s = Math.floor(durM - m * 60)
+                    h += ''
+                    m += ''
+                    s += ''
+                    if (h.length == 1) h = '0' + h
+                    if (m.length == 1) m = '0' + m
+                    if (s.length == 1) s = '0' + s
+                    const strDur = h + ':' + m + ':' + s
+                    dur = strDur
+
+                } catch {
+                    dur = null
+                }
             }
+
+            if (!o.metadata) o.metadata = {}
+            if (!o.metadata.duration) {
+
+                if (settings.debug.debug)
+                    console.warn('set duration: ' + dur)
+                // store duration
+                o.metadata.duration = dur
+            }
+            else {
+
+                if (dur != null) {
+                    if (settings.debug.debug)
+                        console.warn('update duration: ' + dur)
+                    // upd duration
+                    o.metadata.duration = dur
+                }
+            }
+
+            const item = radsItems.loadingRDItem
+            if (item != null) {
+                if (item.pdc && dur != null)
+                    item.subText2 = o.metadata.duration
+
+                radsItems.updateRadItemView(
+                    item,
+                    radsItems.$loadingRDItem,
+                    null
+                )
+            }
+
             playHistory.setupAddToHistoryTimer(o)
         }
     }

@@ -60,7 +60,7 @@ class Logger {
     toStr(o) {
         var str = o
         if (typeof str == 'object')
-            str = (typeof str) + ':' + JSON.stringify(str)
+            str = (typeof str) + ':' + JSON.stringify(o)
         return str
     }
 

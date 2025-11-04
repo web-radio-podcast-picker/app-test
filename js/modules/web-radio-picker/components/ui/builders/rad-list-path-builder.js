@@ -34,7 +34,18 @@ class RadListPathBuilder {
         const $p = $('#wrp_radio_box')
         $p[0].innerHTML = ''
         $p.append(this.buildHistorybutton())
-        if (item == null || item.groups == null) return
+        if (item == null) return
+
+        if (!item.groups) {
+            // fix missing item groups for pdc/epi items
+            item.groups = []
+            if (item.epi) {
+                const grp = item.sel.tag?.item?.name
+                if (grp != null)
+                    item.groups.push(grp)
+            }
+        }
+
         // fav button
         const favs = favorites.getItemFavoritesFiltered(item)
         if (favs.length > 0) {
@@ -42,6 +53,12 @@ class RadListPathBuilder {
             const $favBut = this.buildFavButton(fav)
             $p.append($favBut)
         }
+
+        if (item.epi) {
+            this.buildEpiViewTagPath(item, $p)
+            return
+        }
+
         // tag path / lang path / artists path
         const w = 24
         const $img = $(`<img name="fav_but" class="small-tag-icon" src="./img/icons8-tag-50.png" width="${w}" height="${w}" alt="fav_but">`)
@@ -56,6 +73,10 @@ class RadListPathBuilder {
         if (item.artist == null || item.artist === undefined) return;
         $p.append(this.buildRightChevron())
         $p.append(this.buildArtistButton(item.artist, false))
+    }
+
+    buildEpiViewTagPath(item, $p) {
+
     }
 
     buildHistorybutton() {

@@ -307,7 +307,7 @@ ui = {
             $e.text(messOrEvent)
             $e.removeClass('hidden')
         }
-        logger.error(messOrEvent)
+        logger.error(messOrEvent, err)
 
         /*  // auto hide timer
             setTimeout(() => {

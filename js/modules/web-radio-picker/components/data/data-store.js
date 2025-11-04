@@ -29,15 +29,19 @@ class DataStore {
     }
 
     saveRadiosLists() {
-        if (settings.debug.info)
-            logger.log('save radio lists')
-        if (localStorage === undefined) {
+        try {
             if (settings.debug.info)
-                logger.warn('no local storage')
-            return
+                logger.log('save radio lists')
+            if (localStorage === undefined) {
+                if (settings.debug.info)
+                    logger.warn('no local storage')
+                return
+            }
+            const str = radiosLists.toJSON()
+            localStorage.setItem(ST_RadiosLists, str)
+        } catch (err) {
+            ui.showError('save lists failed', null, null, null, err)
         }
-        const str = radiosLists.toJSON()
-        localStorage.setItem(ST_RadiosLists, str)
     }
 
     initUIStateStorage(initFunc) {
@@ -71,14 +75,18 @@ class DataStore {
     }
 
     saveUIState() {
-        if (settings.debug.info)
-            logger.log('save UI state')
-        if (localStorage === undefined) {
+        try {
             if (settings.debug.info)
-                logger.warn('no local storage')
-            return
+                logger.log('save UI state')
+            if (localStorage === undefined) {
+                if (settings.debug.info)
+                    logger.warn('no local storage')
+                return
+            }
+            const str = uiState.toJSON()
+            localStorage.setItem(ST_UIState, str)
+        } catch (err) {
+            ui.showError('save UI failed', null, null, null, err)
         }
-        const str = uiState.toJSON()
-        localStorage.setItem(ST_UIState, str)
     }
 }

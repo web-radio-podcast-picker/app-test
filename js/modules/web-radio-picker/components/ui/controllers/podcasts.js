@@ -258,7 +258,9 @@ class Podcasts {
                             if (!isBuildAsync) {
                                 // load and init listId view
                                 this.podcastsLists.updateListView(listId)
-                            } else initTabDone = true
+                            } else
+                                // done async by the buildItems method
+                                initTabDone = true
                         }
                     })
                 }
@@ -283,7 +285,7 @@ class Podcasts {
         this.selection = selection
         this.resetInitializedLists()
         const $pdcBut = $('#btn_wrp_podcast')
-        if ($pdcBut.text() == '<<<')
+        if ($pdcBut.text() == '<<<')        // TODO : improve this way of checking
             $pdcBut.click()
         $pdcBut.click()
     }
