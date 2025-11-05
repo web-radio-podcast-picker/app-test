@@ -255,47 +255,54 @@ class RadListBuilder {
             rdMediaImage.noImage()
         }
 
+
         const channel = ui.getCurrentChannel()
-        if (channel != null && channel !== undefined) {
+        if (channel != null && channel !== undefined)
 
-            radsItems.setLoadingItem(o, $item)
+            if (!wrpp.isPlaying(o)) {
 
-            // build foldable item + unfold it
-            radsItems.buildFoldableItem(
-                o, $item,
-                uiState.currentRDList?.listId,
-                uiState.currentRDList?.name,
-                {},
-                true
-            )
+                radsItems.setLoadingItem(o, $item)
 
-            wrpp.clearAppStatus()
-            playEventsHandlers.initAudioSourceHandlers()
-            playEventsHandlers.onLoading(o)
-
-            // plays the item
-            const pl = async () => {
-
-                // turn on channel
-
-                // update pause state
-                playEventsHandlers.onPauseStateChanged(false)
-
-                // setup channel media
-                await app.updateChannelMedia(
-                    ui.getCurrentChannel(),
-                    o.url
+                // build foldable item + unfold it
+                radsItems.buildFoldableItem(
+                    o, $item,
+                    uiState.currentRDList?.listId,
+                    uiState.currentRDList?.name,
+                    {},
+                    true
                 )
 
-                // update ui state
-                uiState.updateCurrentRDItem(o)
-            }
+                wrpp.clearAppStatus()
+                playEventsHandlers.initAudioSourceHandlers()
+                playEventsHandlers.onLoading(o)
 
-            if (oscilloscope.pause)
-                app.toggleOPause(async () => await pl())
-            else
-                await pl()
-        }
+                // plays the item
+                const pl = async () => {
+
+                    // turn on channel
+
+                    // update pause state
+                    playEventsHandlers.onPauseStateChanged(false)
+
+                    // setup channel media
+                    await app.updateChannelMedia(
+                        ui.getCurrentChannel(),
+                        o.url
+                    )
+
+                    // update ui state
+                    uiState.updateCurrentRDItem(o)
+                }
+
+                if (oscilloscope.pause)
+                    app.toggleOPause(async () => await pl())
+                else
+                    await pl()
+            }
+            else {
+                // show media view
+                $('#btn_wrp_logo').click()
+            }
     }
 
     // update the rdList view for the current rdList and the given item

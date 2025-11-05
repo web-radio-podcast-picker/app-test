@@ -228,9 +228,17 @@ class PodcastsLists {
                 // TODO: ------ /!\ here not found if list not visible/constructed --------
                 const $epiItem = $(wrpp.getEpiListItem(epiItem)?.item)
 
-                const $clkb = $epiItem
-                    .find('.wrp-list-item-text-container')
-                $clkb.click()
+                if (true || !wrpp.isPlaying(epiTem)) {
+                    // auto play
+                    const $clkb = $epiItem
+                        .find('.wrp-list-item-text-container')
+                    $clkb.click()
+                }
+                else {
+                    // already playing
+                    // select without play
+
+                }
             }
         }
 

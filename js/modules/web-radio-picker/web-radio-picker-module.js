@@ -574,6 +574,21 @@ class WebRadioPickerModule extends ModuleBase {
 
     // #region data
 
+    compareItems(item1, item2) {
+        return item1?.code == item2?.code
+            && item1?.name == item2?.name
+            && item1?.url == item2?.url
+            ;
+    }
+
+    isPlaying(item) {
+        return !oscilloscope.pause
+            && this.compareItems(
+                uiState.currentRDItem,
+                item)
+            ;
+    }
+
     toArtistFromtreamingExclusive(r) {
         if (r === undefined || r == null) return null
         return r.name?.replace('- Hits', '')?.trim()
