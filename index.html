@@ -82,6 +82,7 @@
     <script src="./js/ext/jquery-3.7.1.min.js?hash=q"></script>
 
     <!-- settings & data -->
+    <script src="./js/modules/web-radio-picker/components/signal/debouncer.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/data-store.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/remote-data-store.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/flat-index-text-export-parser.js?hash=q"></script>
@@ -378,6 +379,11 @@
                         <img id="wrp_but_add_fav" src="./img/icons8-add-new-50.png"
                             class="addFavButton wrp-rad-item-icon" alt="add favorite" width="32" height="32">
                     </div>
+
+                    <div id="opts_wrp_pane_loading" class="loading-list-pane wrp-scroll-pane hidden">
+                        Loading ...
+                    </div>
+
                     <canvas id="cnv_oscillo" class="gr1 gc1 hidden"></canvas>
                 </div>
             </div>
