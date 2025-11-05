@@ -48,7 +48,9 @@ class Debouncer {
             exec()
         } else {
 
-            if (this.execDifferTimer != null) {
+            if (this.execDifferTimer != null
+                || this.execDelayTimer != null
+            ) {
                 // wait programmed
                 if (settings.debug.debug)
                     logger.log(DebouncerLogPfx + 'wait differed')
