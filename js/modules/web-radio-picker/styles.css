@@ -36,6 +36,8 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
 #err_holder {
     text-align: -webkit-center;
     align-content: center;
+    position: relative;
+    top: 0.6em;
 }
 
 #err_txt {
@@ -43,13 +45,18 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     cursor: pointer;
     /*max-width: 300px;
     max-height: 300px;*/
-    display: block;
+    /* display: block; */
     box-sizing: border-box;
     /*padding: 1em;*/
     /*text-align: center;*/
     /*background-color: #000000AA;*/
     /*width: 70%;*/
     /*align-content: center;*/
+    /* border: red solid 1px; */
+    padding: 0.5em;
+    background: #000000BB;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 #wrp_img {

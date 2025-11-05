@@ -483,7 +483,7 @@ class Podcasts {
 
     openPdcPreviewError(item, $item, mess, response) {
         console.log(response)
-        const text = 'channel not found'
+        const text = 'channel not found: ' + item.name
         ui.showError(text)
         item.metadata.statusText = text
         radsItems.updateRadItemView(item, $item)

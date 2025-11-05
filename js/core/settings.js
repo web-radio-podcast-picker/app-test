@@ -14,7 +14,7 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.4.1',
+            version: '1.3.5.1',
             verDate: '11/05/2025'
         }
     },
@@ -81,6 +81,11 @@ window.settings = {
         info: true,
         stackTrace: false,
         obj: false
+    },
+
+    dataStore: {
+        minSpanMs: 5000,
+        delayExec: 3000
     },
 
     extInput: {
@@ -171,6 +176,7 @@ window.settings = {
         autoHideInfoPopupDelay: 2000,
         infoPopupFadeInDelay: 250,
         infoPopupFadeOutDelay: 150,
+
         maxRefreshRate: 250,        // maximum views refresh rate in Fps
         clientWidthBorder: 4,       // default border width for client area
         clientHeightBorder: 2,      // default border height for client area
@@ -180,10 +186,12 @@ window.settings = {
         errorBarRelY: - 21 - 7 * 10,
         infoBarRelY: - 21 - 7,
         buttonBarRelY: - 42 - 7 * 7 + 5 * 7,
+
         compactDisplayMaxHeight: 600,
         introPopupDelay: 4000,      // ms
         fadeOutDelay: 1000,
         popupTransparency: true,
+
         errDisplayTime: 4000,        // error display time ms
         longInfoDisplayTime: 6000,        // error display time ms
         longErrDisplayTime: 6000,        // error display time ms

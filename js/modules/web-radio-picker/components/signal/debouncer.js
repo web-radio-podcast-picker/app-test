@@ -15,8 +15,10 @@ class Debouncer {
     execDifferTimer = null
     execDelayTimer = null
 
-    constructor(name) {
+    constructor(name, minSpanMs, delayExec) {
         this.name = name
+        this.minSpanMs = minSpanMs
+        this.delayExec = delayExec
     }
 
     debounce(func) {

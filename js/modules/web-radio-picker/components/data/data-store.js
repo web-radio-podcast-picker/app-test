@@ -13,8 +13,13 @@ class DataStore {
 
     saveDisabled = false
 
-    rlDebouncer = new Debouncer('dbcSaveRadiosLists')
-    uisDebouncer = new Debouncer('dbcSaveUIState')
+    rlDebouncer = new Debouncer('dbcSaveRadiosLists',
+        settings.dataStore.minSpanMs,
+        settings.dataStore.delayExec
+    )
+    uisDebouncer = new Debouncer('dbcSaveUIState',
+        settings.dataStore.minSpanMs,
+        settings.dataStore.delayExec)
 
     constructor() {
 

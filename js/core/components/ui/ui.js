@@ -307,6 +307,10 @@ ui = {
             const $e = $('#err_txt')
             $e.text(messOrEvent)
             $e.removeClass('hidden')
+            const self = this
+            setTimeout(() => {
+                self.hideError()
+            }, settings.ui.errDisplayTime)
         }
         logger.error(messOrEvent, err)
 
