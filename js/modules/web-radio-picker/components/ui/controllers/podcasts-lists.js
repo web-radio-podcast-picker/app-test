@@ -319,7 +319,7 @@ class PodcastsLists {
 
     findListItemInView(paneId, item) {
         const $panel = $('#' + paneId)
-        const $item = $panel.find('[data-text="' + item.name + '"]')
+        const $item = $panel.find('[data-text=' + $.escapeSelector(item.name) + ']')
         return $item
     }
 
