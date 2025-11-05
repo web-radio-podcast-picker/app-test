@@ -21,15 +21,15 @@ class DataStore {
     }
 
     saveAll() {
-        this.saveRadiosLists
-        this.saveUIState
+        this.saveRadiosLists()
+        this.saveUIState()
     }
 
     loadRadiosLists() {
         if (localStorage === undefined) return
         const str = localStorage.getItem(ST_RadiosLists)
         if (str == null) {
-            this.saveRadiosLists()
+            this.#dbcSaveRadiosLists()
             return
         }
         radiosLists.fromJSON(str)
@@ -81,7 +81,7 @@ class DataStore {
         if (localStorage === undefined) return
         const str = localStorage.getItem(ST_UIState)
         if (str == null) {
-            this.saveUIState()
+            this.#dbcSaveUIState()
             return
         }
         uiState.fromJSON(str)
