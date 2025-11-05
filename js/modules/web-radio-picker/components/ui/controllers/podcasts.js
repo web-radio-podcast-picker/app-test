@@ -41,7 +41,9 @@ class Podcasts {
         pdcSubListId: null,
         epi: null,
         epiSubListId: null,
+        // TODO: is the order to open epi enabled. is setted to false after execution
         epiOpen: false,
+        // TODO: Not usefull ??
         epiOpening: false,
         noPage: 1,
     }
@@ -66,7 +68,9 @@ class Podcasts {
         this.rssParser = new PodcastRSSParser()
 
         $('#wrp_pdc_prv_em_button').on('click', (e) => {
-            podcasts.selection.epiOpen = true
+
+            //TODO podcasts.selection.epiOpen = true
+
             this.podcastsLists.clickOpenEpiList(e)
         })
 
@@ -157,7 +161,7 @@ class Podcasts {
                 break
             case Pdc_List_Pdc:
                 // TODO: ok after startup, no good at startup (current lost)
-                s.epi = null
+                //s.epi = null
                 break
             case Pdc_List_Epi:
                 //s.epi = null
@@ -170,8 +174,9 @@ class Podcasts {
     getMoreFocusableListId() {
         const selection = this.selection
         const slistId =
-            /*(selection.epi != null ? Pdc_List_Epi : null)
-            || */(selection.pdc != null ? Pdc_List_Pdc : null)
+            //(selection.epi != null ? Pdc_List_Epi : null) ||
+
+            (selection.pdc != null ? Pdc_List_Pdc : null)
             || (selection.letter != null ? Pdc_List_Letter : null)
             || (selection.tag != null ? Pdc_List_Tag : null)
             || (selection.lang != null ? Pdc_List_Lang : null)
@@ -207,7 +212,7 @@ class Podcasts {
 
             if (settings.debug.debug) {
                 //console.clear()
-                console.log('## ---------------SELECT TAB----------- targetListId=' + targetListId)
+                console.log('[##] ---------------SELECT TAB----------- targetListId=' + targetListId)
             }
 
             this.updateSelectionSubListsIds(selection)
@@ -283,7 +288,7 @@ class Podcasts {
     changePodcasts(selection, openOpts) {
         this.openOpts = openOpts
         this.selection = selection
-        this.resetInitializedLists()
+        this.resetInitializedLists()        // TODO: cache management
         const $pdcBut = $('#btn_wrp_podcast')
         if ($pdcBut.text() == '<<<')        // TODO : improve this way of checking
             $pdcBut.click()
@@ -436,8 +441,8 @@ class Podcasts {
 
         if (settings.debug.debug) {
             //console.clear()
-            console.log('## open podcasts')
-            console.log('## ' + JSON.stringify(this.openOpts, null, 2))
+            console.log('[##] open podcasts')
+            console.log('[##] ', this.openOpts)
         }
 
         if (this.initializingPodcasts == null)
@@ -555,7 +560,11 @@ class Podcasts {
             console.log('setEpiListVisible= ' + isVisible + ' -- initializingPodcasts= ' + this.initializingPodcasts)
 
         if (!isVisible && this.initializingPodcasts < -2) {
-            this.selection.epiOpen = false
+
+            // TODO -------------------------------
+            // TODO this.selection.epiOpen = false
+            // TODO -------------------------------
+
             settings.dataStore.saveUIState()
         }
     }
@@ -582,7 +591,8 @@ class Podcasts {
         $('#wrp_pdc_epim_name').html(title)
         $('#wrp_pdc_epim_desc').addClass('hidden')
 
-        this.selection.epiOpen = true
+        // TODO this.selection.epiOpen = true
+
         //this.selection.epiOpening = false
         settings.dataStore.saveUIState()
     }
@@ -629,17 +639,28 @@ class Podcasts {
                 infosPane.toggleInfos()
 
             // ----- AUTO OPEN EPI -----
-            if (!this.isEpiListVisible()) {
+            if (true/*!this.isEpiListVisible()*/) {
+
                 this.setPdcPreviewVisible(true)
-                if (this.selection.epiOpen && this.buildPdcPreviewCount < 1) {
-                    //this.selection.epiOpening = true
+
+                if (this.selection.epiOpen
+
+                    /*&& this.buildPdcPreviewCount < 1*/) {
+                    ////this.selection.epiOpening = true
+                    this.selection.epiOpen = false
+
+                    //$('#opts_wrp_podcast_pdc').removeClass('hidden')
+                    //$('#opts_wrp_podcast_pdc').removeClass('hidden')
+                    ////$('#wrp_pdc_st_list').removeClass('hidden')
+                    //$('#wrp_pdc_st_list_container').removeClass('hidden')
 
                     // case on start TODO: ?? // why not generalize ???
 
                     if (settings.debug.debug)
-                        logger.log('opening epi list')
+                        logger.log('[##] opening epi list')
 
                     this.autoOpenedEpiList = true
+                    // TODO: click fail if epi list was initially visible
                     $('#wrp_pdc_prv_em_button').click()
                 }
             }
