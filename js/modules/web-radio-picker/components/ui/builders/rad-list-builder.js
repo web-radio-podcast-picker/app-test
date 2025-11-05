@@ -255,23 +255,23 @@ class RadListBuilder {
             rdMediaImage.noImage()
         }
 
-
         const channel = ui.getCurrentChannel()
-        if (channel != null && channel !== undefined)
+        if (channel != null && channel !== undefined) {
 
-            if (!wrpp.isPlaying(o)) {
+            const playingState = wrpp.isPlaying(o)
+            const isCurrent = playingState.isCurrent
 
+            // build foldable item + unfold it
+            radsItems.buildFoldableItem(
+                o, $item,
+                uiState.currentRDList?.listId,
+                uiState.currentRDList?.name,
+                {},
+                true
+            )
+
+            if (!isCurrent) {
                 radsItems.setLoadingItem(o, $item)
-
-                // build foldable item + unfold it
-                radsItems.buildFoldableItem(
-                    o, $item,
-                    uiState.currentRDList?.listId,
-                    uiState.currentRDList?.name,
-                    {},
-                    true
-                )
-
                 wrpp.clearAppStatus()
                 playEventsHandlers.initAudioSourceHandlers()
                 playEventsHandlers.onLoading(o)
@@ -299,10 +299,12 @@ class RadListBuilder {
                 else
                     await pl()
             }
+
             else {
                 // show media view
                 $('#btn_wrp_logo').click()
             }
+        }
     }
 
     // update the rdList view for the current rdList and the given item

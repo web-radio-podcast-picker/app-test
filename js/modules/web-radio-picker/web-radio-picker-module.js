@@ -582,11 +582,15 @@ class WebRadioPickerModule extends ModuleBase {
     }
 
     isPlaying(item) {
-        return !oscilloscope.pause
-            && this.compareItems(
-                uiState.currentRDItem,
-                item)
-            ;
+        const isCurrent = this.compareItems(
+            uiState.currentRDItem,
+            item)
+        const isPaused = !oscilloscope.pause
+        return {
+            isPaused: isPaused,
+            isCurrent: isCurrent,
+            isPlayinng: isCurrent && !isPaused
+        };
     }
 
     toArtistFromtreamingExclusive(r) {
