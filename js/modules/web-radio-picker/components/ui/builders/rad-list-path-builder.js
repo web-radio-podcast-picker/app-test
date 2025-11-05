@@ -74,6 +74,7 @@ class RadListPathBuilder {
         if (settings.debug.debug)
             console.log(item.sel)
         const pdc = item.sel.pdc?.item?.name
+
         const selclone = cloneSelection(item.sel)
         //this.#addLangLetterTagEpiPathButtons(item.sel, selclone, $p, true)
         if (pdc) this.#addPdcEpiPathButton(pdc, $p, selclone)
@@ -81,17 +82,13 @@ class RadListPathBuilder {
 
         const $epiBut = this.buildPdcPathButton(Pdc_List_Epi, item.name, $ctxt[0].outerHTML, true, false)
         $p.append($epiBut)
+
         $epiBut.on('click', e => {
 
             const $tabChannel = $('#btn_wrp_podcast_pdc')
-            //if ($tabChannel.hasClass('selected'))
-            //$tabChannel.removeClass('selected')
 
-            /*$('#opts_wrp_podcast_pdc').removeClass('hidden')
-            $('#wrp_pdc_epi_list_container').addClass('hidden')
-            $('#opts_wrp_podcast_epi_media').addClass('hidden')*/
+            const selclone = cloneSelection(uiState.currentRDItem?.sel)
 
-            const selclone = cloneSelection(item.sel)
             selclone.epi = { item: item }
             selclone.epiOpen = true
             selclone.epiOpening = false
@@ -179,6 +176,8 @@ class RadListPathBuilder {
         const $nameBut = this.buildPdcPathButton(Pdc_List_Pdc, name, name, true, true)
         $p2.append($nameBut)
         $nameBut.on('click', e => {
+            const selclone = cloneSelection(uiState.currentRDItem?.sel)
+            selclone.epiOpen = false
             podcasts.changePodcasts(
                 selclone
             )

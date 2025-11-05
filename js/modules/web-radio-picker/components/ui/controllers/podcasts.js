@@ -406,7 +406,7 @@ class Podcasts {
             }
         }
 
-        // TODO: race condition. can applied too late (pdc async, epi sync before pdc)
+        // TODO: race condition. can be applied too late (pdc async, epi sync before pdc)
         this.setEpiListMediaVisible(slistId == Pdc_List_Epi)
 
         if (tabsController.openingVizWithEpiListVisible === true)
@@ -602,7 +602,8 @@ class Podcasts {
 
         if (settings.debug.debug) {
             console.log('[##] build pdc preview: ' + item.name)
-            console.log('[##]', sel)
+            if (settings.debug.obj)
+                console.log('[##]', sel)
         }
 
         ui.hideError()
@@ -629,7 +630,7 @@ class Podcasts {
             // store opened item
             //this.podcastsLists.pdcPreviewItem = item //= cloneItem(item)    // keep sel
 
-            if (settings.debug.debug)
+            if (settings.debug.obj)
                 console.log('[##]', this.podcastsLists.pdcPreviewItem)
 
             this.podcastsLists.$pdcPreviewItem = $item

@@ -7,17 +7,22 @@
 const ST_RadiosLists = 'RadiosLists'
 const ST_UIState = 'UIState'
 
+const DataStoreLogPfx = '[!!] '
+
 class DataStore {
 
     saveDisabled = false
+
+    rlDebouncer = new Debouncer('dbcSaveRadiosLists')
+    uisDebouncer = new Debouncer('dbcSaveUIState')
 
     constructor() {
 
     }
 
     saveAll() {
-        this.saveRadiosLists()
-        this.saveUIState()
+        this.saveRadiosLists
+        this.saveUIState
     }
 
     loadRadiosLists() {
@@ -31,13 +36,17 @@ class DataStore {
     }
 
     saveRadiosLists() {
+        this.rlDebouncer.debounce(() => this.#dbcSaveRadiosLists())
+    }
+
+    #dbcSaveRadiosLists() {
         if (this.saveDisabled) return
         try {
             if (settings.debug.info)
-                logger.log('save radio lists')
+                logger.log(DataStoreLogPfx + 'save radio lists')
             if (localStorage === undefined) {
                 if (settings.debug.info)
-                    logger.warn('no local storage')
+                    logger.warn(DataStoreLogPfx + 'no local storage')
                 return
             }
             const str = radiosLists.toJSON()
@@ -79,13 +88,17 @@ class DataStore {
     }
 
     saveUIState() {
+        this.uisDebouncer.debounce(() => this.#dbcSaveUIState())
+    }
+
+    #dbcSaveUIState() {
         if (this.saveDisabled) return
         try {
             if (settings.debug.info)
-                logger.log('save UI state')
+                logger.log(DataStoreLogPfx + 'save UI state')
             if (localStorage === undefined) {
                 if (settings.debug.info)
-                    logger.warn('no local storage')
+                    logger.warn(DataStoreLogPfx + 'no local storage')
                 return
             }
             const str = uiState.toJSON()
