@@ -288,7 +288,30 @@ class PodcastsLists {
 
     updateEpiItemView(item, $item) {
         var subText2 = ''
-        if (item.metadata?.duration) subText2 = item.metadata.duration
+        var $sep = ' / '
+
+        const dur = item.metadata?.duration
+        if (dur) {
+            if (isStr(dur) && !dur.includes('NaN')) {
+                subText2 = dur.toString()
+            }
+            else {
+                if (!isNaN(item.metadata.duration)) {
+                    if (item.metadata.duration)
+                        subText2 = item.metadata.duration
+                }
+                else {
+                    subText2 = ' '
+                    $sep = ''
+                }
+            }
+        }
+
+        if (subText2 != '')
+            if (item.metadata?.currentTime) subText2 =
+                item.metadata.currentTime.toString() + $sep + subText2
+
+        item.subText2 = subText2
         item.metadata.statusText = this.getEpiItemPlayStateText(item)
         radsItems.updateRadItemView(item, $item)
     }
@@ -765,6 +788,8 @@ class PodcastsLists {
             //epiItem.logo = item.rss.image || item.rss.itunes.image
             epiItem.logo = rssItem.image ||
                 item.rss.image || item.rss.itunes.image
+                || item.logo
+
             epiItem.metadata = {}
             epiItem.pdc = true      // indicates it's a pdc, not a station
             epiItem.epi = true      // indicates it's a pdc episode, not a channel

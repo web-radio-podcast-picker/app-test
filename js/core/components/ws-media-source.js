@@ -22,6 +22,8 @@ class WRPPWSMediaSource {
     init() {
         const tagId = 'audio_tag'
         this.audio = $('#' + tagId)[0]
+        app.audio = this.audio
+
         if (WRPPWSMediaSource.sourceInitialized) return
 
         this.audio.addEventListener('loadedmetadata', (ev) => {

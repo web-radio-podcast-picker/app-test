@@ -6,6 +6,18 @@
 
 class PlayEventsHandlers {
 
+    lastEvents = {
+        connecting: null,
+        noConnection: null,
+        connected: null,
+        playing: null,
+        pauseStateChanged: null
+    }
+
+    storeEvent(id) {
+        this.lastEvents[id] = sclone(radsItems.getLoadingItem())
+    }
+
     initAudioSourceHandlers() {
         WRPPMediaSource.onLoadError = (err, audio) => this.onLoadError(err, audio)
         WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
@@ -13,6 +25,8 @@ class PlayEventsHandlers {
     }
 
     onLoading(item) {
+        this.storeEvent('connecting')
+
         uiState.setPlayPauseButtonFreezeState(true)
         const st = 'connecting...'
         if (settings.debug.debug) {
@@ -27,6 +41,8 @@ class PlayEventsHandlers {
     }
 
     onLoadError(err, audio) {
+        this.storeEvent('noConnection')
+
         // CORS <=> {code: 4, message: 'MEDIA_ELEMENT_ERROR: Format error'}
         var st = 'no connection'
 
@@ -49,6 +65,8 @@ class PlayEventsHandlers {
     }
 
     onLoadSuccess(audio, ev) {
+        this.storeEvent('connected')
+
         const st = 'connected'
         app.channel.connected = true
         radsItems.updateLoadingRadItem(st)
@@ -74,24 +92,8 @@ class PlayEventsHandlers {
             var dur = audio.duration
 
             if (!isNaN(dur)) {
-                try {
-                    // should be hh:mm:ss
-                    var h = Math.floor(parseFloat((parseFloat(dur) / (60 * 24)).toFixed(2)))
-                    const durM = dur - (h * 60 * 24)
-                    var m = Math.floor(parseFloat((parseFloat(durM) / 60).toFixed(2)))
-                    var s = Math.floor(durM - m * 60)
-                    h += ''
-                    m += ''
-                    s += ''
-                    if (h.length == 1) h = '0' + h
-                    if (m.length == 1) m = '0' + m
-                    if (s.length == 1) s = '0' + s
-                    const strDur = h + ':' + m + ':' + s
-                    dur = strDur
-
-                } catch {
-                    dur = null
-                }
+                const duration = DurationHMS.fromSeconds(dur)
+                dur = duration.toString()
             }
 
             if (!o.metadata) o.metadata = {}
@@ -129,6 +131,10 @@ class PlayEventsHandlers {
     }
 
     onCanPlay(audio) {
+        this.storeEvent('playing')
+
+        //this.startPlayTickTimer()
+
         uiState.setPlayPauseButtonFreezeState(false)
         const st = 'playing'
         if (settings.debug.debug) {
@@ -141,17 +147,48 @@ class PlayEventsHandlers {
     }
 
     onPauseStateChanged(updateRadItemStatusText, item, $item) {
+
+        this.storeEvent('pauseStateChanged')
+
+        const pause = oscilloscope.pause
         if (updateRadItemStatusText)
             radsItems.updateLoadingRadItem(
-                oscilloscope.pause ?
-                    'pause' : 'playing',
+                pause ? 'pause' : 'playing',
                 null, $item)
-        const pause = oscilloscope.pause
+
         if (pause) {
+            this.stopPlayTickTimer()
             playHistory.clearHistoryTimer()
             radsItems.setLoadingItemMetadata('endTime', Date.now())
-        } else
+        } else {
+            this.startPlayTickTimer()
             radsItems.setLoadingItemMetadata('startTime', Date.now())
+        }
+
         uiState.updatePauseView()
+    }
+
+    tickTimer = null
+
+    startPlayTickTimer() {
+        if (this.tickTimer == null)
+            this.tickTimer = setInterval(() => {
+                const audio = window.audio
+                const position = audio?.currentTime
+                if (!isNaN(position)) {
+                    const pos = DurationHMS.fromSeconds(position)
+                    ////console.log(pos.toString())
+                    radsItems.setLoadingItemMetadata('currentTime', pos)
+                    const cur = radsItems.getLoadingItem()
+                    podcasts.podcastsLists.updateEpiItemView(
+                        cur.loadingRDItem, cur.$loadingRDItem
+                    )
+                }
+            }, 500);
+    }
+
+    stopPlayTickTimer() {
+        clearInterval(this.tickTimer)
+        this.tickTimer = null
     }
 }
