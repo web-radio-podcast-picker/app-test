@@ -14,7 +14,7 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.8.1',
+            version: '1.3.8.2',
             verDate: '11/06/2025'
         }
     },
@@ -85,7 +85,7 @@ window.settings = {
 
     dataStore: {
         minSpanMs: 5000,
-        delayExec: 3000
+        delayExec: 5000
     },
 
     extInput: {

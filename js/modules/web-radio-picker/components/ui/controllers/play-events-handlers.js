@@ -6,33 +6,52 @@
 
 class PlayEventsHandlers {
 
-    lastEvents = {
-        connecting: null,
-        noConnection: null,
-        connected: null,
-        playing: null,
-        pauseStateChanged: null
+    resetEvents() {
+        this.lastEvents = {
+            connecting: null,
+            noConnection: null,
+            connected: null,
+            ended: null,
+            playing: null,
+            pauseStateChanged: null
+        }
     }
 
-    storeEvent(id) {
+    storeEvent(id, item) {
         this.lastEvents[id] = sclone(radsItems.getLoadingItem())
+        const ps = wrpp.playingState(item)
+        const events = {}
+        for (const evk in this.lastEvents) {
+            events[evk] = this.lastEvents[evk] != null
+        }
+        radsItems.setLoadingItemMetadata('playState',
+            {
+                loadingState: id,
+                playingState: sclone(ps),
+                events: events
+            })
     }
 
     initAudioSourceHandlers() {
         WRPPMediaSource.onLoadError = (err, audio) => this.onLoadError(err, audio)
         WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
         WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
+        WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
+        this.resetEvents()
     }
 
     onLoading(item) {
-        this.storeEvent('connecting')
+
+        this.resetEvents()
 
         uiState.setPlayPauseButtonFreezeState(true)
         const st = 'connecting...'
         if (settings.debug.debug) {
             logger.log(st)
         }
+
         radsItems.updateLoadingRadItem(st)
+        this.storeEvent('connecting', item)
 
         app.channel.connected = false
         $('#wrp_connected_icon').addClass('hidden')
@@ -41,7 +60,6 @@ class PlayEventsHandlers {
     }
 
     onLoadError(err, audio) {
-        this.storeEvent('noConnection')
 
         // CORS <=> {code: 4, message: 'MEDIA_ELEMENT_ERROR: Format error'}
         var st = 'no connection'
@@ -54,7 +72,9 @@ class PlayEventsHandlers {
         if (settings.debug.debug) {
             logger.log(st)
         }
+
         radsItems.updateLoadingRadItem(st)
+        this.storeEvent('noConnection', radsItems.loadingRDItem)
 
         app.channel.connected = false
         $('#wrp_connected_icon').addClass('hidden')
@@ -65,12 +85,13 @@ class PlayEventsHandlers {
     }
 
     onLoadSuccess(audio, ev) {
-        this.storeEvent('connected')
 
         const st = 'connected'
         app.channel.connected = true
         radsItems.updateLoadingRadItem(st)
         radsItems.setLoadingItemMetadata('startTime', Date.now())
+
+        this.storeEvent(st, radsItems.loadingRDItem)
 
         // metatadata available: audio.duration
 
@@ -139,21 +160,27 @@ class PlayEventsHandlers {
         if (settings.debug.debug) {
             logger.log(st)
         }
+
         radsItems
             .updateLoadingRadItem(st)
             .setLoadingItemMetadata('startTime', Date.now())
+
+        this.storeEvent(st, radsItems.loadingRDItem)
+
         tabsController.showPlayingRdItemViz()
     }
 
     onPauseStateChanged(updateRadItemStatusText, item, $item) {
 
-        this.storeEvent('pauseStateChanged')
-
         const pause = oscilloscope.pause
+        const pauseText = pause ? 'pause' : 'playing'
+
         if (updateRadItemStatusText)
             radsItems.updateLoadingRadItem(
-                pause ? 'pause' : 'playing',
+                pauseText,
                 null, $item)
+
+        this.storeEvent('pauseStateChanged', item)
 
         if (pause) {
             this.stopPlayTickTimer()
@@ -165,6 +192,15 @@ class PlayEventsHandlers {
         }
 
         uiState.updatePauseView()
+    }
+
+    onEnded(e, audio) {
+        const cur = radsItems.getLoadingItem()
+
+        const st = 'ended'
+        this.storeEvent(st, cur.loadingRDItem)
+
+        podcasts.podcastsLists.updateEpiItemView(cur.loadingRDItem, cur.$loadingRDItem)
     }
 
     tickTimer = null
