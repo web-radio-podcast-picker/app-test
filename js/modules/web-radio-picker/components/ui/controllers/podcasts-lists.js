@@ -221,7 +221,9 @@ class PodcastsLists {
 
         // epi item
 
-        const epiItem = self.podcasts.selection.epi?.item
+        //const epiItem = self.podcasts.selection.epi?.item
+        const epiItem = uiState.currentRDItem
+
         const paneId = 'opts_wrp_podcast_epi'
         const $pane = $('#' + paneId)
         // restore selection in view
@@ -233,6 +235,10 @@ class PodcastsLists {
                 const isCurrent = wrpp.playingState(epiItem).isCurrent
 
                 if (isCurrent) {
+
+                    // late update ----- UPDATE COZ DOM CHANGED
+                    radsItems.$loadingRDItem = $item
+
                     if (!$item.hasClass('wrp-list-item-foldable')) {
                         // re-unfold the items and uptate item view
                         this.selectEpiItem(Pdc_List_Epi, paneId, epiItem, $item, true)
