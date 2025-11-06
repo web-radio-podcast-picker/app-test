@@ -214,12 +214,48 @@ class PodcastsLists {
             selection => Pdc_List_Epi
             //, true, true
         )
+
+        // media view
+
         podcasts.buildEpiMediaView(item)
+
+        // epi item
+
+        const epiItem = self.podcasts.selection.epi?.item
+        const paneId = 'opts_wrp_podcast_epi'
+        const $pane = $('#' + paneId)
+        // restore selection in view
+        if (epiItem != null) {
+            // try select epi
+            const $item = this.findListItemInView(paneId, epiItem)
+            if ($item.length > 0) {
+
+                const isCurrent = wrpp.playingState(epiItem).isCurrent
+
+                if (isCurrent) {
+                    if (!$item.hasClass('wrp-list-item-foldable')) {
+                        // re-unfold the items and uptate item view
+                        this.selectEpiItem(Pdc_List_Epi, paneId, epiItem, $item, true)
+                        this.updateEpiItemView(epiItem, $item)
+                    }
+                } else
+                    $item
+                        .removeClass('item-selected')
+                        .removeClass('wrp-list-item-foldables')
+
+                $item[0].scrollIntoView(ScrollIntoViewProps)        // TODO: done in podcastsLists:332 (openList) ?
+            }
+            else {
+                // sel not found
+                $pane.scrollTop(0)
+            }
+        } else {
+            // no selection
+            $pane.scrollTop(0)
+        }
 
         if (podcasts.autoOpenedEpiList) {
             podcasts.autoOpenedEpiList = false
-
-            const epiItem = self.podcasts.selection.epi?.item
 
             if (epiItem != null) {
                 if (settings.debug.debug)
@@ -228,21 +264,62 @@ class PodcastsLists {
                 // TODO: ------ /!\ here not found if list not visible/constructed --------
                 const $epiItem = $(wrpp.getEpiListItem(epiItem)?.item)
 
-                if (true || !wrpp.isPlaying(epiTem)) {
-                    // auto play
-                    const $clkb = $epiItem
-                        .find('.wrp-list-item-text-container')
-                    $clkb.click()
-                }
+                //if (true || !wrpp.isPlaying(epiTem)) {
+                // auto play
+                const $clkb = $epiItem.find('.wrp-list-item-text-container')
+                $clkb.click()
+
+                /*}
                 else {
                     // already playing
                     // select without play
-
-                }
+                }*/
             }
         }
 
         item.rss = null
+    }
+
+    updateEpiItemView(item, $item) {
+        var subText2 = ''
+        if (item.metadata?.duration) subText2 = item.metadata.duration
+        item.metadata.statusText = this.getEpiItemPlayStateText(item)
+        radsItems.updateRadItemView(item, $item)
+    }
+
+    getEpiItemPlayStateText(item) {
+        const playState = wrpp.playingState(item)
+        var status = ''
+        if (playState.isCurrent) {
+            status = 'playing'  // TODO: or 'connecting...' !
+            if (playState.isPaused)
+                status = 'pause'
+        }
+        return status
+    }
+
+    selectEpiItem(listId, paneId, item, $item, unfoldSelection) {
+        wrpp.clearContainerSelection(paneId)
+        // #region select item
+        wrpp.clearContainerSelection(paneId)
+        // fold any unfolded list item
+        radsItems.unbuildFoldedItems(paneId)
+        // unfold selection
+        if (unfoldSelection)
+            radsItems.buildFoldableItem(
+                item,
+                $item,
+                RadioList_Podcast,
+                Pdc_List_Pdc,       // TODO: ??
+                '',
+                true,
+                true,
+                listId
+            )
+        // TODO: favorite icon lost after that ...
+        $item.addClass('item-selected')
+        // auto-focus
+        $item[0].scrollIntoView(ScrollIntoViewProps)
     }
 
     openList(
@@ -269,6 +346,8 @@ class PodcastsLists {
 
         // TODO: do not rebuild selected item in case of opening epi list
         // #region select item
+        //self.selectItem(listId, self.paneId, item, $item, unfoldSelection)
+
         wrpp.clearContainerSelection(self.paneId)
         // fold any unfolded list item
         radsItems.unbuildFoldedItems(self.paneId)

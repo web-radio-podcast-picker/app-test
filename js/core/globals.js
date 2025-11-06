@@ -127,10 +127,12 @@ const transparentPixel =
 const cloneSelection = sel => {
     /*const o = cloneItem({ sel: sel })
     return o.sel*/
+    if (sel==null || sel==undefined) return sel
     return sclone(sel)
 }
 
 const cloneCleanupSelection = sel => {
+    if (sel==null || sel==undefined) return sel
     const o = cloneItem({ sel: sel })
     return o.sel
 }

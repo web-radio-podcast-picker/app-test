@@ -67,7 +67,7 @@ class TabsController {
         ui.tabs.initTabs(this.infTabs, {
 
             onPostChange: ($c) => {
-                podcasts.setEpiListVisible(false)
+                //podcasts.setEpiListVisible(false)
                 this.onInfTabChanged($c)
             }
         })

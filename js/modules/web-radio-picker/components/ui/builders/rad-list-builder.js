@@ -258,8 +258,9 @@ class RadListBuilder {
         const channel = ui.getCurrentChannel()
         if (channel != null && channel !== undefined) {
 
-            const playingState = wrpp.isPlaying(o)
+            const playingState = wrpp.playingState(o)
             const isCurrent = playingState.isCurrent
+            const isPaused = playingState.isPaused
 
             // build foldable item + unfold it
             radsItems.buildFoldableItem(
@@ -270,7 +271,11 @@ class RadListBuilder {
                 true
             )
 
-            if (!isCurrent) {
+            if (o.epi) {
+                podcasts.podcastsLists.updateEpiItemView(o, $item)
+            }
+
+            if (!o.epi || !isCurrent) {
                 radsItems.setLoadingItem(o, $item)
                 wrpp.clearAppStatus()
                 playEventsHandlers.initAudioSourceHandlers()
@@ -301,6 +306,12 @@ class RadListBuilder {
             }
 
             else {
+
+                if (isPaused) {
+                    // unpause if current and paused
+                    $('#wrp_btn_pause_onoff').click()
+                }
+
                 // show media view
                 $('#btn_wrp_logo').click()
             }

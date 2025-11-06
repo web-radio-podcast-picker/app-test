@@ -29,6 +29,9 @@ class Podcasts {
     initializedLists = {}
     initializingPodcasts = null
 
+    // indicates should open selection.epi on 'open epi list'
+    autoOpenedEpiList = false
+
     // selection values
     selection = {
         lang: null,
@@ -435,12 +438,9 @@ class Podcasts {
     }
 
     // restore from ui state
-    openPodcasts(selection/*, openOpts*/) {
-
-        /*this.openOpts = openOpts*/
+    openPodcasts(selection) {
 
         if (settings.debug.debug) {
-            //console.clear()
             console.log('[##] open podcasts')
             console.log('[##] ', this.openOpts)
         }
@@ -470,8 +470,7 @@ class Podcasts {
         sel.pdc = { item: item }
 
         // any clone here prevent any item update after loading! (buildPdcPreview)
-        const cItem = item //cloneItem(item)   // fix sel in item
-        //cItem.sel = cloneSelection(cItem.sel)
+        const cItem = item
 
         // TODO: avoid ops after receipt if other request started after this one
         remoteDataStore.getPodcastChannelRss(
@@ -532,6 +531,17 @@ class Podcasts {
     }
 
     shouldRestoreEpiVisibleState = false
+
+    setEpiListVisibility(isVisible) {
+        if (isVisible) {
+            $('#wrp_pdc_epi_list_container').removeClass('hidden')
+            $('#opts_wrp_podcast_epi').removeClass('hidden')
+        }
+        else {
+            $('#wrp_pdc_epi_list_container').addClass('hidden')
+            $('#opts_wrp_podcast_epi').addClass('hidden')
+        }
+    }
 
     setEpiListVisible(isVisible) {
 
@@ -640,34 +650,27 @@ class Podcasts {
                 infosPane.toggleInfos()
 
             // ----- AUTO OPEN EPI -----
-            if (true/*!this.isEpiListVisible()*/) {
+            //if (true/*!this.isEpiListVisible()*/) {
 
-                this.setPdcPreviewVisible(true)
+            this.setPdcPreviewVisible(true)
 
-                if (this.selection.epiOpen
+            if (this.selection.epiOpen) {
+                ////this.selection.epiOpening = true
+                this.selection.epiOpen = false
 
-                    /*&& this.buildPdcPreviewCount < 1*/) {
-                    ////this.selection.epiOpening = true
-                    this.selection.epiOpen = false
+                // case on start TODO: ?? // why not generalize ???
 
-                    //$('#opts_wrp_podcast_pdc').removeClass('hidden')
-                    //$('#opts_wrp_podcast_pdc').removeClass('hidden')
-                    ////$('#wrp_pdc_st_list').removeClass('hidden')
-                    //$('#wrp_pdc_st_list_container').removeClass('hidden')
+                if (settings.debug.debug)
+                    logger.log('[##] opening epi list')
 
-                    // case on start TODO: ?? // why not generalize ???
-
-                    if (settings.debug.debug)
-                        logger.log('[##] opening epi list')
-
-                    this.autoOpenedEpiList = true
-                    // TODO: click fail if epi list was initially visible
-                    $('#wrp_pdc_prv_em_button').click()
-                }
+                this.autoOpenedEpiList = true
+                // TODO: click fail if epi list was initially visible
+                $('#wrp_pdc_prv_em_button').click()
             }
+            /*}
             else {
                 item.rss = null
-            }
+            }*/
 
             this.buildPdcPreviewCount++
         } catch (parseError) {

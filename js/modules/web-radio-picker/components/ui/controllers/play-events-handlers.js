@@ -33,6 +33,8 @@ class PlayEventsHandlers {
         if (err?.code == 4)
             st = ' not allowed (cors)'      // the most probable
 
+        ui.showError(st)
+
         if (settings.debug.debug) {
             logger.log(st)
         }

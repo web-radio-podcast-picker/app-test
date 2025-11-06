@@ -581,11 +581,11 @@ class WebRadioPickerModule extends ModuleBase {
             ;
     }
 
-    isPlaying(item) {
+    playingState(item) {
         const isCurrent = this.compareItems(
             uiState.currentRDItem,
             item)
-        const isPaused = !oscilloscope.pause
+        const isPaused = oscilloscope.pause
         return {
             isPaused: isPaused,
             isCurrent: isCurrent,
