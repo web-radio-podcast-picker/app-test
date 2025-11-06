@@ -180,7 +180,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     line-height: 1em;
     margin: 0.25em;
     margin-top: 0px;
-    grid-template-columns: min-content auto min-content;
+    grid-template-columns: min-content auto max-content min-content;
     cursor: default;
     /* align-items: baseline; */
 }
@@ -255,7 +255,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     flex-direction: row-reverse;
     padding: 0.5em;
     grid-row: 1;
-    grid-column: 3;
+    grid-column: 4;
     /* align-self: flex-start; */
     align-items: center;
 }
@@ -272,7 +272,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
 }
 
 .wrp-item-info-text2 {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
     color: #FFFFFFCC;
     text-align: right;
@@ -815,4 +815,19 @@ h1 {
     align-content: center;
     justify-items: center;
     font-size: 1.4em;
+}
+
+.wrp-item-timeline-box {
+    border: #A0DDffDD solid 2px;
+}
+
+.wrp-item-timeline-box-cursor {
+    height: 1em;
+    width: 1em;
+    background-color: #A0DDffDD;
+}
+
+.wrp-item-info-text3 {
+    grid-column: 2;
+    align-content: center;
 }

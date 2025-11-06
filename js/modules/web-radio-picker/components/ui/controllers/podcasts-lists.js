@@ -290,26 +290,23 @@ class PodcastsLists {
         var subText2 = ''
         var $sep = ' / '
 
+        ////console.warn(item.metadata?.duration)
+        ////console.warn(item.metadata?.currentTime)
+
         const dur = item.metadata?.duration
-        if (dur) {
-            if (isStr(dur) && !dur.includes('NaN')) {
-                subText2 = dur.toString()
-            }
-            else {
-                if (!isNaN(item.metadata.duration)) {
-                    if (item.metadata.duration)
-                        subText2 = item.metadata.duration
-                }
-                else {
-                    subText2 = ' '
-                    $sep = ''
-                }
+        if (dur != null) {
+            DurationHMS.check(dur)
+            if (!dur.isInfinite) {
+                subText2 = DurationHMS.text(dur)
+            } else {
+                subText2 = ' '
+                $sep = ''
             }
         }
 
         if (subText2 != '')
             if (item.metadata?.currentTime) subText2 =
-                item.metadata.currentTime.toString() + $sep + subText2
+                DurationHMS.text(item.metadata.currentTime) + $sep + subText2
 
         item.subText2 = subText2
         item.metadata.statusText = this.getEpiItemPlayStateText(item)

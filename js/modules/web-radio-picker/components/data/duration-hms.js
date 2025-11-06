@@ -11,23 +11,49 @@ class DurationHMS {
     s = 0
 
     error = false
+    isInfinite = false
 
-    toString() {
-        if (this.error) return null
-        var h = this.h + ''
-        var m = this.m + ''
-        var s = this.s + ''
+    static toSeconds(o) {
+        return o.h * 60 * 24 + o.m * 60 + o.s
+    }
+
+    static check(o) {
+        if (isNaN(o.h) || isNaN(o.m) || isNaN(o.s))
+            o.isInfinite = true
+    }
+
+    static text(o) {
+        if (o.error) return ''
+        DurationHMS.check(o)
+        if (o.isInfinite) return ''
+
+        var h = o.h + ''
+        var m = o.m + ''
+        var s = o.s + ''
         if (h.length == 1) h = '0' + h
         if (m.length == 1) m = '0' + m
         if (s.length == 1) s = '0' + s
-        const strDur = h + ':' + m + ':' + s
-        return strDur
+        var z = '00'
+        var str = ''
+        var p = ':'
+        if (h != z) str += h + p + m + p + s
+        else {
+            /*if (m != z) str += m + p + s
+            else
+                str = s*/
+            str += m + p + s
+        }
+
+        return str
     }
 
     // convert from a number of seconds
     static fromSeconds(sec) {
-        if (isNaN(sec)) return null
         const res = new DurationHMS()
+        if (isNaN(sec)) {
+            res.isInfinite = true
+            return res
+        }
         try {
             // should be hh:mm:ss
             var h = Math.floor(parseFloat((parseFloat(sec) / (60 * 24)).toFixed(2)))
@@ -39,8 +65,15 @@ class DurationHMS {
             res.s = s
         } catch {
             res.error = true
+            res.isInfinite = true
         }
         return res
+    }
+
+    static fromInfinite() {
+        const dur = new DurationHMS()
+        dur.isInfinite = true
+        return dur
     }
 
     // convert from [[hh:]mm:]ss

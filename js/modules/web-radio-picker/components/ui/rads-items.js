@@ -75,6 +75,22 @@ class RadsItems {
         this.setTitleIconsVisibility($item, false)
     }
 
+    updateRadItemCursorView(item, $item) {
+        const $bw = $item.find('.wrp-item-timeline-box')
+        const bw = $bw.width()
+        const $cursor = $item.find('.wrp-item-timeline-box-cursor')
+        const dur = item.metadata?.duration
+        const curTime = item.metadata?.currentTime
+        var w = 0
+        if (dur && curTime && !dur.isInfinite && !curTime.isInfinite) {
+            const max = DurationHMS.toSeconds(dur)
+            const cur = DurationHMS.toSeconds(curTime)
+            const r = max == 0 ? 0 : cur / max
+            w = bw * r
+        }
+        $cursor.width(w)
+    }
+
     updateRadItemView(item, $item, opts) {
         if (item === undefined || item == null) return
         if ($item === undefined || $item == null) return
@@ -119,6 +135,9 @@ class RadsItems {
             $subt2.removeClass('hidden')
         else
             $subt2.addClass('hidden')
+
+        if (item.epi)
+            this.updateRadItemCursorView(item, $item)
 
         this.updateRadItem(item, $item, $butOn, $butOff)
     }
@@ -166,8 +185,14 @@ class RadsItems {
         $item.addClass('wrp-list-item-foldable')
         const subitHidden = unfolded ? '' : 'hidden'
 
+        var timeLineBox = ''
+        if (rdItem?.epi) {
+            timeLineBox = `<div class="wrp-item-timeline-box"><div class="wrp-item-timeline-box-cursor"></div></div>`
+        }
+
         const text2 = !isRdItem ? '' :
-            `<span class="wrp-item-info-text2">${favName}</span>`
+            `<div class="wrp-item-info-text3">${timeLineBox}</div>`
+            + `<span class="wrp-item-info-text2">${favName}</span>`
         const $subit = $(
             `<div class="wrp-list-item-sub ${subitHidden}">
 <span class="wrp-item-info-text"></span>

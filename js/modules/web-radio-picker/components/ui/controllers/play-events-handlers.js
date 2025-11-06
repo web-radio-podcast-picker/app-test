@@ -92,8 +92,10 @@ class PlayEventsHandlers {
             var dur = audio.duration
 
             if (!isNaN(dur)) {
-                const duration = DurationHMS.fromSeconds(dur)
-                dur = duration.toString()
+                dur = DurationHMS.fromSeconds(dur)
+            }
+            else {
+                dur = DurationHMS.fromInfinite()
             }
 
             if (!o.metadata) o.metadata = {}
@@ -114,16 +116,13 @@ class PlayEventsHandlers {
                 }
             }
 
-            const item = radsItems.loadingRDItem
+            const cur = radsItems.getLoadingItem()
+            const item = cur.item
             if (item != null) {
                 if (item.pdc && dur != null)
-                    item.subText2 = o.metadata.duration
+                    item.subText2 = o.metadata.duration?.text()
 
-                radsItems.updateRadItemView(
-                    item,
-                    radsItems.$loadingRDItem,
-                    null
-                )
+                podcasts.podcastsLists.updateEpiItemView(item, cur.$item)
             }
 
             playHistory.setupAddToHistoryTimer(o)
@@ -174,16 +173,15 @@ class PlayEventsHandlers {
         if (this.tickTimer == null)
             this.tickTimer = setInterval(() => {
                 const audio = window.audio
+
                 const position = audio?.currentTime
-                if (!isNaN(position)) {
-                    const pos = DurationHMS.fromSeconds(position)
-                    ////console.log(pos.toString())
-                    radsItems.setLoadingItemMetadata('currentTime', pos)
-                    const cur = radsItems.getLoadingItem()
-                    podcasts.podcastsLists.updateEpiItemView(
-                        cur.loadingRDItem, cur.$loadingRDItem
-                    )
-                }
+                const pos = DurationHMS.fromSeconds(position)    ////console.log(pos.toString())
+                radsItems.setLoadingItemMetadata('currentTime', pos)
+
+                const cur = radsItems.getLoadingItem()
+                podcasts.podcastsLists.updateEpiItemView(
+                    cur.loadingRDItem, cur.$loadingRDItem
+                )
             }, 500);
     }
 
