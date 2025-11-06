@@ -200,6 +200,11 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     grid-column: 1;
     padding: 0.5em;
     overflow-wrap: anywhere;
+    line-height: 2em;
+}
+
+.wrp-list-item-text-container-epi {
+    line-height: 1.3em;
 }
 
 .wrp-list-item-subtext-container {
@@ -215,7 +220,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     padding-left: 0.1em;
     padding-bottom: 0.2em;
     margin-bottom: 0em;
-    padding-top: 0em;
+    padding-top: 0.3em;
     display: grid;
     grid-template-columns: auto auto;
 }
@@ -819,6 +824,9 @@ h1 {
 
 .wrp-item-timeline-box {
     border: #A0DDffDD solid 2px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .wrp-item-timeline-box-cursor {

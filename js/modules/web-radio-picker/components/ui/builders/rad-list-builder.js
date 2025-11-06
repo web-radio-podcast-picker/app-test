@@ -25,7 +25,8 @@ class RadListBuilder {
             textViewFunc(text) : text
 
         // radio name
-        const $textBox = $('<div class="wrp-list-item-text-container">' + str + '</div>')
+        var xcl = rdItem?.epi ? 'wrp-list-item-text-container-epi' : ''
+        const $textBox = $('<div class="wrp-list-item-text-container ' + xcl + '">' + str + '</div>')
 
         // TODO: FIX :: listId == listName == null on startup ?!
         // eventually sub text
