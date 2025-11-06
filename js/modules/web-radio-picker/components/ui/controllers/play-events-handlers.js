@@ -17,19 +17,22 @@ class PlayEventsHandlers {
         }
     }
 
-    storeEvent(id, item) {
+    storeEvent(id, statusText, item) {
         this.lastEvents[id] = sclone(radsItems.getLoadingItem())
         const ps = wrpp.playingState(item)
         const events = {}
         for (const evk in this.lastEvents) {
             events[evk] = this.lastEvents[evk] != null
         }
+
         radsItems.setLoadingItemMetadata('playState',
             {
+                statusText: statusText,
                 loadingState: id,
                 playingState: sclone(ps),
                 events: events
             })
+        radsItems.setLoadingItemMetadata('statusText', statusText)
     }
 
     initAudioSourceHandlers() {
@@ -51,7 +54,7 @@ class PlayEventsHandlers {
         }
 
         radsItems.updateLoadingRadItem(st)
-        this.storeEvent('connecting', item)
+        this.storeEvent('connecting', st, item)
 
         app.channel.connected = false
         $('#wrp_connected_icon').addClass('hidden')
@@ -74,7 +77,7 @@ class PlayEventsHandlers {
         }
 
         radsItems.updateLoadingRadItem(st)
-        this.storeEvent('noConnection', radsItems.loadingRDItem)
+        this.storeEvent('noConnection', st, radsItems.loadingRDItem)
 
         app.channel.connected = false
         $('#wrp_connected_icon').addClass('hidden')
@@ -91,7 +94,7 @@ class PlayEventsHandlers {
         radsItems.updateLoadingRadItem(st)
         radsItems.setLoadingItemMetadata('startTime', Date.now())
 
-        this.storeEvent(st, radsItems.loadingRDItem)
+        this.storeEvent(st, st, radsItems.loadingRDItem)
 
         // metatadata available: audio.duration
 
@@ -151,9 +154,6 @@ class PlayEventsHandlers {
     }
 
     onCanPlay(audio) {
-        this.storeEvent('playing')
-
-        //this.startPlayTickTimer()
 
         uiState.setPlayPauseButtonFreezeState(false)
         const st = 'playing'
@@ -165,7 +165,7 @@ class PlayEventsHandlers {
             .updateLoadingRadItem(st)
             .setLoadingItemMetadata('startTime', Date.now())
 
-        this.storeEvent(st, radsItems.loadingRDItem)
+        this.storeEvent(st, st, radsItems.loadingRDItem)
 
         tabsController.showPlayingRdItemViz()
     }
@@ -180,7 +180,7 @@ class PlayEventsHandlers {
                 pauseText,
                 null, $item)
 
-        this.storeEvent('pauseStateChanged', item)
+        this.storeEvent('pauseStateChanged', pauseText, item)
 
         if (pause) {
             this.stopPlayTickTimer()
@@ -198,7 +198,7 @@ class PlayEventsHandlers {
         const cur = radsItems.getLoadingItem()
 
         const st = 'ended'
-        this.storeEvent(st, cur.loadingRDItem)
+        this.storeEvent(st, st, cur.loadingRDItem)
 
         podcasts.podcastsLists.updateEpiItemView(cur.loadingRDItem, cur.$loadingRDItem)
     }
@@ -212,6 +212,7 @@ class PlayEventsHandlers {
 
                 const position = audio?.currentTime
                 const pos = DurationHMS.fromSeconds(position)    ////console.log(pos.toString())
+                radsItems.setLoadingItemMetadata
                 radsItems.setLoadingItemMetadata('currentTime', pos)
 
                 const cur = radsItems.getLoadingItem()
