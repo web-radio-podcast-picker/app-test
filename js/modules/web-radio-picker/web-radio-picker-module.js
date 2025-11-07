@@ -596,7 +596,7 @@ class WebRadioPickerModule extends ModuleBase {
         return {
             isPaused: isPaused,
             isCurrent: isCurrent,
-            isPlayinng: isCurrent && !isPaused
+            isPlaying: isCurrent && !isPaused
         };
     }
 

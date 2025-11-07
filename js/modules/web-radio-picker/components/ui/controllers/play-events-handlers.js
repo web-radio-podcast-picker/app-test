@@ -227,7 +227,7 @@ class PlayEventsHandlers {
                 podcasts.podcastsLists.updateEpiItemView(
                     cur.loadingRDItem, cur.$loadingRDItem
                 )
-            }, 500);
+            }, 500)
     }
 
     stopPlayTickTimer() {

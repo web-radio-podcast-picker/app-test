@@ -314,8 +314,25 @@ class PodcastsLists {
     }
 
     getEpiItemPlayStateText(item) {
-        const status = item.metadata?.statusText
+        const status = this.getStatusText(item)
+        if (item.metadata)
+            item.metadata.statusText = status
+        //item.metadata?.statusText
         return status
+    }
+
+    getStatusText(item) {
+        if (!item.metadata) return
+        const m = item.metadata.playState
+        if (!m) return '?'
+        const e = m.events
+        var r = ''
+        if (e.connecting) r = 'connecting ...'
+        if (e.connected) r = 'connected'
+        if (e.noConnection) r = 'no connection'     // TODO: get the real error message (to be stored)
+        if (e.playing) r = 'playing'
+        //if (e.pause) r = 'pause' // doesn't exists
+        return r
     }
 
     selectEpiItem(listId, paneId, item, $item, unfoldSelection) {

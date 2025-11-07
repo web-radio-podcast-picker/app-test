@@ -189,11 +189,13 @@ class UIState {
             podcastSelection: podcasts.selection
         }
 
-        const str = JSON.stringify(r, (k, v) => {
-            if (serializeField(k))
-                return v
-            else return null
-        })
+        const str =
+            settings.db.useLocalStorage ?
+                JSON.stringify(r, (k, v) => {
+                    if (serializeField(k))
+                        return v
+                    else return null
+                }) : ''
 
         return { object: r, json: str }
     }
