@@ -4,6 +4,8 @@
     find license and copyright informations in files /COPYRIGHT and /LICENCE
 */
 
+const PlayEventsHandlersLogPfx = '[@@] '
+
 class PlayEventsHandlers {
 
     resetEvents() {
@@ -50,7 +52,7 @@ class PlayEventsHandlers {
         uiState.setPlayPauseButtonFreezeState(true)
         const st = 'connecting...'
         if (settings.debug.debug) {
-            logger.log(st)
+            logger.log(PlayEventsHandlersLogPfx + st)
         }
 
         radsItems.updateLoadingRadItem(st)
@@ -73,7 +75,7 @@ class PlayEventsHandlers {
         ui.showError(st)
 
         if (settings.debug.debug) {
-            logger.log(st)
+            logger.log(PlayEventsHandlersLogPfx + st)
         }
 
         radsItems.updateLoadingRadItem(st)
@@ -99,9 +101,9 @@ class PlayEventsHandlers {
         // metatadata available: audio.duration
 
         if (settings.debug.debug) {
-            logger.log(st)
+            logger.log(PlayEventsHandlersLogPfx + st)
             console.log(ev)
-            logger.log('duration:' + audio.duration)
+            logger.log(PlayEventsHandlersLogPfx + ' duration:' + audio.duration)
         }
         $('#wrp_connect_icon').addClass('hidden')
         $('#wrp_connect_error_icon').addClass('hidden')
@@ -158,7 +160,7 @@ class PlayEventsHandlers {
         uiState.setPlayPauseButtonFreezeState(false)
         const st = 'playing'
         if (settings.debug.debug) {
-            logger.log(st)
+            logger.log(PlayEventsHandlersLogPfx + st)
         }
 
         radsItems
@@ -173,14 +175,20 @@ class PlayEventsHandlers {
     onPauseStateChanged(updateRadItemStatusText, item, $item) {
 
         const pause = oscilloscope.pause
-        const pauseText = pause ? 'pause' : 'playing'
+        var pauseText = pause ? 'pause' : 'playing'   // TODO: could be connected not playing
+        if (!pause && this.lastEvents.playing == null)
+            pauseText = 'connected'
 
         if (updateRadItemStatusText)
             radsItems.updateLoadingRadItem(
                 pauseText,
                 null, $item)
 
-        this.storeEvent('pauseStateChanged', pauseText, item)
+        const st = 'pauseStateChanged'
+        this.storeEvent(st, pauseText, item)
+
+        if (settings.debug.debug)
+            logger.log(PlayEventsHandlersLogPfx + st + ' : ' + pauseText)
 
         if (pause) {
             this.stopPlayTickTimer()

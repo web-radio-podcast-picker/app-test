@@ -116,6 +116,11 @@ const Class_Item_Selected = 'item-selected'
 
 const Class_Hidden = 'hidden'
 
+// db
+
+const StoreKeyName = 'storeKey'
+const StoreObjectKeyName = 'key'
+
 // -----
 
 const transparentPixel =

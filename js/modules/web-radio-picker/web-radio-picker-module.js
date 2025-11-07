@@ -210,13 +210,7 @@ class WebRadioPickerModule extends ModuleBase {
 
     initView(viewId) {
 
-        settings.dataStore.loadRadiosLists()
-
         tabsController.initTabs()
-        listsBuilder.buildTagItems()
-            .buildArtItems()
-            .buildLangItems()
-            .buildListsItems()
 
         const readOnly = { readOnly: true, attr: 'text' };
 
@@ -328,7 +322,8 @@ class WebRadioPickerModule extends ModuleBase {
         // modules are late binded. have the responsability to init bindings
         this.updateBindings()
 
-        // ui state
+        // initial datas & ui state
+
         const firstInit = settings.dataStore.initUIStateStorage(
             () => {
                 // first launch init
@@ -344,8 +339,20 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
-        if (!firstInit)
-            settings.dataStore.loadUIState()
+        settings.dataStore.init(() => {
+            settings.dataStore.loadRadiosLists(
+                () => {
+
+                    listsBuilder
+                        .buildTagItems()
+                        .buildArtItems()
+                        .buildLangItems()
+                        .buildListsItems()
+
+                    if (!firstInit)
+                        settings.dataStore.loadUIState()
+                })
+        })
     }
 
     updateBindings() {

@@ -23,6 +23,14 @@ class RadiosLists {
     // radio lists
     lists = {}
 
+    constructor() {
+        this.init()
+    }
+
+    init() {
+        this.lists[StoreKeyName] = 'itemsLists'
+    }
+
     addList(listId, name, isSystem) {
         if (isSystem === undefined) isSystem = false
         if (!this.lists[name]) {
@@ -83,6 +91,7 @@ class RadiosLists {
             if (id != [RadioList_History])
                 this.deleteList(id)
         })
+        this.init()
     }
 
     removeFavFromList(rdItem, favName) {
@@ -124,20 +133,6 @@ class RadiosLists {
         })
         return res
     }
-
-    /*findListItemByName(name, containerId) {
-        const $items = $('#' + containerId).find('.wrp-list-item')
-        console.log('1111111111111111111')
-        // TODO: use 'some' operator to speed up this
-        const t = $items.map((i, e) => {
-            return {
-                name: e.attributes['data-text'].value,
-                item: e
-            }
-        })
-        const r = t.filter((i, x) => x.name == name)
-        return (r.length == 0) ? null : r[0]
-    }*/
 
     findListItemById(id, containerId) {
         const $items = $('#' + containerId).find('.wrp-list-item')
@@ -202,8 +197,11 @@ class RadiosLists {
     importFavoritesJSONExport(o) {
         if (o[FavoritesJSONExportValidatorTag] === undefined)
             throw new Error('favorites JSON export is not a valid object')
+
         delete o[FavoritesJSONExportValidatorTag]
+        // remove history
         delete o[RadioList_History]
+
         const names = Object.keys(o)
         if (settings.debug.info) {
             logger.log('favorites lists: ' + names.length)
@@ -228,6 +226,7 @@ class RadiosLists {
                 const tgtItem = this.findItemByNameAndUrl(name, srcItem.name, srcItem.url)
                 if (tgtItem == null) {
                     // add favorite
+                    // TODO: findRadItem will be removed
                     const newItem = wrpp.findRadItem(srcItem)
                     if (newItem != null) {
                         // merge favs lists
@@ -305,44 +304,50 @@ class RadiosLists {
                     }
                 })
             else
-                console.warn('list "'+name+'" has no items prop')
+                console.warn('list "' + name + '" has no items prop')
         }
     }
 
     fromJSON(str) {
-        const t = {}
         const lists = JSON.parse(str)
+        this.fromObject(lists)
+    }
+
+    fromObject(lists) {
+        const t = {}
         const names = Object.keys(lists)
         names.forEach(name => {
-            const srcList = lists[name]
-            t[name] = srcList
-            const substItems = []
-            // normalize props
-            if (srcList.isSystem === undefined)
-                srcList.isSystem = srcList.name == RadioList_History
-            // transfers props
-            srcList.items.forEach(item => {
-                // TODO: this search in allItems . thus loose pdcs & epis
-                const newItem = wrpp.findRadItem(item)
+            if (name != StoreKeyName) {
+                const srcList = lists[name]
+                t[name] = srcList
+                const substItems = []
+                // normalize props
+                if (srcList.isSystem === undefined)
+                    srcList.isSystem = srcList.name == RadioList_History
+                // transfers props
+                srcList.items.forEach(item => {
+                    // TODO: this search in allItems . thus loose pdcs & epis
+                    const newItem = wrpp.findRadItem(item)
 
-                // copy dynamic properties from storage
-                if (newItem != null) {
-                    newItem.favLists = [...item.favLists]
-                    // fix history fav
-                    if (name == RadioList_History && !newItem.favLists.includes(RadioList_History))
-                        newItem.favLists.push(RadioList_History)
-                    substItems.push(newItem)
-                }
-                else {
-                    if (item.pdc) {
-                        substItems.push(item)
+                    // copy dynamic properties from storage
+                    if (newItem != null) {
+                        newItem.favLists = [...item.favLists]
                         // fix history fav
-                        if (name == RadioList_History && !item.favLists.includes(RadioList_History))
-                            item.favLists.push(RadioList_History)
+                        if (name == RadioList_History && !newItem.favLists.includes(RadioList_History))
+                            newItem.favLists.push(RadioList_History)
+                        substItems.push(newItem)
                     }
-                }
-            })
-            srcList.items = substItems
+                    else {
+                        if (item.pdc) {
+                            substItems.push(item)
+                            // fix history fav
+                            if (name == RadioList_History && !item.favLists.includes(RadioList_History))
+                                item.favLists.push(RadioList_History)
+                        }
+                    }
+                })
+                srcList.items = substItems
+            }
         })
         this.lists = t
         this.cleanupHistoryItemsFavorites()

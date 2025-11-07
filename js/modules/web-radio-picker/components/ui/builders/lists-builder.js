@@ -59,26 +59,28 @@ class ListsBuilder {
 
         var i = 0
         names.forEach(name => {
-            const list = t[name]
-            const lst = list.items
-            const { item, $item } = radListBuilder.buildListItem(
-                name,
-                i,
-                i,
-                this.favoriteListItemOpts(lst),
-                null,
-                null,
-                null
-            )
-            i++
-            this.initListItem($pl, item, $item, lst,
-                uiState.RDList(RadioList_List, name, $item)
-            )
-            if (list.name == RadioList_History) {
-                $item.addClass('wrp-list-item-history-favs')
-                radListBuilder.updateListItemText($item, RadioList_List_VisibleName)
+            if (name != StoreKeyName) {
+                const list = t[name]
+                const lst = list.items
+                const { item, $item } = radListBuilder.buildListItem(
+                    name,
+                    i,
+                    i,
+                    this.favoriteListItemOpts(lst),
+                    null,
+                    null,
+                    null
+                )
+                i++
+                this.initListItem($pl, item, $item, lst,
+                    uiState.RDList(RadioList_List, name, $item)
+                )
+                if (list.name == RadioList_History) {
+                    $item.addClass('wrp-list-item-history-favs')
+                    radListBuilder.updateListItemText($item, RadioList_List_VisibleName)
+                }
+                $pl.append($item)
             }
-            $pl.append($item)
         })
         return this
     }
@@ -146,8 +148,7 @@ class ListsBuilder {
                 uiState.RDList(listId, name, $item), onClick)
             try {
                 $container.append($item)
-            } catch (err)
-            {
+            } catch (err) {
                 // TODO: check this case (seems not catchable)
                 console.warn(err)
             }

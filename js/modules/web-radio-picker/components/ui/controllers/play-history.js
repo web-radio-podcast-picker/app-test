@@ -30,7 +30,7 @@ class PlayHistory {
 
         if (settings.debug.debug)
             logger.log('add to history:' + o?.name)
-        o.listenDate = Date.now
+        o.listenDate = Date.now()
         var history = radiosLists.getList(RadioList_History).items
         const itemInList = wrpp.findRadItemInList(o, history)
         if (itemInList != null) {

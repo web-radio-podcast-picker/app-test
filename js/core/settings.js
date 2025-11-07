@@ -14,7 +14,7 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.8.6',
+            version: '1.3.9.2',
             verDate: '11/06/2025'
         }
     },
@@ -83,9 +83,15 @@ window.settings = {
         obj: false
     },
 
-    dataStore: {
+    db: {
         minSpanMs: 5000,
-        delayExec: 5000
+        delayExec: 5000,
+        useLocalStorage: false,
+        dbName: 'wrpp',
+        dbVer: 1,
+        itemsListsStoreName: 'lists',
+        propertiesStoreName: 'properties',
+        uiStateStoreName: 'uistate'
     },
 
     extInput: {
