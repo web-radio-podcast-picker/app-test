@@ -314,13 +314,6 @@ class PodcastsLists {
     }
 
     getEpiItemPlayStateText(item) {
-        /*const playState = wrpp.playingState(item)
-        var status = ''
-        if (playState.isCurrent) {
-            status = 'playing'  // TODO: or 'connecting...' !
-            if (playState.isPaused)
-                status = 'pause'
-        }*/
         const status = item.metadata?.statusText
         return status
     }
