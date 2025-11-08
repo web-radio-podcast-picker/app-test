@@ -85,6 +85,8 @@ class Db {
      */
     saveItemsLists(o) {
 
+        //radiosLists.purgeItems()
+
         // fix bad datas
         if (o.currentRDItem &&
             typeof o.currentRDItem.listenDate == 'function')

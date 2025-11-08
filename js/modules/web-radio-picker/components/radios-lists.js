@@ -179,6 +179,7 @@ class RadiosLists {
     exportToClipboard() {
         this.lists[FavoritesJSONExportValidatorTag]
             = FavoritesJSONExportValidatorTag
+        this.purgeItems()
 
         const txt = this.toJSON(true)
 
@@ -301,7 +302,12 @@ class RadiosLists {
                             item.sel.pdc.item.sel = null
                         if (item.sel.epi?.item?.sel)
                             item.sel.epi.item.sel = null
+                        if (item.sel.pdc?.item)
+                            item.sel.pdc.item.pItem = null
+                        if (item.sel.epi?.item)
+                            item.sel.epi.item.pItem = null
                     }
+                    if (item.pItem) item.pItem = null
                 })
             else
                 console.warn('list "' + name + '" has no items prop')
@@ -350,6 +356,7 @@ class RadiosLists {
             }
         })
         this.lists = t
+        this.purgeItems()
         this.cleanupHistoryItemsFavorites()
     }
 
