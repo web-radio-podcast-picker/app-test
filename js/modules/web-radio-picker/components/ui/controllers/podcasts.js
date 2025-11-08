@@ -463,6 +463,7 @@ class Podcasts {
 
         ui.hideError()
         item.metadata.statusText = 'opening...'
+        propertiesStore.save(item)
         radsItems.updateRadItemView(item, $item)
 
         // fix sel
@@ -485,6 +486,7 @@ class Podcasts {
         const text = 'channel not found: ' + item.name
         ui.showError(text)
         item.metadata.statusText = text
+        propertiesStore.save(item)
         radsItems.updateRadItemView(item, $item)
     }
 
@@ -618,6 +620,7 @@ class Podcasts {
 
         ui.hideError()
         item.metadata.statusText = ''
+        propertiesStore.save(item)
         radsItems.updateRadItemView(item, $item)
 
         item.selCnt++   // only if preview is ok

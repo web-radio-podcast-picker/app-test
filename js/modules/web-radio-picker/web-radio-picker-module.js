@@ -103,6 +103,11 @@ var podcasts = null
  */
 var remoteDataStore = null
 
+/**
+ * @type {PropertiesStore}
+ */
+var propertiesStore = null
+
 //#endregion
 
 // module: web radio picker
@@ -194,6 +199,7 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
+        propertiesStore = new PropertiesStore()
         listsBuilder = new ListsBuilder()
         radListBuilder = new RadListBuilder()
         playHistory = new PlayHistory()
@@ -324,6 +330,7 @@ class WebRadioPickerModule extends ModuleBase {
 
         // initial datas & ui state
 
+        // TODO: remove local storage init
         const firstInit = settings.dataStore.initUIStateStorage(
             () => {
                 // first launch init
@@ -340,18 +347,22 @@ class WebRadioPickerModule extends ModuleBase {
         )
 
         settings.dataStore.init(() => {
-            settings.dataStore.loadRadiosLists(
-                () => {
 
-                    listsBuilder
-                        .buildTagItems()
-                        .buildArtItems()
-                        .buildLangItems()
-                        .buildListsItems()
+            settings.dataStore.loadProperties(() => {
 
-                    if (!firstInit)
-                        settings.dataStore.loadUIState()
-                })
+                settings.dataStore.loadRadiosLists(
+                    () => {
+
+                        listsBuilder
+                            .buildTagItems()
+                            .buildArtItems()
+                            .buildLangItems()
+                            .buildListsItems()
+
+                        if (!firstInit)
+                            settings.dataStore.loadUIState()
+                    })
+            })
         })
     }
 
@@ -598,6 +609,15 @@ class WebRadioPickerModule extends ModuleBase {
             isCurrent: isCurrent,
             isPlaying: isCurrent && !isPaused
         };
+    }
+
+    /**
+     * check if a playable item key is correclty initialized. fix it if possible
+     * @param {Object} item 
+     */
+    checkItemKey(item) {
+        if (item.key) return
+        item.key = item.name + item.url
     }
 
     toArtistFromtreamingExclusive(r) {

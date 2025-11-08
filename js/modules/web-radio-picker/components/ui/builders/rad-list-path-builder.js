@@ -71,8 +71,8 @@ class RadListPathBuilder {
     }
 
     #buildEpiViewTagPath(item, $p) {
-        if (settings.debug.debug)
-            console.log(item.sel)
+        /*if (settings.debug.debug)
+            console.log(item.sel)*/
         const pdc = item.sel.pdc?.item?.name
 
         const selclone = cloneSelection(item.sel)

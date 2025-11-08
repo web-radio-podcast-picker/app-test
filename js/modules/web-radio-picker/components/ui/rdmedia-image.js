@@ -91,7 +91,7 @@ class RdMediaImage {
             if (this.noImageSelfClass)
                 $i.removeClass(this.noImageSelfClass)
             if (settings.debug.debug)
-                console.warn('image ok ' + $i[0].src)
+                console.log('image ok ' + $i[0].src)
         }
 
         $i.removeClass('hidden')

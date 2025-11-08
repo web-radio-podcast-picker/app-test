@@ -161,3 +161,8 @@ function sclone(o) {
     const str = JSON.stringify(o)
     return JSON.parse(str)
 }
+
+function className(o) {
+    if (o == null || o === undefined) return null
+    return o.__proto__.constructor.name
+}

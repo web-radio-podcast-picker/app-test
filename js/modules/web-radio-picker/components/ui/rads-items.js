@@ -43,6 +43,7 @@ class RadsItems {
         if (item != null) {
             wrpp.checkMetaData(item)
             item.metadata.statusText = statusText
+            propertiesStore.save(item)
         }
 
         const $subit = $item.find('.wrp-list-item-sub')
@@ -60,6 +61,7 @@ class RadsItems {
         if (item == null) return
         wrpp.checkMetaData(item)
         item.metadata[key] = val
+        propertiesStore.save(item)
         return this
     }
 

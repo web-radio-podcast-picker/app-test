@@ -17,6 +17,10 @@ class DataStore {
     db = null
     saveDisabled = false
 
+    prDebouncer = new Debouncer('dbcSaveProperties',
+        settings.db.minSpanMs,
+        settings.db.delayExec
+    )
     rlDebouncer = new Debouncer('dbcSaveRadiosLists',
         settings.db.minSpanMs,
         settings.db.delayExec
@@ -33,8 +37,19 @@ class DataStore {
     }
 
     saveAll() {
+        this.saveProperties()
         this.saveRadiosLists()
         this.saveUIState()
+    }
+
+    loadProperties(onLoaded) {
+        this.db.loadProperties(o => {
+            if (o != null)
+                propertiesStore.fromObject(o)
+            else
+                logger.error('properties not found')
+            onLoaded()
+        })
     }
 
     loadRadiosLists(onLoaded) {
@@ -59,7 +74,45 @@ class DataStore {
             }
             onLoaded()
         })
+    }
 
+    saveProperties() {
+        this.prDebouncer.debounce(() => this.#dbcSaveProperties())
+    }
+
+    #dbcSaveProperties() {
+        if (this.saveDisabled) return
+
+        try {
+            if (settings.debug.info)
+                logger.log(DataStoreLogPfx + 'save properties')
+
+            this.db.saveProperties(propertiesStore.toObject())
+
+        } catch (err) {
+            this.saveDisabled = true
+            ui.showError('save properties failed', null, null, null, err)
+        }
+    }
+
+    savePropertiesSingle(props) {
+        //this.prDebouncer.debounce(() => this.#dbcSavePropertiesSingle(props))
+        this.#dbcSavePropertiesSingle(props)
+    }
+
+    #dbcSavePropertiesSingle(props) {
+        if (this.saveDisabled) return
+
+        try {
+            if (settings.debug.info)
+                logger.log(DataStoreLogPfx + 'save properties single')
+
+            this.db.savePropertiesSingle(props)
+
+        } catch (err) {
+            this.saveDisabled = true
+            ui.showError('save properties single failed', null, null, null, err)
+        }
     }
 
     saveRadiosLists() {

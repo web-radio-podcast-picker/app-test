@@ -218,9 +218,9 @@ class UIState {
             this.#setRDItem(state.currentRDItem)
 
         if (settings.debug.debug) {
-            console.warn('restore UI state: ')
-            console.warn(state)
-            console.warn(this)
+            console.log('restore UI state: ')
+            console.log(state)
+            console.log(this)
             window.state = state
         }
 

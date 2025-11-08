@@ -17,9 +17,55 @@ class DurationHMS {
         return o.h * 60 * 24 + o.m * 60 + o.s
     }
 
+    static isSeekable(o) {
+        DurationHMS.check(o)
+        return (!o.isInfinite &&
+            o.h + o.m + o.s > 0
+        )
+    }
+
+    static fromObject(o) {
+        const d = new DurationHMS()
+        d.h = o.h
+        d.m = o.m
+        d.s = o.s
+        d.error = o.error
+        d.isInfinite = o.isInfinite
+        return d
+    }
+
     static check(o) {
+        if (o == null || o === undefined)
+            return DurationHMS.fromInfinite()
+
+        if (className(o) == 'Object') {
+            const names = Object.getOwnPropertyNames(o)
+            if (names.includes('h')
+                && names.includes('m')
+                && names.includes('s')) {
+                // has muted to an 'Object' , mutate to a DurationHMS
+                o = DurationHMS.fromObject(o)
+            }
+        }
+
+        if (className(o) != 'DurationHMS') {
+            if (!isNaN(o))
+                // case 1 : number of seconds
+                o = DurationHMS.fromSeconds(parseInt(o))
+            else {
+                // case 2 - a string
+                if (className(o) == 'String') {
+                    o = DurationHMS.fromHMS(o)
+                }
+                else
+                    return DurationHMS.fromInfinite()
+            }
+        }
+
         if (isNaN(o.h) || isNaN(o.m) || isNaN(o.s))
             o.isInfinite = true
+
+        return o
     }
 
     static text(o) {
@@ -78,6 +124,21 @@ class DurationHMS {
 
     // convert from [[hh:]mm:]ss
     static fromHMS(str) {
-
+        var t = str.split(':')
+        if (t.length > 3) return DurationHMS.fromInfinite()
+        if (t.length == 0) {
+            if (isNaN(str))
+                return DurationHMS.fromSeconds(parseInt(str))
+            else
+                return DurationHMS.fromInfinite()
+        }
+        if (t.length == 1) t = [0, 0, t[0]]
+        if (t.length == 2) t = [0, t[0], t[1]]
+        if (t.length == 3) t = [t[0], t[1], t[2]]
+        const d = new DurationHMS()
+        d.h = t[0]
+        d.m = t[1]
+        d.s = t[2]
+        return d
     }
 }
