@@ -308,7 +308,9 @@ ui = {
             $e.text(messOrEvent)
             $e.removeClass('hidden')
             const self = this
-            setTimeout(() => {
+            if (this.errTimeout)
+                clearTimeout(this.errTimeout)
+            this.errTimeout = setTimeout(() => {
                 self.hideError()
             }, settings.ui.errDisplayTime)
         }

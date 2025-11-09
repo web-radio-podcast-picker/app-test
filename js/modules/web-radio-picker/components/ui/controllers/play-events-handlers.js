@@ -42,6 +42,8 @@ class PlayEventsHandlers {
         WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
         WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
         WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
+        //window.audio.timeupdate = e => this.onCurrentTimeChanged(e)
+        window.audio.addEventListener('timeupdate', e => this.onCurrentTimeChanged(e))
         this.resetEvents()
     }
 
@@ -122,8 +124,8 @@ class PlayEventsHandlers {
         const o = uiState.currentRDItem     // TODO: why current item and not loading item ?
         if (o != null) {
 
-            window.audio = audio
             var dur = audio.duration
+            this.disableUpdatePosition = true
 
             if (!isNaN(dur)) {
                 dur = DurationHMS.fromSeconds(dur)
@@ -135,19 +137,30 @@ class PlayEventsHandlers {
             if (!o.metadata) o.metadata = {}
             if (!o.metadata.duration) {
 
-                if (settings.debug.debug)
+                if (settings.debug.debug) {
                     console.log(PlayEventsHandlersLogPfx + 'set duration: ' + DurationHMS.text(dur))
+                    console.log(PlayEventsHandlersLogPfx + 'current time: ' + DurationHMS.text(o.metadata.currentTime))
+                }
                 // store duration
                 o.metadata.duration = dur
             }
             else {
 
                 if (dur != null) {
-                    if (settings.debug.debug)
+                    if (settings.debug.debug) {
                         console.log(PlayEventsHandlersLogPfx + 'update duration: ' + DurationHMS.text(dur))
+                        console.log(PlayEventsHandlersLogPfx + 'current time: ' + DurationHMS.text(o.metadata.currentTime))
+                    }
                     // upd duration
                     o.metadata.duration = dur
                 }
+            }
+
+            // reset stream at beginning if pos = end
+            if (DurationHMS.equals(dur, o.metadata.currentTime)) {
+                const atZero = DurationHMS.fromZero()
+                o.metadata.currentTime = atZero
+                audio.currentTime = DurationHMS.toSeconds(atZero)
             }
 
             // try restore last play position
@@ -161,6 +174,8 @@ class PlayEventsHandlers {
                         console.log(PlayEventsHandlersLogPfx + 'restore position: ' + DurationHMS.text(o.metadata.currentTime))
                 }
             }
+
+            this.disableUpdatePosition = false
 
             const cur = radsItems.getLoadingItem()
             const item = cur.item
@@ -179,6 +194,8 @@ class PlayEventsHandlers {
         }
     }
 
+    removeEnded = false
+
     onCanPlay(audio) {
 
         uiState.setPlayPauseButtonFreezeState(false)
@@ -188,6 +205,13 @@ class PlayEventsHandlers {
         }
 
         const item = radsItems.loadingRDItem
+
+        item.metadata.playState.events.ended = false
+        this.removeEnded = true
+
+        //if (settings.debug.debug)
+        //    console.log(PlayEventsHandlersLogPfx, item.metadata.playState.events)
+
         radsItems
             .updateLoadingRadItem(st)
             .setLoadingItemMetadata('startTime', Date.now())
@@ -206,12 +230,34 @@ class PlayEventsHandlers {
     onPauseStateChanged(updateRadItemStatusText, item, $item) {
 
         // TODO: item null here, coz uiState.currentRDItem is null
-        if (item == null) item = radsItems.loadingRDItem
+        /*if (item == null)*/ item = radsItems.loadingRDItem
+
+        //console.log(PlayEventsHandlersLogPfx, item.metadata.playState.events)
 
         const pause = oscilloscope.pause
         var pauseText = pause ? 'pause' : 'playing'   // TODO: could be connected not playing
-        if (!pause && this.lastEvents.playing == null)
+        if (!pause && !this.lastEvents.playing)
             pauseText = 'connected'
+
+
+        //if (this.lastEvents['playing'] && pauseText != 'connected') {
+
+        this.disableUpdatePosition = true
+
+        if (!oscilloscope.pause && item.metadata.playState.events.ended) {
+            // restart stream at the beginning
+            item.metadata.playState.events.ended = false
+            item.metadata.currentTime = DurationHMS.fromZero()
+            window.audio.currentTime = DurationHMS.toSeconds(item.metadata.currentTime)
+            //this.updatePosition()
+            if (settings.debug.debug)
+                console.log(PlayEventsHandlersLogPfx + 'reset pos to 0')
+        }
+
+        // restart timer
+        this.setupPlayTickTimer(pause)
+        //}
+
 
         if (updateRadItemStatusText)
             radsItems.updateLoadingRadItem(
@@ -224,13 +270,16 @@ class PlayEventsHandlers {
         if (settings.debug.debug)
             logger.log(PlayEventsHandlersLogPfx + st + ' : ' + pauseText)
 
-        if (this.lastEvents['playing'] && pauseText != 'connected')
-            this.setupPlayTickTimer(pause)
+        //this.updatePosition()
+        podcasts.podcastsLists.updateEpiItemView(item, $item)
 
         // auto save single item
         propertiesStore.savePropsToDb(item)
 
         uiState.updatePauseView()
+
+        this.disableUpdatePosition = false
+
     }
 
     setupPlayTickTimer(pause) {
@@ -250,35 +299,102 @@ class PlayEventsHandlers {
         const st = 'ended'
         this.storeEvent(st, st, cur.loadingRDItem)
 
+        if (settings.debug.debug) {
+            logger.log(PlayEventsHandlersLogPfx + st)
+        }
+
+        cur.loadingRDItem.statusText = st
+
+        this.stopPlayTickTimer()
+        app.toggleOPause(() => {
+            uiState.updatePauseView()
+        })
+
         // auto save single item
         propertiesStore.savePropsToDb(cur.loadingRDItem)
 
         podcasts.podcastsLists.updateEpiItemView(cur.loadingRDItem, cur.$loadingRDItem)
     }
 
+    disableUpdatePosition = false
+
+    updatePosition() {
+        const audio = window.audio
+
+        const position = audio?.currentTime
+        const pos = DurationHMS.fromSeconds(position)    ////console.log(pos.toString())
+        radsItems.setLoadingItemMetadata('currentTime', pos)
+
+        const cur = radsItems.getLoadingItem()
+        podcasts.podcastsLists.updateEpiItemView(
+            cur.loadingRDItem, cur.$loadingRDItem
+        )
+    }
+
     tickTimer = null
 
     startPlayTickTimer() {
+
+        return
+
         if (this.tickTimer == null) {
             if (settings.debug.debug)
                 console.log(PlayEventsHandlersLogPfx + 'start play tick timer')
 
-            this.tickTimer = setInterval(() => {
-                const audio = window.audio
-
-                const position = audio?.currentTime
-                const pos = DurationHMS.fromSeconds(position)    ////console.log(pos.toString())
-                radsItems.setLoadingItemMetadata('currentTime', pos)
+            const f = () => {
+                this.updatePosition()
 
                 const cur = radsItems.getLoadingItem()
-                podcasts.podcastsLists.updateEpiItemView(
-                    cur.loadingRDItem, cur.$loadingRDItem
-                )
+
+                if (cur.loadingRDItem.metadata.playState.events.ended) {
+                    this.stopPlayTickTimer()
+                    app.toggleOPause(() => {
+                        uiState.updatePauseView()
+                        // auto save single item
+                        propertiesStore.savePropsToDb(cur.loadingRDItem)
+                    })
+                }
+            }
+
+            f() // apply immediately
+            this.tickTimer = setInterval(() => {
+                f()
             }, 500)
         }
     }
 
+    onCurrentTimeChanged() {
+
+        const cur = radsItems.getLoadingItem()
+        const item = cur.loadingRDItem
+
+        if (this.disableUpdatePosition) return
+
+        if (this.removeEnded) {
+            this.removeEnded = false
+            item.metadata.playState.events.ended = false
+        }
+
+        /*if (item.metadata.playState.events.ended) {
+            this.stopPlayTickTimer()
+            app.toggleOPause(() => {
+                uiState.updatePauseView()
+                // auto save single item
+                propertiesStore.savePropsToDb(item)
+            })
+        }*/
+
+        ////console.log(PlayEventsHandlersLogPfx + item.metadata.playState.events.ended)
+
+        if (!item.metadata.playState.events.playing) return
+        if (item.metadata.playState.events.ended) return
+        this.updatePosition()
+    }
+
     stopPlayTickTimer() {
+
+        return
+
         if (settings.debug.debug)
             console.log(PlayEventsHandlersLogPfx + 'stop play tick timer')
 

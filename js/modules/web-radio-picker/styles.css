@@ -37,7 +37,10 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     text-align: -webkit-center;
     align-content: center;
     position: relative;
-    top: 0.6em;
+    top: 0.8em;
+    z-index: 100;
+    /* display: inline-block; */
+    justify-self: center;
 }
 
 #err_txt {
@@ -180,7 +183,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     line-height: 1em;
     margin: 0.25em;
     margin-top: 0px;
-    grid-template-columns: min-content auto max-content min-content;
+    grid-template-columns: max-content auto max-content min-content;
     cursor: default;
     /* align-items: baseline; */
 }
@@ -272,8 +275,12 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     font-size: 1em;
     align-content: center;
     padding: 0.5em;
-    text-wrap: nowrap;
+    text-wrap: wrap;
     /* align-self: flex-start; */
+    overflow-wrap: break-word;
+    display: block;
+    /* border: red solid 1px; */
+    /* width: 100%; */
 }
 
 .wrp-item-info-text2 {

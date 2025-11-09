@@ -29,6 +29,7 @@ class WRPPMediaSource {
     init() {
         const tagId = 'audio_tag'
         this.audio = $('#' + tagId)[0]
+        window.audio = this.audio
 
         if (WRPPMediaSource.sourceInitialized) return
         WRPPMediaSource.sourceInitialized = true

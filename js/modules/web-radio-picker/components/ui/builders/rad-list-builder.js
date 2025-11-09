@@ -344,6 +344,7 @@ class RadListBuilder {
         $cbox[0].click()
 
         // restore the position & selection
+        // TODO: this remove the ended / full time line state /!\
         $pl.scrollTop(y)
         if (id !== undefined) {
             const it = wrpp.getRadListItemById(id)

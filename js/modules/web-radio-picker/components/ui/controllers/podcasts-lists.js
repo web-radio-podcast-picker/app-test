@@ -334,6 +334,7 @@ class PodcastsLists {
         if (e.noConnection) r = 'no connection'     // TODO: get the real error message (to be stored)
         if (e.playing) r = 'playing'
         //if (e.pause) r = 'pause' // doesn't exists
+        if (e.ended) r = 'ended'
         return r
     }
 
