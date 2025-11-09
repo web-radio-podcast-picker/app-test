@@ -204,6 +204,8 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     padding: 0.5em;
     overflow-wrap: anywhere;
     line-height: 2em;
+    /* border: red solid 1px; */
+    margin-right: 1.5em;
 }
 
 .wrp-list-item-text-container-epi {
@@ -245,6 +247,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     grid-row: 1;
     grid-column: 2;
     text-align: right;
+    margin-right: -2.5em;
 }
 
 .wrp-list-item-history-favs {
@@ -527,11 +530,12 @@ div#btn_wrp_infos.selected > img {
 }
 
 .icon-rad-fav {
-    justify-self: end;    
+    justify-self: end;
     width: 24px;
     height: 24px;
-    align-self: center;
+    /* align-self: center; */
     margin-right: 0.5em;
+    margin-top: 0.4em;
 }
 
 .wrp-inf-pane {

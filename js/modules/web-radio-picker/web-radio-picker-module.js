@@ -353,14 +353,29 @@ class WebRadioPickerModule extends ModuleBase {
                 settings.dataStore.loadRadiosLists(
                     () => {
 
-                        listsBuilder
-                            .buildTagItems()
-                            .buildArtItems()
-                            .buildLangItems()
-                            .buildListsItems()
+                        const uiInitFunc = () => {
+                            listsBuilder
+                                .buildTagItems()
+                                .buildArtItems()
+                                .buildLangItems()
+                                .buildListsItems()
 
-                        if (!firstInit)
-                            settings.dataStore.loadUIState()
+                            if (!firstInit)
+                                settings.dataStore.loadUIState()    // will launch // tasks
+                        }
+
+                        if (settings.migration.fixFavoritesItemsFavLists) {
+                            if (settings.debug.debug)
+                                console.warn(DataStoreLogPfx + 'reload properties (migration: fixFavoritesItemsFavLists)')
+                            // async save
+                            settings.dataStore.db.saveProperties(propertiesStore.toObject())
+                            setTimeout(() => {
+                                // delay start
+                                settings.dataStore.loadProperties(() => uiInitFunc())
+                            }, 5000)
+                        }
+                        else
+                            uiInitFunc()
                     })
             })
         })

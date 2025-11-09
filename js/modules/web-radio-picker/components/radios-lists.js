@@ -353,6 +353,12 @@ class RadiosLists {
                             if (name == RadioList_History && !item.favLists.includes(RadioList_History))
                                 item.favLists.push(RadioList_History)
 
+                            if (settings.migration.fixFavoritesItemsFavLists) {
+                                // fix item favFists: add listId to favList
+                                if (!item.favLists.includes(name))
+                                    item.favLists.push(name)
+                            }
+
                             // init properties from local db
                             wrpp.checkItemKey(item)
                             propertiesStore.load(item)
@@ -365,6 +371,7 @@ class RadiosLists {
         this.lists = t
         this.purgeItems()
         this.cleanupHistoryItemsFavorites()
+
     }
 
     cleanupHistoryItemsFavorites() {

@@ -14,9 +14,14 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.11.1',
+            version: '1.3.11.2',
             verDate: '11/09/2025'
         }
+    },
+
+    migration: {
+        // use once (slow startup)
+        fixFavoritesItemsFavLists: false
     },
 
     flags: {
