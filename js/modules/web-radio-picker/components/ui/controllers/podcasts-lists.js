@@ -24,6 +24,10 @@ class PodcastsLists {
         return $('#' + this.listIdToPaneId[listId])
     }
 
+    /**
+     * build a list data and view for pdc/epi : tag,letter,lang,pdc,epi
+     * @param {String} listId 
+     */
     updateListView(listId) {
         if (settings.debug.info)
             logger.log('update list view: ' + listId)
@@ -756,58 +760,75 @@ class PodcastsLists {
 
         item.rss.episodes.forEach(rssItem => {
 
-            const epiItem = this.podcastItem(
-                null,
-                rssItem.title,
-                '',
-                null,
-                null
-            )
-
-            if (epiItems[epiItem.name]) {
+            // ------ reuse already existing instance -----
+            var name = rssItem.title
+            if (epiItems[name]) {
                 // duplicated name
-                epiItem.name += ' ' + prfx + index
+                name += ' ' + prfx + index
                 index++
                 if (index > 9) {
                     prfx += '9.'
                     index = 1
                 }
             }
+            const url = rssItem.audioUrl
+            const key = name + url
+            const cacheItem = memoryItemsStore.get(key)
+            // ---------------------------------------------
 
-            // item details
-            epiItem.subText2 = rssItem.duration
-            try {
-                const d = new Date(rssItem.pubDate)
-                epiItem.subText =
-                    d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-            } catch { }
+            const epiItem = cacheItem ? cacheItem
+                : this.podcastItem(
+                    null,
+                    name,
+                    '',
+                    null,
+                    null
+                )
 
-            // epi items props
-            epiItem.url = rssItem.audioUrl
-            //epiItem.pItem = item
-            epiItem.sel = sel
-            //epiItem.rss = rssItem       // TODO: avoid store RSS (too big)
+            if (!cacheItem) {
+                // item details
+                epiItem.subText2 = rssItem.duration
+                try {
+                    const d = new Date(rssItem.pubDate)
+                    epiItem.subText =
+                        d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+                } catch { }
 
-            // state datas
-            //epiItem.selCnt = 0
+                // epi items props
+                epiItem.url = url
+                //epiItem.pItem = item
+                epiItem.sel = sel
+                //epiItem.rss = rssItem       // TODO: avoid store RSS (too big)
 
-            // make it compatible with favorites management
-            epiItem.id = epiItem.name   // here id == title (no id in podcasts)
-            epiItem.favLists = []   // TODO: keep favorites in store and réinit here
+                // state datas
+                //epiItem.selCnt = 0
 
-            // compat with favorites & rdItem management
-            //epiItem.logo = item.rss.image || item.rss.itunes.image
-            epiItem.logo = rssItem.image ||
-                item.rss.image || item.rss.itunes.image
-                || item.logo
+                // make it compatible with favorites management
+                epiItem.id = epiItem.name   // here id == title (no id in podcasts)
+                epiItem.favLists = []   // TODO: keep favorites in store and réinit here
 
-            epiItem.metadata = {}
-            epiItem.pdc = true      // indicates it's a pdc, not a station
-            epiItem.epi = true      // indicates it's a pdc episode, not a channel
+                // compat with favorites & rdItem management
+                //epiItem.logo = item.rss.image || item.rss.itunes.image
+                epiItem.logo = rssItem.image ||
+                    item.rss.image || item.rss.itunes.image
+                    || item.logo
 
-            epiItem.pubDate = rssItem.pubDate
+                epiItem.metadata = {}
+                epiItem.pdc = true      // indicates it's a pdc, not a station
+                epiItem.epi = true      // indicates it's a pdc episode, not a channel
 
-            epiItems[epiItem.name] = epiItem
+                epiItem.pubDate = rssItem.pubDate
+
+                epiItems[epiItem.name] = epiItem
+            }
+            else {
+                if (settings.debug.debug)
+                    console.log('get from memory item store: ' + epiItem.name)
+                epiItem.sel = sel
+            }
+
+            // ---- restore item data -----
+            propertiesStore.load(epiItem)
 
         })
 
@@ -835,6 +856,14 @@ class PodcastsLists {
         })
     }
 
+    /**
+     * build PDC data items
+     * @param {Object} pItem parent item (letter/tag)
+     * @param {Number} store store number
+     * @param {Number} page page number
+     * @param {String} data pdc text list (separated values)
+     * @param {Object} sel current selection object. might be a clone
+     */
     buildPdcItems(pItem, store, page, data, sel) {
         const pdcItems = {}
         if (settings.debug.debug)
@@ -850,40 +879,58 @@ class PodcastsLists {
 
         t.forEach(row => {
             const c = row.split(settings.dataProvider.columnSeparator)
-            const pdcItem =
-                this.podcastItem(
+
+            // ------ reuse already existing instance -----
+            const name = c[0]
+            const url = c[1].trim() // coz see \r in results
+            const key = name + url
+            const cacheItem = memoryItemsStore.get(key)
+            // ---------------------------------------------
+
+            const pdcItem = cacheItem ? cacheItem
+                : this.podcastItem(
                     null,
-                    c[0],
+                    name,
                     '',
                     pItem.stores,
                     null
                 )
 
-            // pdc item props
-            pdcItem.url = c[1].trim()       // coz see \r in results
-            pdcItem.store = store
-            pdcItem.page = page
-            //pdcItem.pItem = pItem
-            pdcItem.sel = cloneSelection(sel)
-            ////pdcItem.sel.pdc = { item: pdcItem }
+            if (!cacheItem) {
+                // pdc item props
+                pdcItem.url = url
+                pdcItem.store = store
+                pdcItem.page = page
+                //pdcItem.pItem = pItem
+                pdcItem.sel = cloneSelection(sel)
+                ////pdcItem.sel.pdc = { item: pdcItem }
 
-            // state datas
-            pdcItem.selCnt = 0
+                // state datas
+                pdcItem.selCnt = 0
 
-            // make it compatible with favorites management
-            pdcItem.id = c[0]   // here id == title (no id in podcasts)
-            pdcItem.favLists = []   // TODO: keep favorites in store and réinit here
+                // make it compatible with favorites management
+                pdcItem.id = c[0]   // here id == title (no id in podcasts)
+                pdcItem.favLists = []   // TODO: keep favorites in store and réinit here
 
-            // compat with favorites & rdItem management
-            pdcItem.metadata = {}
-            pdcItem.pdc = true      // indicates it's a pdc, not a station
+                // compat with favorites & rdItem management
+                pdcItem.metadata = {}
+                pdcItem.pdc = true      // indicates it's a pdc, not a station
+            }
+            else {
+                if (settings.debug.debug)
+                    console.log('get from memory item store: ' + pdcItem.name)
+                pdcItem.sel = cloneSelection(sel)
+            }
+
+            // ---- restore item data -----
+            propertiesStore.load(pdcItem)
 
             pdcItems[pdcItem.name] = pdcItem
-
-            this.podcasts.pdcItems = pdcItems
         })
+        this.podcasts.pdcItems = pdcItems
 
-        this.updateListView(Pdc_List_Pdc)   // do here coz async from caller
+        // do here coz async from caller
+        this.updateListView(Pdc_List_Pdc)
         this.podcasts.asyncInitTab(Pdc_List_Pdc)
     }
 }

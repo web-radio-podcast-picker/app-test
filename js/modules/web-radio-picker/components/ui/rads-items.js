@@ -192,11 +192,13 @@ class RadsItems {
             timeLineBox = `<div class="wrp-item-timeline-box"><div class="wrp-item-timeline-box-cursor"></div></div>`
         }
 
+        const subXClass = rdItem?.epi ? 'wrp-list-epi-item-sub' : ''
+
         const text2 = !isRdItem ? '' :
             `<div class="wrp-item-info-text3">${timeLineBox}</div>`
             + `<span class="wrp-item-info-text2">${favName}</span>`
         const $subit = $(
-            `<div class="wrp-list-item-sub ${subitHidden}">
+            `<div class="wrp-list-item-sub ${subitHidden} ${subXClass}">
 <span class="wrp-item-info-text"></span>
 ${text2}
 <div class="wrp-item-controls-container">

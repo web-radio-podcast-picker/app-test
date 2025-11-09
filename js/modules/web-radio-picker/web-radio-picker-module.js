@@ -108,6 +108,11 @@ var remoteDataStore = null
  */
 var propertiesStore = null
 
+/**
+ * @type {MemoryItemsStore}
+ */
+var memoryItemsStore = null
+
 //#endregion
 
 // module: web radio picker
@@ -199,6 +204,7 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
+        memoryItemsStore = new MemoryItemsStore()
         propertiesStore = new PropertiesStore()
         listsBuilder = new ListsBuilder()
         radListBuilder = new RadListBuilder()
@@ -430,6 +436,12 @@ class WebRadioPickerModule extends ModuleBase {
         }
     }
 
+    /**
+     * @deprecated will be removed with dynamic station list loading
+     * search item in full stations list
+     * @param {Object} item searched item
+     * @returns 
+     */
     findRadItem(item) {
         return this.findRadItemInList(item, this.itemsAll)
     }
@@ -585,6 +597,9 @@ class WebRadioPickerModule extends ModuleBase {
         return this
     }
 
+    /**
+     * @deprecated // TODO: listing all radios is going to be removed
+     */
     allRadios() {
         this.clearListsSelection()
         radListBuilder

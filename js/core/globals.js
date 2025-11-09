@@ -150,10 +150,9 @@ const cloneItem = item => {
             item.sel.pdc.item.sel = null
         if (item.sel.epi?.item?.sel)
             item.sel.epi.item.sel = null
-        const o = sclone(item)
-        return o
     }
-    return null
+    const o = sclone(item)
+    return o
 }
 
 const isStr = o => {

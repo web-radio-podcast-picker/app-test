@@ -127,6 +127,16 @@ class ListsBuilder {
         return { $panel: $pl, $selected: $selected, id: id, it: null }
     }
 
+    /**
+     * init ui of a rad list item for (pdc/epi) : tag,letter,lang,pdc,epi
+     * @param {String} containerId 
+     * @param {Object} itemsByName items by names
+     * @param {String} listId 
+     * @param {Function} onClick 
+     * @param {Function} countFunc 
+     * @param {Function} textViewFunc 
+     * @returns 
+     */
     buildNamesItems(containerId, itemsByName, listId, onClick, countFunc, textViewFunc) {
 
         const $container = $('#' + containerId)
@@ -187,6 +197,15 @@ class ListsBuilder {
         $n.text(opts.count)
     }
 
+    /**
+     * init ui of a rad list item for (pdc/epi) : tag,letter,lang,pdc,epi
+     * @param {JQuery} $container 
+     * @param {Object} item 
+     * @param {JQuery} $item 
+     * @param {Array} t pdc items arrays
+     * @param {RDList} currentRDList 
+     * @param {Function} onClick 
+     */
     initListItem($container, item, $item, t, currentRDList, onClick) {
         const $textContainer = $item.find('.wrp-list-item-text-container')
 

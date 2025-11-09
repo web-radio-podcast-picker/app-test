@@ -36,10 +36,26 @@ class Favorites {
             uiState.$addingFavoriteItem)
 
         // update fav list
+        // TODO: should remove from any list where it exists coz there is only one favorite possible
+        radiosLists.removeFromAnyList(addingFavoriteItem)
+
+        if (!radiosLists.addToList(rdList.listId, rdList.name, addingFavoriteItem)) {
+            radiosLists.removeFromList(addingFavoriteItem, rdList.name)
+            radiosLists.addToList(rdList.listId, rdList.name, addingFavoriteItem)
+        }
+
+        // upd item favlist
+
         if (!addingFavoriteItem.favLists.includes(rdList.name))
             addingFavoriteItem.favLists.push(rdList.name)
-        radiosLists.addToList(rdList.name, addingFavoriteItem)
 
+        // ---- put new fav in mem items store -----
+        wrpp.checkItemKey(addingFavoriteItem)
+        memoryItemsStore.put(addingFavoriteItem)
+        propertiesStore.savePropsToDb(addingFavoriteItem)
+        // ------------------------------------------
+
+        // TODO: this update occurs before list is visible in case of async view build
         radsItems.updateRadItemView(
             addingFavoriteItem,
             $addingFavoriteItem
@@ -207,6 +223,10 @@ class Favorites {
             delFav = fav
         });
         radsItems.updateRadItemView(item, $item)
+
+        // ----- update storage -----
+        wrpp.checkItemKey(item)
+        propertiesStore.savePropsToDb(item)
 
         // update the fav list
         listsBuilder.updateListsItems()

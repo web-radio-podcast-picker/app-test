@@ -183,9 +183,17 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     line-height: 1em;
     margin: 0.25em;
     margin-top: 0px;
-    grid-template-columns: max-content auto max-content min-content;
-    cursor: default;
+    grid-template-columns: auto max-content max-content min-content;
     /* align-items: baseline; */
+}
+
+.wrp-list-epi-item-sub {
+    grid-template-columns: min-content auto max-content min-content !important;
+}
+
+div.wrp-list-epi-item-sub > span.wrp-item-info-text {
+    text-wrap: nowrap !important;
+    word-wrap: unset !important;
 }
 
 .wrp-rad-item-icon {
@@ -203,13 +211,15 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     grid-column: 1;
     padding: 0.5em;
     overflow-wrap: anywhere;
-    line-height: 2em;
+    line-height: 1.3em;
     /* border: red solid 1px; */
     margin-right: 1.5em;
+    min-height: 2.3em;
 }
 
 .wrp-list-item-text-container-epi {
     line-height: 1.3em;
+    /* min-height: 2.5em; */
 }
 
 .wrp-list-item-subtext-container {
@@ -849,4 +859,5 @@ h1 {
 .wrp-item-info-text3 {
     grid-column: 2;
     align-content: center;
+    grid-row: 1;
 }

@@ -119,6 +119,12 @@ class RadListBuilder {
         return this
     }
 
+    /**
+     * build lists view items for : tag,letter,lang,pdc,epi
+     * @param {Array} items 
+     * @param {String} listId 
+     * @param {String} listName 
+     */
     buildRadListItems(items, listId, listName) {
         const $rad = $('#wrp_radio_list')
         var j = 0
@@ -375,6 +381,12 @@ class RadListBuilder {
         }
     }
 
+    /**
+     * build/update lists view items for pdc/epi : tag,letter,lang,pdc,epi
+     * @param {Array} items 
+     * @param {String} listId 
+     * @param {String} listName 
+     */
     updateRadList(lst, listId, listName) {
         this.clearRadList()
         this.buildRadListItems(lst, listId, listName)
