@@ -42,8 +42,10 @@ class PlayEventsHandlers {
         WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
         WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
         WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
-        //window.audio.timeupdate = e => this.onCurrentTimeChanged(e)
+        // -----------
         window.audio.addEventListener('timeupdate', e => this.onCurrentTimeChanged(e))
+        window.audio.addEventListener("durationchange", e => this.onDurationChanged(e))
+        // -----------
         this.resetEvents()
     }
 
@@ -156,23 +158,27 @@ class PlayEventsHandlers {
                 }
             }
 
-            // reset stream at beginning if pos = end
-            if (DurationHMS.equals(dur, o.metadata.currentTime)) {
-                const atZero = DurationHMS.fromZero()
-                o.metadata.currentTime = atZero
-                audio.currentTime = DurationHMS.toSeconds(atZero)
-            }
-
-            // try restore last play position
-            if (o.metadata.currentTime) {
-                o.metadata.currentTime = DurationHMS.check(o.metadata.currentTime)
-
-                if (DurationHMS.isSeekable(o.metadata.currentTime)) {
-                    // restore playing position
-                    audio.currentTime = DurationHMS.toSeconds(o.metadata.currentTime)
-                    if (settings.debug.debug)
-                        console.log(PlayEventsHandlersLogPfx + 'restore position: ' + DurationHMS.text(o.metadata.currentTime))
+            if (o.epi) {
+                // reset stream at beginning if pos = end
+                if (DurationHMS.equals(dur, o.metadata.currentTime)) {
+                    const atZero = DurationHMS.fromZero()
+                    o.metadata.currentTime = atZero
+                    audio.currentTime = DurationHMS.toSeconds(atZero)
                 }
+
+                // try restore last play position
+                if (o.metadata.currentTime) {
+                    o.metadata.currentTime = DurationHMS.check(o.metadata.currentTime)
+
+                    if (DurationHMS.isSeekable(o.metadata.currentTime)) {
+                        // restore playing position
+                        audio.currentTime = DurationHMS.toSeconds(o.metadata.currentTime)
+                        if (settings.debug.debug)
+                            console.log(PlayEventsHandlersLogPfx + 'restore position: ' + DurationHMS.text(o.metadata.currentTime))
+                    }
+                }
+            } else {
+                o.metadata.currentTime = DurationHMS.fromZero()
             }
 
             this.disableUpdatePosition = false
@@ -235,7 +241,7 @@ class PlayEventsHandlers {
         //console.log(PlayEventsHandlersLogPfx, item.metadata.playState.events)
 
         const pause = oscilloscope.pause
-        var pauseText = pause ? 'pause' : 'playing'   // TODO: could be connected not playing
+        var pauseText = pause ? 'pause' : 'playing'
         if (!pause && !this.lastEvents.playing)
             pauseText = 'connected'
 
@@ -363,6 +369,17 @@ class PlayEventsHandlers {
         }
     }
 
+    onDurationChanged(e) {
+        const dur = DurationHMS.fromSeconds(e.timeStamp)
+        if (settings.debug.debug) {
+            console.log(DurationHMS.text(dur))
+            console.log(PlayEventsHandlersLogPfx + 'duration changed')
+            console.log(PlayEventsHandlersLogPfx, e)
+            //ui.showError('duration changed')
+        }
+
+    }
+
     onCurrentTimeChanged() {
 
         const cur = radsItems.getLoadingItem()
@@ -374,17 +391,6 @@ class PlayEventsHandlers {
             this.removeEnded = false
             item.metadata.playState.events.ended = false
         }
-
-        /*if (item.metadata.playState.events.ended) {
-            this.stopPlayTickTimer()
-            app.toggleOPause(() => {
-                uiState.updatePauseView()
-                // auto save single item
-                propertiesStore.savePropsToDb(item)
-            })
-        }*/
-
-        ////console.log(PlayEventsHandlersLogPfx + item.metadata.playState.events.ended)
 
         if (!item.metadata.playState.events.playing) return
         if (item.metadata.playState.events.ended) return

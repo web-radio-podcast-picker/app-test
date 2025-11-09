@@ -14,6 +14,7 @@ class DurationHMS {
     isInfinite = false
 
     static equals(x, y) {
+        if (x==null || y==null) return false
         return x.h == y.h && x.m == y.m && x.s == y.s
     }
 
@@ -73,6 +74,7 @@ class DurationHMS {
     }
 
     static text(o) {
+        if (o==null || o===undefined) return null
         if (o.error) return ''
         DurationHMS.check(o)
         if (o.isInfinite) return ''
