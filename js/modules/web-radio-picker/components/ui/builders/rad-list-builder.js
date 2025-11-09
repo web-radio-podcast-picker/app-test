@@ -123,6 +123,9 @@ class RadListBuilder {
         const $rad = $('#wrp_radio_list')
         var j = 0
         items.forEach(n => {
+
+            // ----- construct data -----
+
             const { item, $item } = this
                 .buildListItem(
                     n.name,
@@ -133,6 +136,15 @@ class RadListBuilder {
                     listId,
                     listName
                 )
+
+            // ---- restore item data -----
+
+            if (n.pdc) {
+                propertiesStore.load(n)
+            }
+
+            // ---- init ui -----
+
             j++
             this.initItemRad($rad, $item, n)
             $rad.append($item)

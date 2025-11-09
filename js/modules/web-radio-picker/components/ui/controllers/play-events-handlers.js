@@ -386,10 +386,13 @@ class PlayEventsHandlers {
 
     lastTimeChanged = null
     lastPosition = null
+    lastTimePositionSaved = null
 
     onCurrentTimeChanged() {
 
         if (this.disableUpdatePosition) return
+
+        // slow up
 
         const timeChanged = new Date()
         if (this.lastTimeChanged != null) {
@@ -402,10 +405,25 @@ class PlayEventsHandlers {
         const cur = radsItems.getLoadingItem()
         const item = cur.loadingRDItem
 
+        // auto save position regularly
+
+        if (item.epi && this.lastTimePositionSaved != null) {
+            const dtime = timeChanged - this.lastTimePositionSaved
+            // min 10 sec
+            if (dtime >= 10 * 1000) {
+                propertiesStore.savePropsToDb(item)
+                this.lastTimePositionSaved = timeChanged
+            }
+        } else this.lastTimePositionSaved = new Date()
+
+        // apply command to remove ended flag on current item
+
         if (this.removeEnded) {
             this.removeEnded = false
             item.metadata.playState.events.ended = false
         }
+
+        // update position
 
         if (!item.metadata.playState.events.playing) return
         if (item.metadata.playState.events.ended) return

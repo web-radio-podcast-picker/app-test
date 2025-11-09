@@ -60,6 +60,9 @@ class ListsBuilder {
         var i = 0
         names.forEach(name => {
             if (name != StoreKeyName) {
+
+                // ----- construct data ----
+
                 const list = t[name]
                 const lst = list.items
                 const { item, $item } = radListBuilder.buildListItem(
@@ -71,6 +74,9 @@ class ListsBuilder {
                     null,
                     null
                 )
+
+                // ----- ui init -----
+
                 i++
                 this.initListItem($pl, item, $item, lst,
                     uiState.RDList(RadioList_List, name, $item)
@@ -129,6 +135,9 @@ class ListsBuilder {
         const keys = Object.keys(itemsByName)
         var j = 0
         keys.forEach(name => {
+
+            // ----- construct data -----
+
             const dataItem = itemsByName[name]
             const { item, $item } = radListBuilder.buildListItem(
                 name,
@@ -142,6 +151,9 @@ class ListsBuilder {
                 listId,
                 textViewFunc
             )
+
+            // ----- init ui -----
+
             j++
             btns[name] = $item
             this.initListItem($container, item, $item, itemsByName[name],
