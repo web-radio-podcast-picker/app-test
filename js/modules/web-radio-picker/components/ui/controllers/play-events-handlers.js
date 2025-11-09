@@ -328,6 +328,10 @@ class PlayEventsHandlers {
         const audio = window.audio
 
         const position = audio?.currentTime
+
+        if (this.lastPosition == position) return
+        this.lastPosition = position
+
         const pos = DurationHMS.fromSeconds(position)    ////console.log(pos.toString())
         radsItems.setLoadingItemMetadata('currentTime', pos)
 
@@ -380,12 +384,23 @@ class PlayEventsHandlers {
 
     }
 
+    lastTimeChanged = null
+    lastPosition = null
+
     onCurrentTimeChanged() {
+
+        if (this.disableUpdatePosition) return
+
+        const timeChanged = new Date()
+        if (this.lastTimeChanged != null) {
+            const delta = timeChanged - this.lastTimeChanged
+            // min 1/2 sec
+            if (delta < 500) return
+        }
+        this.lastTimeChanged = timeChanged
 
         const cur = radsItems.getLoadingItem()
         const item = cur.loadingRDItem
-
-        if (this.disableUpdatePosition) return
 
         if (this.removeEnded) {
             this.removeEnded = false
