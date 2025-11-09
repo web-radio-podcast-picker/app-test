@@ -66,7 +66,9 @@ class RadListBuilder {
             && rdItem != null && rdItem.favLists) {
             const favs = favorites.getItemFavoritesFiltered(rdItem)
             if (favs.length > 0) {
-                const $favIcon = $('<img name="heart_on" src="./img/icons8-heart-fill-48.png" width="24" height="24" alt="favorite" class="gr1 gc1 icon-rad-fav">')
+                const xcl = rdItem.epi
+                    ? 'wrp-item-epi-title-icon' : 'wrp-item-title-icon'
+                const $favIcon = $('<img name="heart_on" src="./img/icons8-heart-fill-48.png" width="24" height="24" alt="favorite" class="' + xcl + ' gr1 gc1 icon-rad-fav">')
                 $item.append($favIcon)
             }
         }

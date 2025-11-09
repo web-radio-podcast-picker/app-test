@@ -206,6 +206,14 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     background-color: #44AAff;
 }
 
+.wrp-item-title-icon {
+    align-self: center;
+}
+
+.wrp-item-epi-title-icon {
+    align-self: unset;
+}
+
 .wrp-list-item-text-container {
     grid-row: 1;
     grid-column: 1;

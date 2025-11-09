@@ -123,7 +123,7 @@ class RadiosLists {
                     x => x.name == item.name
                         && x.url == item.url).length > 0
                 if (existsIn) {
-                    this.lists[listName] =
+                    list.items =
                         list.items.filter(
                             x => x.name != item.name
                                 && x.url != item.url
