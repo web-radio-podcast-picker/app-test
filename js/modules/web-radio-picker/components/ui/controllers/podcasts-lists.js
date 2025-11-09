@@ -818,14 +818,14 @@ class PodcastsLists {
                 epiItem.epi = true      // indicates it's a pdc episode, not a channel
 
                 epiItem.pubDate = rssItem.pubDate
-
-                epiItems[epiItem.name] = epiItem
             }
             else {
                 if (settings.debug.debug)
                     console.log('get from memory item store: ' + epiItem.name)
-                epiItem.sel = sel
+                epiItem.sel = sel //cloneSelection(sel)   // add clone
             }
+
+            epiItems[epiItem.name] = epiItem
 
             // ---- restore item data -----
             propertiesStore.load(epiItem)

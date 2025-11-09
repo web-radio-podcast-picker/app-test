@@ -95,6 +95,8 @@ You should have received a copy of the GNU General Public License along with thi
     lastPdcPreviewVisibleState = false
     lastEpiListVisibleState = false
 
+    infoPaneVisible = false
+
     toggleInfos() {
         const $but = $('#btn_wrp_infos')
         const $pane = $('#wrp_inf_pane')
@@ -107,6 +109,7 @@ You should have received a copy of the GNU General Public License along with thi
         if (!$pane.hasClass('hidden')) {
 
             // becomes visible
+            this.infoPaneVisible = true
 
             this.lastPdcPreviewVisibleState = podcasts.isPdcPreviewVisible()
             this.lastEpiListVisibleState = podcasts.isEpiListVisible()
@@ -121,6 +124,7 @@ You should have received a copy of the GNU General Public License along with thi
         else {
 
             // becomes hidden
+            this.infoPaneVisible = false
 
             if (uiState.currentTab.listId == RadioList_Podcast) {
                 if (!this.lastEpiListVisibleState)
@@ -149,11 +153,15 @@ You should have received a copy of the GNU General Public License along with thi
     }
 
     async updateInfoPaneOnResize() {
-        $('#ifp_window_size').text(this.getWindowSizeText())
+        if (this.infoPaneVisible) {
+            $('#ifp_window_size').text(this.getWindowSizeText())
+        }
     }
 
     updateInfoPaneOnEndOfFrame() {
-        $('#ifp_FPS').text(this.getFPS())
+        if (this.infoPaneVisible) {
+            $('#ifp_FPS').text(this.getFPS())
+        }
     }
 
     async getRelatedApps() {
