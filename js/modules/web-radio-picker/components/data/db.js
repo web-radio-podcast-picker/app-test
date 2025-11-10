@@ -109,7 +109,7 @@ class Db {
             rssStore.transaction.oncomplete = e => checkReady(this.rssStoreName)
         }
 
-        if (noPrevVer || e.oldVersion == 1 || e.oldVersion == 2 || e.newVersion == 4) {
+        if (noPrevVer || e.oldVersion <= 2 || e.newVersion == 4) {
 
             if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 3')
 
@@ -119,6 +119,8 @@ class Db {
                 this.pdcListsStoreName, { keyPath: StoreObjectKeyName })
             pdcListsStore.transaction.oncomplete = e => checkReady(this.pdcListsStoreName)
         }
+
+        // version 4 - fix mig version 1 to 3
     }
 
     /**
