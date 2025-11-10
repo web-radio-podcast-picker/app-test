@@ -15,6 +15,7 @@ class Db {
     propertiesStoreName = 'properties'
     uiStateStoreName = 'uistate'
     rssStoreName = 'rss'
+    pdclistsStoreName = 'pdclists'
     dbReady = false
     #count = 0
     onDbReady = null
@@ -27,6 +28,7 @@ class Db {
         this.propertiesStoreName = settings.db.propertiesStoreName
         this.uiStateStoreName = settings.db.uiStateStoreName
         this.rssStoreName = settings.db.rssStoreName
+        this.pdcListsStoreName = settings.db.pdcListsStoreName
     }
 
     /**
@@ -58,7 +60,7 @@ class Db {
 
         const checkReady = () => {
             this.#count++
-            this.dbReady = this.#count == 4
+            this.dbReady = this.#count == 5
             if (this.dbReady) {
                 if (settings.debug.debug)
                     logger.log(DbLogPfx + 'db ready')
@@ -66,7 +68,8 @@ class Db {
             }
         }
 
-        if (e.oldVersion != 1) {    // first upgrade event (first db create)
+        if (e.oldVersion == null || e.oldVersion === undefined || e.oldVersion == 0) {    // first upgrade event (first db create)
+            // version 1
             // favorites : items without key
             const favoritesStore = db.createObjectStore(
                 this.itemsListsStoreName, { keyPath: StoreKeyName })
@@ -83,11 +86,20 @@ class Db {
             uiStateStore.transaction.oncomplete = e => checkReady()
         }
 
-        if (e.newVersion == 2) {
+        if (e.oldVersion == 1) {
+            // version 2
             // rss: rss parsed objects by key 'key'
             const rssStore = db.createObjectStore(
                 this.rssStoreName, { keyPath: StoreObjectKeyName })
             rssStore.transaction.oncomplete = e => checkReady()
+        }
+
+        if (e.oldVersion == 2) {
+            // version 3
+            // pdc lists: list.txt files parsed objects by key 'key
+            const pdcListsStore = db.createObjectStore(
+                this.pdcListsStoreName, { keyPath: StoreObjectKeyName })
+            pdcListsStore.transaction.oncomplete = e => checkReady()
         }
     }
 
@@ -120,6 +132,15 @@ class Db {
     saveRss(rss) {
         const label = this.rssStoreName
         this.#saveObject(rss, this.rssStoreName, label)
+    }
+
+    /**
+     * save a pdc list object
+     * @param {Object} rss 
+     */
+    savePdcList(list) {
+        const label = 'pdc list'
+        this.#saveObject(list, this.pdclistsStoreName, label)
     }
 
     /**
@@ -168,6 +189,14 @@ class Db {
             if (nolog != true && settings.debug.debug)
                 logger.log(DbLogPfx + label + ' saved in db')
         }
+    }
+
+    /**
+     * load pdc lists
+     * @param {Function} onLoaded 
+     */
+    loadPdcLists(onLoaded) {
+        this.#loadAllObjects(this.pdclistsStoreName, 'pdcList', onLoaded)
     }
 
     /**

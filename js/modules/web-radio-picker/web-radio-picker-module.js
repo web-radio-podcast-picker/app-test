@@ -118,6 +118,11 @@ var memoryItemsStore = null
  */
 var rssCache = null
 
+/**
+ * @type {PdcListCache}
+ */
+var pdcListCache = null
+
 //#endregion
 
 // module: web radio picker
@@ -210,6 +215,7 @@ class WebRadioPickerModule extends ModuleBase {
         )
 
         rssCache = new RssCache()
+        pdcListCache = new PdcListCache()
         memoryItemsStore = new MemoryItemsStore()
         propertiesStore = new PropertiesStore()
         listsBuilder = new ListsBuilder()
@@ -362,35 +368,38 @@ class WebRadioPickerModule extends ModuleBase {
 
             settings.dataStore.loadProperties(() => {
 
-                settings.dataStore.loadRss(() => {
+                settings.dataStore.loadPdcLists(() => {
 
-                    settings.dataStore.loadRadiosLists(
-                        () => {
+                    settings.dataStore.loadRss(() => {
 
-                            const uiInitFunc = () => {
-                                listsBuilder
-                                    .buildTagItems()
-                                    .buildArtItems()
-                                    .buildLangItems()
-                                    .buildListsItems()
+                        settings.dataStore.loadRadiosLists(
+                            () => {
 
-                                if (!firstInit)
-                                    settings.dataStore.loadUIState()    // will launch // tasks
-                            }
+                                const uiInitFunc = () => {
+                                    listsBuilder
+                                        .buildTagItems()
+                                        .buildArtItems()
+                                        .buildLangItems()
+                                        .buildListsItems()
 
-                            if (settings.migration.fixFavoritesItemsFavLists) {
-                                if (settings.debug.debug)
-                                    console.warn(DataStoreLogPfx + 'reload properties (migration: fixFavoritesItemsFavLists)')
-                                // async save
-                                settings.dataStore.db.saveProperties(propertiesStore.toObject())
-                                setTimeout(() => {
-                                    // delay start
-                                    settings.dataStore.loadProperties(() => uiInitFunc())
-                                }, 5000)
-                            }
-                            else
-                                uiInitFunc()
-                        })
+                                    if (!firstInit)
+                                        settings.dataStore.loadUIState()    // will launch // tasks
+                                }
+
+                                if (settings.migration.fixFavoritesItemsFavLists) {
+                                    if (settings.debug.debug)
+                                        console.warn(DataStoreLogPfx + 'reload properties (migration: fixFavoritesItemsFavLists)')
+                                    // async save
+                                    settings.dataStore.db.saveProperties(propertiesStore.toObject())
+                                    setTimeout(() => {
+                                        // delay start
+                                        settings.dataStore.loadProperties(() => uiInitFunc())
+                                    }, 5000)
+                                }
+                                else
+                                    uiInitFunc()
+                            })
+                    })
                 })
             })
         })

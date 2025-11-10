@@ -744,16 +744,27 @@ class PodcastsLists {
         //$pane[0].innerHTML = ''
         this.setListPaneLoadingStateEnabled($pane)
 
-        remoteDataStore.getPodcastsList(
-            storeIndex,
-            langk,
-            tagk,
-            letterk,
-            (data) => {
-                podcasts.podcastsLists.buildPdcItems(
-                    item, storeIndex, sel.noPage, data, sel)
-            }
-        )
+        const storeKey = langk + (tagk || '') + (letterk || '') + storeIndex
+        const pdcListObj = pdcListCache.get(storeKey)
+
+        if (!pdcListObj) {
+            remoteDataStore.getPodcastsList(
+                storeIndex,
+                langk,
+                tagk,
+                letterk,
+                (data) => {
+                    podcasts.podcastsLists.buildPdcItems(
+                        item, storeIndex, sel.noPage, data, sel, false, storeKey)
+                }
+            )
+        } else {
+            // ----- get pdc list from cache -----
+            if (settings.debug.debug)
+                console.log('get from pdc list cache: ' + storeKey)
+            podcasts.podcastsLists.buildPdcItems(
+                item, storeIndex, sel.noPage, pdcListObj, sel, true, storeKey)
+        }
     }
 
     buildEpiItems(index) {
@@ -876,7 +887,7 @@ class PodcastsLists {
      * @param {String} data pdc text list (separated values)
      * @param {Object} sel current selection object. might be a clone
      */
-    buildPdcItems(pItem, store, page, data, sel) {
+    buildPdcItems(pItem, store, page, data, sel, isParsed, storeKey) {
         const pdcItems = {}
         if (settings.debug.debug)
             window.data = data
@@ -886,8 +897,19 @@ class PodcastsLists {
             console.log('store = ' + store + ', page = ' + page)
             console.log(sel)
         }
-        const t = data.trim()       // coz there is empty lines
-            .split('\n')
+
+        const t = isParsed ?
+            data.list   // get from cache
+            : data.trim()       // coz there is empty lines
+                .split('\n')
+
+        if (!isParsed) {
+            // ----- store pdc list in cache -----
+            pdcListCache.put({
+                key: storeKey,
+                list: t
+            })
+        }
 
         t.forEach(row => {
             const c = row.split(settings.dataProvider.columnSeparator)

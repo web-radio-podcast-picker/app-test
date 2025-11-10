@@ -52,6 +52,16 @@ class DataStore {
         })
     }
 
+    loadPdcLists(onLoaded) {
+        this.db.loadPdcLists(o => {
+            if (o != null)
+                pdcListCache.fromObject(o)
+            else
+                logger.error('pdc lists not found')
+            onLoaded()
+        })
+    }
+
     loadRss(onLoaded) {
         this.db.loadRss(o => {
             if (o != null)

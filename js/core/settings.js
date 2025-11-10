@@ -14,7 +14,7 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.14',
+            version: '1.3.15',
             verDate: '11/09/2025'
         }
     },
@@ -93,11 +93,12 @@ window.settings = {
         delayExec: 5000,
         useLocalStorage: false,
         dbName: 'wrpp',
-        dbVer: 2,
+        dbVer: 3,
         itemsListsStoreName: 'lists',
         propertiesStoreName: 'properties',
         uiStateStoreName: 'uistate',
-        rssStoreName: 'rss'
+        rssStoreName: 'rss',
+        pdcListsStoreName: 'pdclists'
     },
 
     extInput: {
