@@ -63,7 +63,8 @@ class Db {
             logger.log(DbLogPfx + 'db migration from version ' + e.oldVersion + ' to ' + e.newVersion)
         }
 
-        const checkReady = id => {
+        const checkReady = (id, cnt) => {
+            if (cnt == null || cnt === undefined) cnt = 1
             this.#count++
             this.dbReady = this.#count == 5
             if (settings.debug.debug)
@@ -96,7 +97,7 @@ class Db {
             const uiStateStore = db.createObjectStore(
                 this.uiStateStoreName, { keyPath: StoreKeyName })
             uiStateStore.transaction.oncomplete = e => checkReady(this.uiStateStoreName)
-        } else this.#count += 3
+        } else checkReady(this.uiStateStoreName, 3)
 
         if (noPrevVer || e.oldVersion == 1) {
 
@@ -107,7 +108,7 @@ class Db {
             const rssStore = db.createObjectStore(
                 this.rssStoreName, { keyPath: StoreObjectKeyName })
             rssStore.transaction.oncomplete = e => checkReady(this.rssStoreName)
-        } else this.#count += 1
+        } else checkReady(this.rssStoreName, 1)
 
         if (noPrevVer || e.oldVersion <= 2) {
 
@@ -118,7 +119,7 @@ class Db {
             const pdcListsStore = db.createObjectStore(
                 this.pdcListsStoreName, { keyPath: StoreObjectKeyName })
             pdcListsStore.transaction.oncomplete = e => checkReady(this.pdcListsStoreName)
-        } else this.#count += 1
+        } else checkReady(this.pdcListsStoreName, 1)
 
         // version 4 - fix mig version 1 to 3
     }
