@@ -43,7 +43,7 @@ class Db {
             this.db = e.target.result
             this.dbReady = true
             if (settings.debug.debug)
-                logger.log(DbLogPfx + 'db ready (no migration)')
+                logger.log(DbLogPfx + 'db ready (no migration) cur ver=' + settings.db.dbVer)
             if (this.onDbReady) this.onDbReady()
         }
         req.onupgradeneeded = e => this.createDb(e, e.target.result)
@@ -98,7 +98,7 @@ class Db {
             uiStateStore.transaction.oncomplete = e => checkReady(this.uiStateStoreName)
         }
 
-        if (noPrevVer || e.oldVersion == 1) {
+        if (noPrevVer || e.oldVersion == 1 || e.newVersion == 4) {
 
             if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 2')
 
@@ -109,7 +109,7 @@ class Db {
             rssStore.transaction.oncomplete = e => checkReady(this.rssStoreName)
         }
 
-        if (noPrevVer || e.oldVersion == 1 || e.oldVersion == 2) {
+        if (noPrevVer || e.oldVersion == 1 || e.oldVersion == 2 || e.newVersion == 4) {
 
             if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 3')
 
