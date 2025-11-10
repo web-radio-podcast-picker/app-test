@@ -98,7 +98,7 @@ class Db {
             uiStateStore.transaction.oncomplete = e => checkReady(this.uiStateStoreName)
         }
 
-        if (noPrevVer || e.oldVersion == 1 || e.newVersion == 4) {
+        if (noPrevVer || e.oldVersion == 1) {
 
             if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 2')
 
