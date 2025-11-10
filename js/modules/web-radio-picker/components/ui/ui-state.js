@@ -168,7 +168,7 @@ class UIState {
 
     getCurrentUIState() {
 
-        if (this.currentRDItem != null)
+        if (this.currentRDItem != null && this.currentRDItem.ref!=null)
             this.currentRDItem.ref.currentRDList.$item = null
 
         const r = {

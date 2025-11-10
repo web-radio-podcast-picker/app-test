@@ -92,6 +92,25 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     cursor: pointer;
 }
 
+#inp_fav_file_grid {
+    justify-self: left;
+    justify-items: left;
+    /* grid-template-columns: auto; */
+}
+
+#inp_wrp_inp_fav_file {
+    grid-column: 1;
+    grid-row: 1;
+    opacity: 0;
+    max-width: 8.5em;
+}
+
+#btn_wrp_imp_fav_file {
+    grid-column: 1;
+    grid-row: 1;
+    /* background: transparent; */
+}
+
 .wrp-but-col {
     display: grid;
     grid-row: 1;

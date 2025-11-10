@@ -65,7 +65,7 @@ class Db {
 
         const checkReady = (id, cnt) => {
             if (cnt == null || cnt === undefined) cnt = 1
-            this.#count++
+            this.#count += cnt
             this.dbReady = this.#count == 5
             if (settings.debug.debug)
                 logger.log(DbLogPfx + 'check ready: ' + id)

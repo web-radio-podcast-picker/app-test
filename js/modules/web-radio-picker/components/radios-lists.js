@@ -219,8 +219,20 @@ class RadiosLists {
         copyToClipboard(txt)
     }
 
+    importFromText(text) {
+        window.importedFavorites = txt
+        const o = JSON.parse(text)
+        return this.importFavoritesJSONExport(o)
+    }
+
     async importFromClipboard() {
         const txt = await readFromClipboard()
+        window.importedFavorites = txt
+        const o = JSON.parse(txt)
+        return this.importFavoritesJSONExport(o)
+    }
+
+    importFromText(txt) {
         window.importedFavorites = txt
         const o = JSON.parse(txt)
         return this.importFavoritesJSONExport(o)

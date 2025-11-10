@@ -14,6 +14,25 @@ class InfosPane {
         app.startFramePermanentOperations.push(() => {
             this.updateInfoPaneOnEndOfFrame()
         })
+
+        $('#btn_wrp_imp_fav_file').on('click', () => {
+            $('#inp_wrp_inp_fav_file').click()
+        })
+
+        $('#inp_wrp_inp_fav_file').on('change', e => {
+            const fileInput = e.currentTarget
+            if (fileInput.files.length > 0) {
+                const name = fileInput.files[0].name
+                const txt = 'import file: ' + name
+                logger.log(txt)
+                dialogs.showInfoPopup(
+                    dialogs.infoPopup('importing favorites file:', name, null, null, true)
+                )
+                wrpp.importRadiosListsFromFile(fileInput.files[0])
+            } else {
+                logger.log('import file: choose a file...')
+            }
+        });
     }
 
     initInfoPane() {

@@ -275,9 +275,10 @@ class WebRadioPickerModule extends ModuleBase {
                 listCountPath + '==' + filteredListCountPath + '?' + listCountPath + ' :  (' + filteredListCountPath + '+" / "+' + listCountPath + ')',
                 readOnly))
 
-        $('#btn_wrp_all_radios').on('click', () => {
-            this.allRadios()
-        })
+        if (false)  // not available/deprecated from 1.3.16.4
+            $('#btn_wrp_all_radios').on('click', () => {
+                this.allRadios()
+            })
 
         if (!settings.features.constraints.noFullscreenToggling) {
             $('#wrp_fullscreen_on').on('click', () => {
@@ -416,12 +417,46 @@ class WebRadioPickerModule extends ModuleBase {
     async importRadiosListsFromClipboard() {
         try {
             const res = await radiosLists.importFromClipboard()
-            listsBuilder.updateListsItems()
-            settings.dataStore.saveRadiosLists()
-            const text = `&bull; imported lists: ${res.importedLists}<br>&bull; imported items: ${res.importedItems}`
+            this.#updateFavsAfterImport(res)
+        } catch (err) {
             dialogs.showInfoPopup(
-                dialogs.infoPopup('Favorites imported', text, null, null, true)
+                dialogs.infoPopupError('Import failed', err)
             )
+        }
+    }
+
+    importRadiosListsFromText(text) {
+        try {
+            const res = radiosLists.importFromText(text)
+            this.#updateFavsAfterImport(res)
+        } catch (err) {
+            dialogs.showInfoPopup(
+                dialogs.infoPopupError('Import failed', err)
+            )
+        }
+    }
+
+    #updateFavsAfterImport(res) {
+        listsBuilder.updateListsItems()
+        settings.dataStore.saveRadiosLists()
+        const text = `&bull; imported lists: ${res.importedLists}<br>&bull; imported items: ${res.importedItems}`
+        dialogs.showInfoPopup(
+            dialogs.infoPopup('Favorites imported', text, null, null, true)
+        )
+    }
+
+    /**
+     * import favs from a json file
+     * @param {Object} file fileInput.files[0]
+     */
+    importRadiosListsFromFile(file) {
+        try {
+            const reader = new FileReader()
+            reader.onload = e => {
+                const text = e.target.result
+                this.importRadiosListsFromText(text)
+            }
+            reader.readAsText(file)
         } catch (err) {
             dialogs.showInfoPopup(
                 dialogs.infoPopupError('Import failed', err)
