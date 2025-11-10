@@ -43,7 +43,7 @@ class Db {
             this.db = e.target.result
             this.dbReady = true
             if (settings.debug.debug)
-                logger.log(DbLogPfx + 'db ready')
+                logger.log(DbLogPfx + 'db ready (no migration)')
             if (this.onDbReady) this.onDbReady()
         }
         req.onupgradeneeded = e => this.createDb(e, e.target.result)
@@ -52,15 +52,22 @@ class Db {
 
     /**
      * create the db
+     * @param {IDBVersionChangeEvent} e 
      * @param {IDBDatabase} db 
      */
     createDb(e, db) {
 
-        if (settings.debug.debug) logger.log(DbLogPfx + 'create db', e)
+        if (settings.debug.debug) {
+            logger.log(DbLogPfx + 'create db', e)
+            logger.log(DbLogPfx + 'current version: ' + settings.db.dbVer)
+            logger.log(DbLogPfx + 'db migration from version ' + e.oldVersion + ' to ' + e.newVersion)
+        }
 
-        const checkReady = () => {
+        const checkReady = id => {
             this.#count++
             this.dbReady = this.#count == 5
+            if (settings.debug.debug)
+                logger.log(DbLogPfx + 'check ready: ' + id)
             if (this.dbReady) {
                 if (settings.debug.debug)
                     logger.log(DbLogPfx + 'db ready')
@@ -68,38 +75,49 @@ class Db {
             }
         }
 
-        if (e.oldVersion == null || e.oldVersion === undefined || e.oldVersion == 0) {    // first upgrade event (first db create)
+        const noPrevVer = e.oldVersion == null || e.oldVersion === undefined || e.oldVersion == 0
+
+        if (noPrevVer) {    // first upgrade event (first db create)
+
+            if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 1')
+
             // version 1
             // favorites : items without key
             const favoritesStore = db.createObjectStore(
                 this.itemsListsStoreName, { keyPath: StoreKeyName })
-            favoritesStore.transaction.oncomplete = e => checkReady()
+            favoritesStore.transaction.oncomplete = e => checkReady(this.itemsListsStoreName)
 
             // properties : items by key 'key' (key==name+url)
             const propertiesStoreName = db.createObjectStore(
                 this.propertiesStoreName, { keyPath: StoreObjectKeyName })
-            propertiesStoreName.transaction.oncomplete = e => checkReady()
+            propertiesStoreName.transaction.oncomplete = e => checkReady(this.propertiesStoreName)
 
             // uistate : items by key 'storeKey'
             const uiStateStore = db.createObjectStore(
                 this.uiStateStoreName, { keyPath: StoreKeyName })
-            uiStateStore.transaction.oncomplete = e => checkReady()
+            uiStateStore.transaction.oncomplete = e => checkReady(this.uiStateStoreName)
         }
 
-        if (e.oldVersion == 1) {
+        if (noPrevVer || e.oldVersion == 1) {
+
+            if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 2')
+
             // version 2
             // rss: rss parsed objects by key 'key'
             const rssStore = db.createObjectStore(
                 this.rssStoreName, { keyPath: StoreObjectKeyName })
-            rssStore.transaction.oncomplete = e => checkReady()
+            rssStore.transaction.oncomplete = e => checkReady(this.rssStoreName)
         }
 
-        if (e.oldVersion == 2) {
+        if (noPrevVer || e.oldVersion == 1 || e.oldVersion == 2) {
+
+            if (settings.debug.debug) logger.log(DbLogPfx + 'migrate db to version 3')
+
             // version 3
             // pdc lists: list.txt files parsed objects by key 'key
             const pdcListsStore = db.createObjectStore(
                 this.pdcListsStoreName, { keyPath: StoreObjectKeyName })
-            pdcListsStore.transaction.oncomplete = e => checkReady()
+            pdcListsStore.transaction.oncomplete = e => checkReady(this.pdcListsStoreName)
         }
     }
 
