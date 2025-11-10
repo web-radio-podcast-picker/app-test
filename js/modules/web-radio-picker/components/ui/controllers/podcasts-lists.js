@@ -290,6 +290,15 @@ class PodcastsLists {
         item.rss = null
     }
 
+    anyToDuration(dur) {
+        dur = DurationHMS.check(dur)
+        var txt = ''
+        if (!dur.isInfinite) {
+            txt = DurationHMS.text(dur)
+        }
+        return { dur: dur, txt: txt }
+    }
+
     updateEpiItemView(item, $item) {
         var subText2 = ''
         var $sep = ' / '
@@ -787,7 +796,11 @@ class PodcastsLists {
 
             if (!cacheItem) {
                 // item details
-                epiItem.subText2 = rssItem.duration
+                const d = this.anyToDuration(rssItem.duration)
+                epiItem.subText2 = d.txt
+
+                epiItem.metadata = {}   // TODO: init duration ?
+
                 try {
                     const d = new Date(rssItem.pubDate)
                     epiItem.subText =
@@ -813,7 +826,6 @@ class PodcastsLists {
                     item.rss.image || item.rss.itunes.image
                     || item.logo
 
-                epiItem.metadata = {}
                 epiItem.pdc = true      // indicates it's a pdc, not a station
                 epiItem.epi = true      // indicates it's a pdc episode, not a channel
 
@@ -822,7 +834,7 @@ class PodcastsLists {
             else {
                 if (settings.debug.debug)
                     console.log('get from memory item store: ' + epiItem.name)
-                epiItem.sel = sel //cloneSelection(sel)   // add clone
+                epiItem.sel = sel
             }
 
             epiItems[epiItem.name] = epiItem

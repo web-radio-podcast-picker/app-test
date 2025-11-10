@@ -52,6 +52,16 @@ class DataStore {
         })
     }
 
+    loadRss(onLoaded) {
+        this.db.loadRss(o => {
+            if (o != null)
+                rssCache.fromObject(o)
+            else
+                logger.error('rss not found')
+            onLoaded()
+        })
+    }
+
     loadRadiosLists(onLoaded) {
 
         // local storage

@@ -473,12 +473,20 @@ class Podcasts {
         // any clone here prevent any item update after loading! (buildPdcPreview)
         const cItem = item
 
-        // TODO: avoid ops after receipt if other request started after this one
-        remoteDataStore.getPodcastChannelRss(
-            item.url,
-            data => this.buildPdcPreview(cItem, $item, data, sel),
-            (mess, response) => this.openPdcPreviewError(item, $item, mess, response)
-        )
+        const rssObj = rssCache.get(item.url)
+        if (!rssObj) {
+            // TODO: avoid ops after receipt if other request started after this one
+            remoteDataStore.getPodcastChannelRss(
+                item.url,
+                data => this.buildPdcPreview(cItem, $item, data, sel, false, item.url),
+                (mess, response) => this.openPdcPreviewError(item, $item, mess, response)
+            )
+        } else {
+            // ----- get rss from cache -----
+            if (settings.debug.debug)
+                console.log('get from rss cache: ' + item.url)
+            this.buildPdcPreview(cItem, $item, rssObj, sel, true, item.url)
+        }
     }
 
     openPdcPreviewError(item, $item, mess, response) {
@@ -610,7 +618,7 @@ class Podcasts {
     }
 
     // build pdc preview
-    buildPdcPreview(item, $item, data, sel) {
+    buildPdcPreview(item, $item, data, sel, isParsed, rssUrl) {
 
         if (settings.debug.debug) {
             console.log('[##] build pdc preview: ' + item.name)
@@ -630,7 +638,13 @@ class Podcasts {
 
         // get rss datas
         try {
-            const o = this.rssParser.parse(data)
+
+            const o = isParsed ? data : this.rssParser.parse(data)
+            if (!isParsed) {
+                // ----- store rss in cache -----
+                o.key = rssUrl
+                rssCache.put(o)
+            }
 
             item.rss = o    // Must be deleted when not needed (too big for storage)
             item.logo = item.rss.image || item.rss.itunes.image

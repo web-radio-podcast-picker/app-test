@@ -230,6 +230,17 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     /* min-height: 2.5em; */
 }
 
+.wrp-list-item-text-container-pdc {
+    /*line-height: 1.3em;*/
+    /* min-height: 2.5em; */
+}
+
+.wrp-item-pod-icon {
+    height: 1.9em;
+    vertical-align: middle;
+    margin-right: 0.25em;
+}
+
 .wrp-list-item-subtext-container {
     grid-row: 1;
     grid-column: 1;

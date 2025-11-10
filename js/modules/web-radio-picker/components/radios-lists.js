@@ -118,7 +118,7 @@ class RadiosLists {
     removeFromAnyList(item) {
         for (const listName in this.lists) {
             const list = this.lists[listName]
-            if (list.items) {
+            if (listName != RadioList_History && list.items) {
                 const existsIn = list.items.filter(
                     x => x.name == item.name
                         && x.url == item.url).length > 0

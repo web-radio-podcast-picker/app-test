@@ -14,6 +14,7 @@ class Db {
     itemsListsStoreName = 'lists'
     propertiesStoreName = 'properties'
     uiStateStoreName = 'uistate'
+    rssStoreName = 'rss'
     dbReady = false
     #count = 0
     onDbReady = null
@@ -25,6 +26,7 @@ class Db {
         this.itemsListsStoreName = settings.db.itemsListsStoreName
         this.propertiesStoreName = settings.db.propertiesStoreName
         this.uiStateStoreName = settings.db.uiStateStoreName
+        this.rssStoreName = settings.db.rssStoreName
     }
 
     /**
@@ -42,7 +44,7 @@ class Db {
                 logger.log(DbLogPfx + 'db ready')
             if (this.onDbReady) this.onDbReady()
         }
-        req.onupgradeneeded = e => this.createDb(e.target.result)
+        req.onupgradeneeded = e => this.createDb(e, e.target.result)
         return this
     }
 
@@ -50,13 +52,13 @@ class Db {
      * create the db
      * @param {IDBDatabase} db 
      */
-    createDb(db) {
+    createDb(e, db) {
 
-        if (settings.debug.debug) logger.log(DbLogPfx + 'create db')
+        if (settings.debug.debug) logger.log(DbLogPfx + 'create db', e)
 
         const checkReady = () => {
             this.#count++
-            this.dbReady = this.#count == 3
+            this.dbReady = this.#count == 4
             if (this.dbReady) {
                 if (settings.debug.debug)
                     logger.log(DbLogPfx + 'db ready')
@@ -64,19 +66,29 @@ class Db {
             }
         }
 
-        // favorites : items without key
-        const favoritesStore = db.createObjectStore(
-            this.itemsListsStoreName, { keyPath: StoreKeyName })
-        // properties : items by key 'key' (key==name+url)
-        const propertiesStoreName = db.createObjectStore(
-            this.propertiesStoreName, { keyPath: StoreObjectKeyName })
-        // uistate : items by key 'storeKey'
-        const uiStateStore = db.createObjectStore(
-            this.uiStateStoreName, { keyPath: StoreKeyName })
+        if (e.oldVersion != 1) {    // first upgrade event (first db create)
+            // favorites : items without key
+            const favoritesStore = db.createObjectStore(
+                this.itemsListsStoreName, { keyPath: StoreKeyName })
+            favoritesStore.transaction.oncomplete = e => checkReady()
 
-        favoritesStore.transaction.oncomplete = e => checkReady()
-        propertiesStoreName.transaction.oncomplete = e => checkReady()
-        uiStateStore.transaction.oncomplete = e => checkReady()
+            // properties : items by key 'key' (key==name+url)
+            const propertiesStoreName = db.createObjectStore(
+                this.propertiesStoreName, { keyPath: StoreObjectKeyName })
+            propertiesStoreName.transaction.oncomplete = e => checkReady()
+
+            // uistate : items by key 'storeKey'
+            const uiStateStore = db.createObjectStore(
+                this.uiStateStoreName, { keyPath: StoreKeyName })
+            uiStateStore.transaction.oncomplete = e => checkReady()
+        }
+
+        if (e.newVersion == 2) {
+            // rss: rss parsed objects by key 'key'
+            const rssStore = db.createObjectStore(
+                this.rssStoreName, { keyPath: StoreObjectKeyName })
+            rssStore.transaction.oncomplete = e => checkReady()
+        }
     }
 
     /**
@@ -97,8 +109,17 @@ class Db {
      * @param {Object} props pdc/epi properties
      */
     savePropertiesSingle(props) {
-        const label = 'properties'
+        const label = this.propertiesStoreName
         this.#saveObject(props, this.propertiesStoreName, label)
+    }
+
+    /**
+     * save rss object
+     * @param {Object} rss 
+     */
+    saveRss(rss) {
+        const label = this.rssStoreName
+        this.#saveObject(rss, this.rssStoreName, label)
     }
 
     /**
@@ -147,6 +168,14 @@ class Db {
             if (nolog != true && settings.debug.debug)
                 logger.log(DbLogPfx + label + ' saved in db')
         }
+    }
+
+    /**
+     * load rss
+     * @param {Function} onLoaded 
+     */
+    loadRss(onLoaded) {
+        this.#loadAllObjects(this.rssStoreName, 'rss', onLoaded)
     }
 
     /**

@@ -6,9 +6,23 @@
 
 class RadListBuilder {
 
+    /**
+     * @prop {RadListPathBuilder}
+     */
     pathBuilder = new RadListPathBuilder()
 
-    // build a playable item
+    /**
+     * build a playable item
+     * @param {String} text 
+     * @param {String} id 
+     * @param {Number} j 
+     * @param {Object} opts 
+     * @param {Object} rdItem 
+     * @param {String} listId 
+     * @param {String} listName 
+     * @param {Function} textViewFunc 
+     * @returns 
+     */
     buildListItem(text, id, j, opts, rdItem, listId, listName, textViewFunc) {
         if (opts === undefined) opts = null
 
@@ -21,11 +35,16 @@ class RadListBuilder {
         $item.removeClass('hidden')
         this.#setRowStyle(j, $item)
 
-        const str = (textViewFunc !== undefined && textViewFunc != null) ?
+        var str = (textViewFunc !== undefined && textViewFunc != null) ?
             textViewFunc(text) : text
 
         // radio name
         var xcl = rdItem?.epi ? 'wrp-list-item-text-container-epi' : ''
+        if (rdItem?.pdc && !rdItem?.epi && (listName == Pdc_List_Epi || listId == RadioList_List)) {
+            // pdc index
+            xcl += 'wrp-list-item-text-container-pdc'
+            str = '<img name="pod" src="./img/icons8-podcast-50.png" class="wrp-item-pod-icon">' + str
+        }
         const $textBox = $('<div class="wrp-list-item-text-container ' + xcl + '">' + str + '</div>')
 
         // TODO: FIX :: listId == listName == null on startup ?!

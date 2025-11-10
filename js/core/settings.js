@@ -14,13 +14,13 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.11.7',
+            version: '1.3.12',
             verDate: '11/09/2025'
         }
     },
 
     migration: {
-        // use once (slow startup)
+        // use once
         fixFavoritesItemsFavLists: false
     },
 
@@ -93,10 +93,11 @@ window.settings = {
         delayExec: 5000,
         useLocalStorage: false,
         dbName: 'wrpp',
-        dbVer: 1,
+        dbVer: 2,
         itemsListsStoreName: 'lists',
         propertiesStoreName: 'properties',
-        uiStateStoreName: 'uistate'
+        uiStateStoreName: 'uistate',
+        rssStoreName: 'rss'
     },
 
     extInput: {
