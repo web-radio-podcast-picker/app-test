@@ -365,6 +365,10 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
+        this.initApp(firstInit)
+    }
+
+    initApp(firstInit) {
         settings.dataStore.init(() => {
 
             settings.dataStore.loadProperties(() => {
