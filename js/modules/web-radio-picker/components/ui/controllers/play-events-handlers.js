@@ -426,7 +426,11 @@ class PlayEventsHandlers {
 
         if (!item.metadata.playState.events.playing) return
         if (item.metadata.playState.events.ended) return
-        this.updatePosition()
+
+        if (settings.ui.updatePositionEnabled) {
+            app.endFrameOneShotOperations.push(() =>
+                this.updatePosition())
+        }
     }
 
     stopPlayTickTimer() {

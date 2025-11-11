@@ -14,7 +14,7 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.18',
+            version: '1.3.21',
             verDate: '11/11/2025'
         }
     },
@@ -211,6 +211,7 @@ window.settings = {
         longErrDisplayTime: 6000,        // error display time ms
 
         updatePositionPerdiod: 500,
+        updatePositionEnabled: true,
 
         themes: {
             default: {

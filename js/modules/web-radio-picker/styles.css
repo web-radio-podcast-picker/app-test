@@ -323,8 +323,7 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     grid-column: 1;
     grid-row: 1;
     color: #FFFFAACC;
-    font-size: 1em;
-    align-content: center;
+    font-size: 1em;    
     padding: 0.5em;
     text-wrap: wrap;
     /* align-self: flex-start; */
@@ -332,6 +331,8 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     display: block;
     /* border: red solid 1px; */
     /* width: 100%; */
+    align-self: center; /* for chromium electron */
+    align-content: center;
 }
 
 .wrp-item-info-text2 {
@@ -340,10 +341,11 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     color: #FFFFFFCC;
     text-align: right;
     font-size: 1em;
-    align-content: center;
     padding: 0.5em;
     padding-right: 0em;
     overflow-wrap: anywhere;
+    align-self: center; /* for chromium electron */
+    align-content: center;
 }
 
 .wrp-list-item:hover {
@@ -898,4 +900,6 @@ h1 {
     grid-column: 2;
     align-content: center;
     grid-row: 1;
+    align-self: center; /* for chromium electron */
+    align-content: center;
 }

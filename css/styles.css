@@ -1579,3 +1579,16 @@ div.dialog-bbar-container span
 .no-vscroll {
     overflow-y: auto !important;
 }
+
+/** ----------- electron ------------ **/
+
+/* Make this area draggable */
+.drag-region {
+  -webkit-app-region: drag;
+  user-select: none; /* Prevent text selection while dragging */
+}
+
+/* Prevent buttons from being draggable */
+.no-drag {
+  -webkit-app-region: no-drag;
+}

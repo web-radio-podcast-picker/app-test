@@ -10,6 +10,22 @@ class RadsItems {
     loadingRDItem = null
     $loadingRDItem = null
 
+    constructor() {
+        ui.onResize.push(() => {
+            this.updateOnResize()
+        })
+    }
+
+    /**----- cached values -----*/
+
+    progressW = null
+    lastStatusText = null
+
+    updateOnResize() {
+        this.progressW = null
+        this.lastStatusText = null
+    }
+
     isLoadingItemSet() {
         return this.loadingRDItem != null && this.$loadingRDItem != null
     }
@@ -79,7 +95,7 @@ class RadsItems {
 
     updateRadItemCursorView(item, $item) {
         const $bw = $item.find('.wrp-item-timeline-box')
-        const bw = $bw.width()
+        const bw = this.progressW || (this.progressW = $bw.width())    // avoid reflow
         const $cursor = $item.find('.wrp-item-timeline-box-cursor')
         const dur = item.metadata?.duration
         const curTime = item.metadata?.currentTime
@@ -109,13 +125,19 @@ class RadsItems {
         const $subt1 = $subTextBox.find('.wrp-list-item-subtext1')
         const $subt2 = $subTextBox.find('.wrp-list-item-subtext2')
 
-        $text.text(item.name)
-        $text.append($subTextBox)
+        $text.text(item.name)           // reflow
+        $text.append($subTextBox)       // reflow
         // ----
 
         wrpp.checkMetaData(item)
 
-        $statusText.text(item.metadata.statusText)
+        const statusText = item.metadata.statusText
+        $statusText.text(statusText)
+        if (statusText != this.lastStatusText) {
+            // progress bar width will change
+            this.progressW = null
+            this.lastStatusText = statusText
+        }
 
         const favName = favorites.getFavName(item) || ''
         $text2.text(favName)

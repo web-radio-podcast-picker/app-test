@@ -14,17 +14,36 @@ class FFTView {
     hidden = false;          // hidden for vizualisation
     channel = null;          // channel
 
+    constructor() {
+        ui.onResize.push(() => {
+            this.updateOnResize()
+        })
+    }
+
     init(canvas, channel) {
         this.canvas = canvas;
         this.channel = channel;
     }
+
+    /**----- cached values -----*/
+
+    canvasHeight = null
+    canvasBoundingClientRect = null
+
+    updateOnResize() {
+        this.canvasHeight = null
+        this.canvasBoundingClientRect = null
+    }
+
+    /** ----------------------- */
 
     getVScale() {
         return this.channel.fft.vScale * this.channel.fft.vScaleFactor
     }
 
     dbOffset(value) {
-        const canvasHeight = this.canvas.height
+        const canvasHeight = this.canvasHeight ||
+            (this.canvasHeight = this.canvas.height)       // avoid reflow
         const displayRange = this.getDisplayRange()
 
         // min  .. max
@@ -54,7 +73,8 @@ class FFTView {
     }
 
     dbOffset2(value) {
-        const canvasHeight = this.canvas.height
+        const canvasHeight = this.canvasHeight ||
+            (this.canvasHeight = this.canvas.height)       // avoid reflow
         const displayRange = this.getDisplayRange()
 
         // min  .. max
@@ -84,7 +104,8 @@ class FFTView {
     }
 
     offsetToDb(offset) {
-        const canvasHeight = this.canvas.height
+        const canvasHeight = this.canvasHeight ||
+            (this.canvasHeight = this.canvas.height)       // avoid reflow
         const displayRange = this.getDisplayRange()
         const vScale = this.getVScale()
         const minDb = this.channel.fft.minDb
@@ -112,7 +133,9 @@ class FFTView {
         if (this.canvas == null) return
         if (this.channel != null && !this.channel.connected) return
 
-        const cnvSize = this.canvas.getBoundingClientRect()
+        const cnvSize =
+            this.canvasBoundingClientRect
+            || (this.canvasBoundingClientRect = this.canvas.getBoundingClientRect())     // avoid reflow
         const canvasHeight = cnvSize.height;
         const canvasWidth = cnvSize.width;
 
