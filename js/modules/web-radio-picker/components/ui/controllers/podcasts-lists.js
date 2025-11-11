@@ -779,6 +779,10 @@ class PodcastsLists {
 
         const sel = cloneCleanupSelection(item.sel) // share accross items
 
+        // TODO: very long process on electron chromium - why ?
+
+        const start = new Date()
+
         item.rss.episodes.forEach(rssItem => {
 
             // ------ reuse already existing instance -----
@@ -856,6 +860,10 @@ class PodcastsLists {
 
         })
 
+        const duration = new Date() - start
+        if (settings.debug.debug)
+            logger.log('build epi items: ' + duration / 1000 + 'sec')
+
         item.rss = null
 
         self.podcasts.epiItems = {}
@@ -912,6 +920,9 @@ class PodcastsLists {
             })
         }
 
+        const start = new Date()
+        const selClone = cloneSelection(sel)
+
         t.forEach(row => {
             const c = row.split(settings.dataProvider.columnSeparator)
 
@@ -937,7 +948,7 @@ class PodcastsLists {
                 pdcItem.store = store
                 pdcItem.page = page
                 //pdcItem.pItem = pItem
-                pdcItem.sel = cloneSelection(sel)
+                pdcItem.sel = selClone
                 ////pdcItem.sel.pdc = { item: pdcItem }
 
                 // state datas
@@ -954,7 +965,7 @@ class PodcastsLists {
             else {
                 if (settings.debug.debug)
                     console.log('get from memory item store: ' + pdcItem.name)
-                pdcItem.sel = cloneSelection(sel)
+                pdcItem.sel = selClone
             }
 
             // ---- restore item data -----
@@ -963,6 +974,10 @@ class PodcastsLists {
             pdcItems[pdcItem.name] = pdcItem
         })
         this.podcasts.pdcItems = pdcItems
+
+        const duration = new Date() - start
+        if (settings.debug.debug)
+            logger.log('build pdc items: ' + duration / 1000 + 'sec')
 
         // do here coz async from caller
         this.updateListView(Pdc_List_Pdc)
