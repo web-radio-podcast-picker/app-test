@@ -8,6 +8,13 @@ const PlayEventsHandlersLogPfx = '[@@] '
 
 class PlayEventsHandlers {
 
+    removeEnded = false
+    disableUpdatePosition = false
+    tickTimer = null
+    lastTimeChanged = null
+    lastPosition = null
+    lastTimePositionSaved = null
+
     resetEvents() {
         this.lastEvents = {
             connecting: null,
@@ -15,6 +22,7 @@ class PlayEventsHandlers {
             connected: null,
             ended: null,
             playing: null,
+            seeking: null,
             pauseStateChanged: null
         }
     }
@@ -44,7 +52,8 @@ class PlayEventsHandlers {
         WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
         // -----------
         window.audio.addEventListener('timeupdate', e => this.onCurrentTimeChanged(e))
-        window.audio.addEventListener("durationchange", e => this.onDurationChanged(e))
+        window.audio.addEventListener('durationchange', e => this.onDurationChanged(e))
+        window.audio.addEventListener('seeking', e => this.onSeeking(e))
         // -----------
         this.resetEvents()
     }
@@ -200,8 +209,6 @@ class PlayEventsHandlers {
         }
     }
 
-    removeEnded = false
-
     onCanPlay(audio) {
 
         uiState.setPlayPauseButtonFreezeState(false)
@@ -322,8 +329,6 @@ class PlayEventsHandlers {
         podcasts.podcastsLists.updateEpiItemView(cur.loadingRDItem, cur.$loadingRDItem)
     }
 
-    disableUpdatePosition = false
-
     updatePosition() {
         const audio = window.audio
 
@@ -340,8 +345,6 @@ class PlayEventsHandlers {
             cur.loadingRDItem, cur.$loadingRDItem
         )
     }
-
-    tickTimer = null
 
     startPlayTickTimer() {
 
@@ -384,10 +387,6 @@ class PlayEventsHandlers {
 
     }
 
-    lastTimeChanged = null
-    lastPosition = null
-    lastTimePositionSaved = null
-
     onCurrentTimeChanged() {
 
         if (this.disableUpdatePosition) return
@@ -398,7 +397,7 @@ class PlayEventsHandlers {
         if (this.lastTimeChanged != null) {
             const delta = timeChanged - this.lastTimeChanged
             // min 1/2 sec
-            if (delta < 500) return
+            if (delta < settings.ui.updatePositionPerdiod) return
         }
         this.lastTimeChanged = timeChanged
 
@@ -410,7 +409,7 @@ class PlayEventsHandlers {
         if (item.epi && this.lastTimePositionSaved != null) {
             const dtime = timeChanged - this.lastTimePositionSaved
             // min 10 sec
-            if (dtime >= 10 * 1000) {
+            if (dtime >= settings.db.autoSavePositionPeriod) {
                 propertiesStore.savePropsToDb(item)
                 this.lastTimePositionSaved = timeChanged
             }
@@ -439,5 +438,22 @@ class PlayEventsHandlers {
 
         clearInterval(this.tickTimer)
         this.tickTimer = null
+    }
+
+    onSeeking(e) {
+        const st = 'seeking'
+        const lb = st + '...'
+        if (settings.debug.debug) {
+            logger.log(PlayEventsHandlersLogPfx + st)
+        }
+
+        const item = radsItems.loadingRDItem
+
+        radsItems
+            .updateLoadingRadItem(lb)
+        this.storeEvent(st, lb, item)
+
+        // auto save single item
+        propertiesStore.savePropsToDb(item)
     }
 }
