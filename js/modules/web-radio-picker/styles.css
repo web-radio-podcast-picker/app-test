@@ -115,7 +115,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     display: grid;
     grid-row: 1;
     margin-bottom: 2px;
-    grid-template-rows: 48px 48px 48px 48px 48px;
+    grid-template-rows: 48px 48px 48px 48px 48px 48px;
     overflow: clip;
     align-items: center;
 }
@@ -577,6 +577,12 @@ div#btn_wrp_infos.selected > img {
 
 .icon-settings {
     padding: 4px !important;
+    margin-top: 4px;
+}
+
+.icon-exit {
+    padding: 4px !important;
+    margin-top: 2px;
 }
 
 .icon-rad-fav {

@@ -365,6 +365,13 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
+        if (settings.sys.electron)
+            $('#btn_wrp_exit').removeClass('hidden')
+
+        $('#btn_wrp_exit').on('click', () => {
+            window.close()
+        })
+
         $('.channel-menu-pane').addClass('drag-region')
         $('#bt_bar').addClass('drag-region')
         $('#wrp_radio_list_btn_bar').addClass('drag-region')
@@ -372,6 +379,7 @@ class WebRadioPickerModule extends ModuleBase {
         $('.menu-item').addClass('no-drag')
         $('.but-icon').addClass('no-drag')
         $('#btn_wrp_infos').addClass('no-drag')
+        $('#btn_wrp_exit').addClass('no-drag')
 
         this.initApp(firstInit)
     }

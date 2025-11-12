@@ -39,6 +39,11 @@ body.page {
     opacity: 1 !important;
 }
 
+body,html {
+    min-width: 370px;
+    min-height: 105px;
+}
+
 html.page {
     width: 100%;
     height: 100%;

@@ -169,6 +169,9 @@ ui = {
                 app.canvas.width = 0
                 app.canvas.height = 0
             }
+            // run own on resize method
+            this.setupZoom()
+            // run on resize callbacks
             this.onResize.forEach(f => {
                 f()
             })
@@ -195,6 +198,20 @@ ui = {
         $c.on('click', () => {
             $c.text('')
         })
+    },
+
+    setupZoom() {
+        const vs = cui.viewSize()
+        //console.log('w=' + vs.width + ',h=' + vs.height)
+        var z = 1   // default zoom
+        if (vs.width < settings.ui.minWidth ||
+            vs.height < settings.ui.minHeight
+        ) {
+            const rx = settings.ui.minWidth / vs.width
+            const ry = settings.ui.minHeight / vs.height
+            var z = 1 / Math.max(rx, ry)
+        }
+        $('body').css('zoom', z)
     },
 
     getCurrentChannel() {

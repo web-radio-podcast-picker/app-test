@@ -14,6 +14,7 @@ class PlayEventsHandlers {
     lastTimeChanged = null
     lastPosition = null
     lastTimePositionSaved = null
+    initialized = false
 
     resetEvents() {
         this.lastEvents = {
@@ -46,15 +47,18 @@ class PlayEventsHandlers {
     }
 
     initAudioSourceHandlers() {
-        WRPPMediaSource.onLoadError = (err, audio) => this.onLoadError(err, audio)
-        WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
-        WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
-        WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
-        // -----------
-        window.audio.addEventListener('timeupdate', e => this.onCurrentTimeChanged(e))
-        window.audio.addEventListener('durationchange', e => this.onDurationChanged(e))
-        window.audio.addEventListener('seeking', e => this.onSeeking(e))
-        // -----------
+        if (!this.initialized) {
+            WRPPMediaSource.onLoadError = (err, audio) => this.onLoadError(err, audio)
+            WRPPMediaSource.onLoadSuccess = (audio, ev) => this.onLoadSuccess(audio)
+            WRPPMediaSource.onCanPlay = (audio) => this.onCanPlay(audio)
+            WRPPMediaSource.onEnded = (e, audio) => this.onEnded(e, audio)
+            // -----------
+            window.audio.addEventListener('timeupdate', e => this.onCurrentTimeChanged(e))
+            window.audio.addEventListener('durationchange', e => this.onDurationChanged(e))
+            window.audio.addEventListener('seeking', e => this.onSeeking(e))
+            // -----------
+            this.initialized = true
+        }
         this.resetEvents()
     }
 

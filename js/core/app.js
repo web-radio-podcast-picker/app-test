@@ -53,6 +53,9 @@ app = {
             || navigator.platform
         settings.sys.platformText = settings.sys.platform
             + (settings.sys.mobile ? ' (mobile)' : '')
+        settings.sys.brand = navigator.userAgentData?.brands.map(x => x?.brand)?.join(' | ')
+        settings.sys.userAgent = navigator.userAgent
+        settings.sys.electron = navigator.userAgent?.includes('Electron/')
     },
 
     initFlags() {
@@ -446,6 +449,18 @@ app = {
         return this.audioOutputDevice
     }
 }
+
+// -------- cordova -----------
+
+document.addEventListener('deviceready', onDeviceReady, false);
+
+function onDeviceReady() {
+    // Cordova is now initialized. Have fun!
+    console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+    //document.getElementById('deviceready').classList.add('ready');
+}
+
+// -----------------------------
 
 document.addEventListener('DOMContentLoaded', function () {
     if (settings.debug.info)
