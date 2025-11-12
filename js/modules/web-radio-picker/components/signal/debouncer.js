@@ -25,7 +25,8 @@ class Debouncer {
 
         if (settings.debug.debug)
             logger.log(DebouncerLogPfx + '--> debounce: ' + this.name)
-        window.func = func
+        if (settings.debug.globalObj)
+            window.func = func
 
         const rd = new Date()
 

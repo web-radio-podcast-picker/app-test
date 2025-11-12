@@ -10,7 +10,7 @@ class PodcastRSSParser {
         try {
             const parser = new DOMParser()
 
-            if (settings.debug.debug)
+            if (settings.debug.globalObj)
                 window.str = str
 
             const xmlDoc = parser.parseFromString(str, 'application/xml')
@@ -23,7 +23,8 @@ class PodcastRSSParser {
             // channel global data
 
             const $items = $(channel).find('*')
-            window.$items = $items
+            if (settings.debug.globalObj)
+                window.$items = $items
 
             const get = name => {
                 var res = null

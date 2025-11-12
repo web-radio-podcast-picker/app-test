@@ -35,10 +35,12 @@ class RadioDataBuilder {
         }
         exp.artists = arts.join(Line_Sep)
 
-        window.export_obj = exp
-        window.export_txt =
-            [exp.groups, exp.artists, exp.radioList]
-                .join(Bloc_Sep)
+        if (settings.debug.globalObj) {
+            window.export_obj = exp
+            window.export_txt =
+                [exp.groups, exp.artists, exp.radioList]
+                    .join(Bloc_Sep)
+        }
     }
 
     encodeRadioItem(item) {

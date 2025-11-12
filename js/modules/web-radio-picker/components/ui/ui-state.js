@@ -168,7 +168,7 @@ class UIState {
 
     getCurrentUIState() {
 
-        if (this.currentRDItem != null && this.currentRDItem.ref!=null)
+        if (this.currentRDItem != null && this.currentRDItem.ref != null)
             this.currentRDItem.ref.currentRDList.$item = null
 
         const r = {
@@ -221,7 +221,8 @@ class UIState {
             console.log('restore UI state: ')
             console.log(state)
             console.log(this)
-            window.state = state
+            if (settings.debug.globalObj)
+                window.state = state
         }
 
         this.disableSave = false

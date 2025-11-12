@@ -898,7 +898,7 @@ class PodcastsLists {
      */
     buildPdcItems(pItem, store, page, data, sel, isParsed, storeKey) {
         const pdcItems = {}
-        if (settings.debug.debug)
+        if (settings.debug.globalObj)
             window.data = data
 
         if (settings.debug.debug) {

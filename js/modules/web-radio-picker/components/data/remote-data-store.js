@@ -51,7 +51,8 @@ class RemoteDataStore {
                 })
                 .then(data => {
                     if (data !== undefined) {
-                        window.rssData = data
+                        if (settings.debug.globalObj)
+                            window.rssData = data
                         return callback(data)
                     }
                 }) // you can use response body here

@@ -33,7 +33,7 @@ class DataStore {
         // init db
         this.db = new Db(onDbReady)
         this.db.openDb()
-        if (settings.debug.debug) window.db = this.db
+        if (settings.debug.globalObj) window.db = this.db
     }
 
     saveAll() {

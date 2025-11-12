@@ -649,7 +649,7 @@ class Podcasts {
             item.rss = o    // Must be deleted when not needed (too big for storage)
             item.logo = item.rss.image || item.rss.itunes.image
 
-            if (settings.debug.debug)
+            if (settings.debug.globalObj)
                 window.rss = o
 
             this.populatePdcPreview(item, $item, o, sel)
