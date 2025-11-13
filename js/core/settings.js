@@ -14,8 +14,8 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.26',
-            verDate: '11/12/2025'
+            version: '1.3.29',
+            verDate: '11/13/2025'
         }
     },
 
@@ -86,7 +86,8 @@ window.settings = {
         info: true,
         stackTrace: false,
         globalObj: false,
-        obj: false
+        obj: false,
+        ipc: true
     },
 
     db: {
@@ -216,6 +217,7 @@ window.settings = {
 
         minWidth: 670,
         minHeight: 405,
+        refRatioXonY: 1024 / 580,       // makes a media view square 456x456 (1.76551724137931)
 
         themes: {
             default: {

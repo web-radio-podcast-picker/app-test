@@ -53,6 +53,7 @@ class RadListPathBuilder {
 
         if (item.epi) {
             this.#buildEpiViewTagPath(item, $p)
+            this.avoidDrag()
             return
         }
 
@@ -65,9 +66,19 @@ class RadListPathBuilder {
             i++
         });
         // artist == listName, if any
-        if (item.artist == null || item.artist === undefined) return;
+        if (item.artist == null || item.artist === undefined) {
+            this.avoidDrag()
+            return;
+        }
         $p.append(this.buildRightChevron())
         $p.append(this.buildArtistButton(item.artist, false))
+
+        this.avoidDrag()
+    }
+
+    avoidDrag() {
+        $('.menu-item').addClass('no-drag')
+        $('.but-icon').addClass('no-drag')
     }
 
     #buildEpiViewTagPath(item, $p) {
@@ -113,7 +124,7 @@ class RadListPathBuilder {
 
     buildHistorybutton() {
         const w = 24
-        const $img = $(`<img name="histo_but" class="hover-icon small-tag-icon fav-path-button margin-right" src="./img/icons8-list-50.png" width="${w}" height="${w}" alt="histo_but">`)
+        const $img = $(`<img name="histo_but" class="no-drag hover-icon small-tag-icon fav-path-button margin-right" src="./img/icons8-list-50.png" width="${w}" height="${w}" alt="histo_but">`)
         $img.on('click', e => {
             infosPane.hideInfoPane()
             this.favButtonOnClick(e, RadioList_List, RadioList_History, true, null)
@@ -166,6 +177,8 @@ class RadListPathBuilder {
         this.#addBottomRightChevron($p2)
 
         this.#addPdcEpiPathButton(item.name, $p2, selclone)
+
+        this.avoidDrag()
     }
 
     #addBottomRightChevron($p) {
@@ -226,6 +239,8 @@ class RadListPathBuilder {
             const $listNameBut = this.buildFavPathButton(listId, listName, listName, false, false, null, null, true)
             $p2.append($listNameBut)
         }
+
+        this.avoidDrag()
     }
 
     buildRightChevron() {

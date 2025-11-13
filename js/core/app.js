@@ -453,13 +453,12 @@ app = {
 // -------- cordova -----------
 
 document.addEventListener('deviceready', onDeviceReady, false);
-
 function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
-    console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-    //document.getElementById('deviceready').classList.add('ready');
+    if (cdveApp()) {
+        if (settings.debug.debug)
+            console.log('running cordova-' + cordova.platformId + '@' + cordova.version)
+    }
 }
-
 // -----------------------------
 
 document.addEventListener('DOMContentLoaded', function () {

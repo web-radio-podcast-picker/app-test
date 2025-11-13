@@ -290,11 +290,11 @@ class Favorites {
             radListBuilder.updateCurrentRDList(
                 uiState.currentRDItem,
                 uiState.currentRDList_Back)
-            // refresh bottom path
-            radListBuilder.pathBuilder.buildRadioViewTagPath(
-                uiState.currentRDItem
-            )
         }
+        // refresh bottom path
+        radListBuilder.pathBuilder.buildRadioViewTagPath(
+            uiState.currentRDItem
+        )
 
         settings.dataStore.saveAll()
     }

@@ -381,48 +381,57 @@ class WebRadioPickerModule extends ModuleBase {
         $('#btn_wrp_infos').addClass('no-drag')
         $('#btn_wrp_exit').addClass('no-drag')
 
+        this.clearRadioView()
         this.initApp(firstInit)
     }
 
     initApp(firstInit) {
         settings.dataStore.init(() => {
 
-            settings.dataStore.loadProperties(() => {
+            settings.dataStore.db.loadWindowProps(
+                (windowProps) => {
 
-                settings.dataStore.loadPdcLists(() => {
+                    if (cdveApp()) {
+                        onReadyToShow(windowProps)
+                    }
 
-                    settings.dataStore.loadRss(() => {
+                    settings.dataStore.loadProperties(() => {
 
-                        settings.dataStore.loadRadiosLists(
-                            () => {
+                        settings.dataStore.loadPdcLists(() => {
 
-                                const uiInitFunc = () => {
-                                    listsBuilder
-                                        .buildTagItems()
-                                        .buildArtItems()
-                                        .buildLangItems()
-                                        .buildListsItems()
+                            settings.dataStore.loadRss(() => {
 
-                                    if (!firstInit)
-                                        settings.dataStore.loadUIState()    // will launch // tasks
-                                }
+                                settings.dataStore.loadRadiosLists(
+                                    () => {
 
-                                if (settings.migration.fixFavoritesItemsFavLists) {
-                                    if (settings.debug.debug)
-                                        console.warn(DataStoreLogPfx + 'reload properties (migration: fixFavoritesItemsFavLists)')
-                                    // async save
-                                    settings.dataStore.db.saveProperties(propertiesStore.toObject())
-                                    setTimeout(() => {
-                                        // delay start
-                                        settings.dataStore.loadProperties(() => uiInitFunc())
-                                    }, 5000)
-                                }
-                                else
-                                    uiInitFunc()
+                                        const uiInitFunc = () => {
+                                            listsBuilder
+                                                .buildTagItems()
+                                                .buildArtItems()
+                                                .buildLangItems()
+                                                .buildListsItems()
+
+                                            if (!firstInit)
+                                                settings.dataStore.loadUIState()    // will launch // tasks
+                                        }
+
+                                        if (settings.migration.fixFavoritesItemsFavLists) {
+                                            if (settings.debug.debug)
+                                                console.warn(DataStoreLogPfx + 'reload properties (migration: fixFavoritesItemsFavLists)')
+                                            // async save
+                                            settings.dataStore.db.saveProperties(propertiesStore.toObject())
+                                            setTimeout(() => {
+                                                // delay start
+                                                settings.dataStore.loadProperties(() => uiInitFunc())
+                                            }, 5000)
+                                        }
+                                        else
+                                            uiInitFunc()
+                                    })
                             })
+                        })
                     })
                 })
-            })
         })
     }
 

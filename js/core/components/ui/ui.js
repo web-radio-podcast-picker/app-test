@@ -207,9 +207,16 @@ ui = {
         if (vs.width < settings.ui.minWidth ||
             vs.height < settings.ui.minHeight
         ) {
+            const refRatioXonY = settings.ui.refRatioXonY
             const rx = settings.ui.minWidth / vs.width
             const ry = settings.ui.minHeight / vs.height
-            var z = 1 / Math.max(rx, ry)
+            if (rx > ry) {
+                z = 1 / rx
+            }
+            else {
+                z = 1 / ry
+            }
+            z = 1 / Math.max(rx, ry)
         }
         $('body').css('zoom', z)
     },
@@ -381,5 +388,16 @@ ui = {
         }
         logger.log('getOrientation = ' + ori)
         return ori
+    },
+
+    // #region ------------- ELECTRON SPECIFIC --------------
+
+    onWindowPropsChanged(wp) {
+        if (settings.debug.debug)
+            console.log('windows props changed: ', wp)
+        settings.dataStore.db.saveWindowProps(wp)
+        //if !cdveApp() return
     }
+
+    // #endregion
 }

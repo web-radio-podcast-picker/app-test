@@ -95,9 +95,11 @@
     <script src="./js/modules/web-radio-picker/components/data/flat-index-text-export-parser.js?hash=q"></script>
     <script src=" ./js/core/globals.js?hash=q"></script>
     <script src="./js/core/settings.js?hash=q"></script>
+    <script src="./js/core/distro-settings.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/db.js?hash=q"></script>
     <!-- code loader -->
     <!-- kernel-->
+    <script src="./js/core/electron-app.js?hash=q"></script>
     <script src="./js/core/components/logger.js?hash=q"></script>
     <script src="./js/core/libs/converters.js?hash=q"></script>
     <script src="./js/core/libs/data.js?hash=q"></script>
@@ -358,7 +360,7 @@
                         <!-- episode media -->
                         <div id="opts_wrp_podcast_epi_media" class="gridh100p wrp-scroll-pane no-vscroll hidden">
                             <div id="wrp_pdc_epim_img_container" class="wrp_pdc_prv_noimg wrp-img-holder">
-                                <img id="wrp_pdc_epim_img" alt="channel image">
+                                <img id="wrp_pdc_epim_img" alt="channel image" class="drag-region">
                             </div>
                             <div id="wrp_pdc_epim_list" class="wrp-scroll-pane">
                                 <div class="gr1 gc1">
@@ -380,7 +382,7 @@
                     </div>
 
                     <div id="opts_wrp_logo" class="wrp-img-holder hidden">
-                        <img id="wrp_img" alt="radio image" src="" class="gr1 gc1 hidden">
+                        <img id="wrp_img" alt="radio image" src="" class="drag-region gr1 gc1 hidden">
                     </div>
 
                     <div id="opts_add_favorite_action_pane" class="action_pane hidden">
@@ -394,7 +396,7 @@
                         Loading ...
                     </div>
 
-                    <canvas id="cnv_oscillo" class="gr1 gc1 hidden"></canvas>
+                    <canvas id="cnv_oscillo" class="drag-region gr1 gc1 hidden"></canvas>
                 </div>
             </div>
 
@@ -550,7 +552,7 @@
 
                 <div id="wrp_pdc_st_list_container" class="hidden gr2 gc1 border-light margin-top gridh100p lim-height">
                     <div id="wrp_pdc_prv_img_container" class="wrp_pdc_prv_noimg wrp-img-holder">
-                        <img id="wrp_pdc_prv_img" alt="channel image">
+                        <img id="wrp_pdc_prv_img" alt="channel image" class="drag-region">
                     </div>
                     <div id="wrp_pdc_st_list" class="wrp-scroll-pane">
                         <div class="gr1 gc1">
@@ -633,7 +635,7 @@
                 </div>
                 <div id="wrp_radio_url" class="gr2 gc1"></div>
             </div>
-            <div id="wrp_footer2" class="gr2 gc1 grid cols5 margin-top padding-small border-light">
+            <div id="wrp_footer2" class="drag-region gr2 gc1 grid cols5 margin-top padding-small border-light">
                 <div id="wrp_radio_box" class="gr1 gc1"></div>
             </div>
 

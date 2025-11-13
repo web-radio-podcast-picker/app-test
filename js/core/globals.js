@@ -198,3 +198,9 @@ const serializeField = f => /*f != 'sel' &&*/ f != 'rss'
     'qty',
     'subText2'
 ]*/
+
+// #region ------- electron specific ------
+
+const cdveApp = () => window._cdveApp
+
+// #endregion
