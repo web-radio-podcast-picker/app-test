@@ -117,7 +117,7 @@ class RadsItems {
         const $butOn = $item.find('img[name="heart_on"]')
         const $butOff = $item.find('img[name="heart_off"]')
         const $text2 = $item.find('.wrp-item-info-text2')
-        const $text = $item.find('.wrp-list-item-text-container')
+        const $text = $item.find('.wrp-list-item-text-title') // container')
         const $statusText = $item.find('.wrp-item-info-text')
 
         // ----
@@ -126,7 +126,7 @@ class RadsItems {
         const $subt2 = $subTextBox.find('.wrp-list-item-subtext2')
 
         $text.text(item.name)           // reflow
-        $text.append($subTextBox)       // reflow
+        //$text.append($subTextBox)       // reflow
         // ----
 
         wrpp.checkMetaData(item)

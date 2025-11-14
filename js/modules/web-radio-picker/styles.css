@@ -243,6 +243,10 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     margin-right: 1.5em;
     min-height: 2.3em;
     align-content: center;
+    /* TODO: display: block */
+    align-content: center;
+    align-self: center;
+    display: grid;
 }
 
 .wrp-list-item-text-container-epi {
@@ -253,6 +257,14 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
 .wrp-list-item-text-container-pdc {
     /*line-height: 1.3em;*/
     /* min-height: 2.5em; */
+}
+
+.wrp-list-item-text-title {
+
+}
+
+.wrp-list-item-text-subcontainer {
+    
 }
 
 .wrp-item-pod-icon {
@@ -303,7 +315,9 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     
 }
 
-.wrp-list-item-history-favs > div.wrp-list-item-text-container
+.wrp-list-item-history-favs 
+    > div.wrp-list-item-text-container
+    > div.wrp-list-item-text-subcontainer
 {
     color: #E0FF80;
     font-weight: bold;

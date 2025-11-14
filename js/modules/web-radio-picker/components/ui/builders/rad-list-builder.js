@@ -45,7 +45,12 @@ class RadListBuilder {
             xcl += 'wrp-list-item-text-container-pdc'
             str = '<img name="pod" src="./img/icons8-podcast-50.png" class="wrp-item-pod-icon">' + str
         }
-        const $textBox = $('<div class="wrp-list-item-text-container ' + xcl + '">' + str + '</div>')
+        const $textBox = $('<div class="wrp-list-item-text-container ' + xcl + '"></div>')
+        const $textBoxSubContainer = $('<div class="wrp-list-item-text-subcontainer"></div>')
+
+        const $textBoxText = $('<div class="wrp-list-item-text-title">' + str + '</div>')   // TODO: encapsulate in a div + style in grid + fix code that update this
+
+        $textBoxSubContainer.append($textBoxText)
 
         // TODO: FIX :: listId == listName == null on startup ?!
         // eventually sub text
@@ -65,7 +70,8 @@ class RadListBuilder {
             if (rdItem.subText2 && rdItem.subText2 != '')
                 $subt2.text(rdItem.subText2)
 
-            $textBox.append($subTextBox)
+            //$textBox.append($subTextBox)
+            $textBoxSubContainer.append($subTextBox)
 
             if (rdItem.subText && rdItem.subText != '')
                 $subt1.removeClass('hidden')
@@ -78,6 +84,7 @@ class RadListBuilder {
                 $subt2.addClass('hidden')
         }
 
+        $textBox.append($textBoxSubContainer)
         $item.append($textBox)
 
         // eventually fav icon
@@ -109,7 +116,7 @@ class RadListBuilder {
     }
 
     updateListItemText($item, text) {
-        const $textBox = $item.find('.wrp-list-item-text-container')
+        const $textBox = $item.find('.wrp-list-item-text-title') //container')
         $textBox.text(text)
     }
 

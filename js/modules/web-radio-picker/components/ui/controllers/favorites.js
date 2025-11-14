@@ -91,8 +91,13 @@ class Favorites {
 
         const $inp = $('<input type="text" id="input_list_item">')
         const $container = $item.find('.wrp-list-item-text-container')
-        const value = $container.text()
-        $container.text('')
+
+        const $text = $container.find('.wrp-list-item-text-title')
+        const value = $text.text() // $container.text()
+
+        //$container.text('')
+        $text.text('')
+
         $inp[0].value = value
         $container.append($inp)
 
@@ -144,7 +149,7 @@ class Favorites {
         wrpp.setupRadioView(uiState.currentRDItem)
 
         $inp.remove()
-        $item.find('.wrp-list-item-text-container').text(text)
+        $item.find('.wrp-list-item-text-title').text(text)
 
         radsItems.setAllButtonsStatus($item, true)
         $item.find('.wrp-list-item-sub').removeClass('hidden')
