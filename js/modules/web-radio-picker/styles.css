@@ -202,12 +202,12 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     line-height: 1em;
     margin: 0.25em;
     margin-top: 0px;
-    grid-template-columns: auto max-content max-content min-content;
+    grid-template-columns: auto max-content auto min-content;
     /* align-items: baseline; */
 }
 
 .wrp-list-epi-item-sub {
-    grid-template-columns: min-content auto max-content min-content !important;
+    grid-template-columns: min-content auto min-content min-content !important;
 }
 
 div.wrp-list-epi-item-sub > span.wrp-item-info-text {
@@ -242,6 +242,7 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     /* border: red solid 1px; */
     margin-right: 1.5em;
     min-height: 2.3em;
+    align-content: center;
 }
 
 .wrp-list-item-text-container-epi {
@@ -340,12 +341,15 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     grid-row: 1;
     color: #FFFFFFCC;
     text-align: right;
-    font-size: 1em;
+    font-size: 0.9em;
     padding: 0.5em;
     padding-right: 0em;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     align-self: center; /* for chromium electron */
     align-content: center;
+    /* white-space: nowrap; */
+    /* overflow-x: hidden; */
+    /* text-overflow: ellipsis; */
 }
 
 .wrp-list-item:hover {

@@ -292,7 +292,7 @@ class Db {
         const req = tc.get(key)
         req.onerror = e => {
             this.dbError(e)
-            //onLoaded(null)    // TODO: to be discussed
+            onLoaded(null)    // TODO: to be discussed
         }
         req.onsuccess = e => {
             if (settings.debug.debug)
