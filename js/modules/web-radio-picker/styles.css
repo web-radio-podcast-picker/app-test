@@ -478,6 +478,8 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     grid-template-columns: min-content auto min-content min-content min-content;
     align-items: unset;
     /*background-color: black;*/
+    overflow-x: hidden;
+    display: block;
 }
 
 #wrp_rad_list_ref,
@@ -492,10 +494,12 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
 
 #wrp_rad_list_ref_name,
 #wrp_pdc_list_ref_name {
-    text-wrap: wrap;
-    text-wrap-mode: wrap;
-    word-break: break-word;
+    text-wrap: nowrap;
+    /* text-wrap-mode: wrap; */
+    /* word-break: break-word; */
     text-align: left;
+    overflow: hidden;
+    /* text-overflow: ellipsis; */
 }
 
 .fav-path-button {
@@ -861,13 +865,18 @@ background-color: #44AAffAA !important
     align-self: center;
 }
 
-.hover-icon {
+.hover-icon,.hover-icon-red {
     background-color: unset;
     padding: 0.5em;
 }
 
 .hover-icon:hover {
-    background-color: #44AAff !important;
+    background-color: #44AAff  !important;
+    cursor: pointer;
+}
+
+.hover-icon-red:hover {
+    background-color: #812828 !important;
     cursor: pointer;
 }
 

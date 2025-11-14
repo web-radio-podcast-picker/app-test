@@ -49,13 +49,14 @@ class RadListPathBuilder {
             $p.append($favBut)
         }
 
-        this.#addListsIcon($p)
-
         if (item.epi) {
+            this.#addPdcListsIcon($p)
             this.#buildEpiViewTagPath(item, $p)
             this.avoidDrag()
             return
         }
+        else
+            this.#addListsIcon($p)
 
         // tag path / lang path / artists path
 
@@ -119,6 +120,12 @@ class RadListPathBuilder {
     #addListsIcon($p) {
         const w = 24
         const $img = $(`<img name="fav_but" class="small-tag-icon" src="./img/icons8-tag-50.png" width="${w}" height="${w}" alt="fav_but">`)
+        $p.append($img)
+    }
+
+    #addPdcListsIcon($p) {
+        const w = 24
+        const $img = $(`<img name="fav_but" src="./img/icons8-podcast-50.png" class="small-tag-icon wrp-item-pod-icon" width="${w}" height="${w}" alt="fav_but">`)
         $p.append($img)
     }
 
