@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.37',
-            verDate: '11/14/2025',
-            description: 'upgrade footer v2, fix switch fav'
+            version: '1.3.38',
+            verDate: '11/15/2025',
+            description: 'add drag region'
         }
     },
 
