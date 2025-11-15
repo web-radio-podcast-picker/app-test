@@ -6,11 +6,15 @@
 
 class TabsController {
 
+    premanentTabs = [
+        'btn_wrp_play_list'
+    ]
+
     tabs = ['btn_wrp_tag_list',
         'btn_wrp_lang_list',
         'btn_wrp_art_list',
-        'btn_wrp_podcast',
         'btn_wrp_play_list',
+        'btn_wrp_podcast',
         'btn_wrp_logo']
 
     pdcTabs = [
@@ -183,7 +187,8 @@ class TabsController {
 
     showNonPDCListsTabs(cid) {
         this.tabs.forEach(tabId => {
-            $('#' + tabId).removeClass('hidden')
+            if (!this.premanentTabs.includes(tabId))
+                $('#' + tabId).removeClass('hidden')
         })
         this.pdcTabs.forEach(tabId => {
             $('#' + tabId).addClass('hidden')
@@ -191,7 +196,8 @@ class TabsController {
         $('#btn_wrp_podcast').removeClass('selected')
         $('#opts_wrp_podcast').addClass('hidden')       // fix for tag path button not hidding pdc pane
 
-        $('#btn_wrp_podcast').text('Podcasts')
+        $('#btn_wrp_podcast').html(StationSwitchButtonLabel)
+            .attr('data-id', StationSwitchButtonId)
 
         uiState.updateCurrentTab(cid)
         //settings.dataStore.saveUIState()
@@ -199,7 +205,8 @@ class TabsController {
 
     showPDCTabs() {
         this.tabs.forEach(tabId => {
-            $('#' + tabId).addClass('hidden')
+            if (!this.premanentTabs.includes(tabId))
+                $('#' + tabId).addClass('hidden')
         })
         this.pdcTabs.forEach(tabId => {
             $('#' + tabId).addClass('hidden')
@@ -210,7 +217,8 @@ class TabsController {
             .removeClass('selected')
         $('#btn_wrp_logo').removeClass('hidden')
 
-        $('#btn_wrp_podcast').text('<<<')
+        $('#btn_wrp_podcast').html(PodcastSwitchButtonLabel)
+            .attr('data-id', PodcastSwitchButtonId)
 
         uiState.updateCurrentTab('btn_wrp_podcast')
         podcasts.openPodcasts()

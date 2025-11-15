@@ -275,6 +275,19 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     /* align-self: center; */
 }
 
+#btn_wrp_podcast {
+    padding: 0px;
+}
+
+.wrp-item-pod-head-icon {
+    width: 30px;
+    height: 36px;
+    vertical-align: middle;
+    margin-right: 0.25em;
+    /* align-self: center; */
+    padding-left: 0.1em;
+}
+
 .wrp-item-pod-icon {    
     height: 1.9em;
     vertical-align: middle;
@@ -597,9 +610,9 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     overflow: hidden;
     align-self: center;
     margin-left: 0.5em;
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
-    line-height: 0.8em;
+    line-height: 0.9em;
     /* height: 0.5em; */
     margin-bottom: 0px;
     /* border: red solid 1px; */
@@ -677,7 +690,7 @@ div#btn_wrp_infos.selected > img {
     background-color: darkblue;
     /* border: red solid 1px; */
     grid-row: 1;
-    grid-column: 1;
+    grid-column: 2;
 }
 
 div#wrp_radio_box > img[class~="but-icon-disabled"] {
@@ -969,6 +982,16 @@ h1 {
 
 #wrp_footer_path_container {
     display: grid;
-    grid-template-columns: min-content auto;
-    grid-template*column: ;
+    grid-template-columns: min-content min-content auto;
+}
+
+#wrp_bbar_chevron {margin: 0px;padding: 0px;position: relative;left: -1em;margin-right: -1.5em;}
+
+.station-button-switch {
+    padding: 0.5em;
+    vertical-align: sub;
+}
+
+#btn_wrp_podcast_pdc {
+    padding-right: 0px;
 }

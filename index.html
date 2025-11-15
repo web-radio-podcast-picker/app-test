@@ -308,8 +308,13 @@
                     <!-- top buttons -->
                     <div class="channel-menu-pane">
 
-                        <span id="btn_wrp_podcast"
-                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Podcasts</span>
+                        <!-- podcasts switch button (Stations/Podcasts)-->
+                        <span id="btn_wrp_podcast" data-id="sta"
+                            class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">
+                            <span class="station-button-switch">Stations</span>
+                        </span>
+                        <img alt="chevron" src="./img/icons8-right-arrow-24.png" id="wrp_bbar_chevron"
+                            class="gr1 right-chevron right-chevron-extended">
 
                         <span id="btn_wrp_tag_list"
                             class="gr1 menu-item menu-item-blue onoff-small-height no-width selected">Tags</span>
@@ -329,8 +334,10 @@
                         <span id="btn_wrp_podcast_epi"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left hidden">Epi</span>
 
+                        <!-- footer v1 
                         <span id="btn_wrp_play_list"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Favs</span>
+                        -->
                     </div>
                 </div>
 
@@ -559,8 +566,10 @@
                             <span class="wrp_pdc_prv_row" id="wrp_pdc_prv_name"></span>
                         </div>
                         <div class="gr2 gc1 align-center align-self-center">
+
                             <span id="wrp_pdc_prv_em_button"
                                 class="wrp_pdc_prv_button nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">Podcasts</span>
+
                         </div>
                         <div class="gr3 gc1 align-bottom">
                             <span class="gr2 gc1 wrp_pdc_prv_row wrp_pdc_prv_row_d" id="wrp_pdc_prv_desc"></span>
@@ -628,7 +637,7 @@
 
             <!-- footer -->
 
-            <!-- v0 
+            <!-- v1 
             <div id="wrp_footer" class="gr2 gc1 grid cols5 margin-top padding-small border-light">
                 <div id="wrp_radio_name" class="gr1 gc1"></div>
                 <div id="err_holder" class="gr1 gc1 align-center content-center hidden">
@@ -641,7 +650,7 @@
             </div>
             -->
 
-            <!-- v1 -->
+            <!-- v2 -->
             <div id="wrp_footer" class="gr2 gc1 grid cols5 margin-top padding-small border-light">
 
                 <div id="err_holder" class="gr1 gc1 align-center content-center hidden">
@@ -651,9 +660,14 @@
             </div>
             <div id="wrp_footer2" class="drag-region gr2 gc1 grid cols5 margin-top padding-small border-light">
                 <div id="wrp_footer_path_container" class="gr1 gc1">
+                    <!-- fav but -->
+                    <span id="btn_wrp_play_list"
+                        class="gr1 gc1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left margin-right">Favs</span>
+                    <!-- path -->
                     <div id="wrp_radio_box">
 
                     </div>
+                    <!-- name -->
                     <div id="wrp_radio_name"></div>
                 </div>
             </div>

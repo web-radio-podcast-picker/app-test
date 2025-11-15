@@ -293,7 +293,7 @@ class Podcasts {
         this.selection = selection
         this.resetInitializedLists()        // TODO: cache management
         const $pdcBut = $('#btn_wrp_podcast')
-        if ($pdcBut.text() == '<<<')        // TODO : improve this way of checking
+        if ($pdcBut.attr('data-id') == PodcastSwitchButtonId)        // TODO : improve this way of checking
             $pdcBut.click()
         $pdcBut.click()
     }

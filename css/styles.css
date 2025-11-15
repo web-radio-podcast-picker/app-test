@@ -280,8 +280,10 @@ div.channel-opts-pane span.unit {
 }
 
 .channel-menu-pane {
-    display: flow;
+    display: grid;
     /* grid-auto-columns: min-content min-content min-content min-content min-content min-content auto; */
+    justify-content: start;
+    overflow: hidden;
 }
 
 .channel-menu-pane-grid {
@@ -291,7 +293,7 @@ div.channel-opts-pane span.unit {
 div.channel-menu-pane > span.menu-item,
 div.channel-menu-pane > span.label
 {
-    /* margin-right: 0.5em; */
+    margin-right: 0.25em;
     /* margin-left: 0em; */
 }
 
