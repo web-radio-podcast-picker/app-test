@@ -125,7 +125,7 @@ class RadListPathBuilder {
 
     #addPdcListsIcon($p) {
         const w = 24
-        const $img = $(`<img name="fav_but" src="./img/icons8-podcast-50.png" class="small-tag-icon wrp-item-pod-icon" width="${w}" height="${w}" alt="fav_but">`)
+        const $img = $(`<img name="fav_pdc_but" src="./img/icons8-podcast-50.png" class="wrp-item-pod-foot-icon" width="${w}" height="${w}" alt="fav_but">`)
         $p.append($img)
     }
 
