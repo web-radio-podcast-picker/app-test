@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.44',
+            version: '1.3.45',
             verDate: '11/16/2025',
-            description: 'fix add fav + fix import update caches + fix reset item set to update cache anyway even if no save'
+            description: 'switch pane button on right of top left bar'
         }
     },
 

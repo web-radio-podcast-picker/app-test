@@ -284,6 +284,14 @@ div.channel-opts-pane span.unit {
     /* grid-auto-columns: min-content min-content min-content min-content min-content min-content auto; */
     justify-content: start;
     overflow: hidden;
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.channel-menu-pane-right {
+    justify-content: right;
+    grid-row: 1;
+    grid-column: 1;
 }
 
 .channel-menu-pane-grid {

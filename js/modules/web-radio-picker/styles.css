@@ -280,12 +280,13 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
 }
 
 .wrp-item-pod-head-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     vertical-align: middle;
-    margin-right: 0.25em;
+    /* margin-right: 0.25em; */
     /* align-self: center; */
     padding-left: 0.1em;
+    padding-right: 0px;
 }
 
 .wrp-item-pod-icon,.wrp-item-epi-icon,.wrp-item-sta-icon {
