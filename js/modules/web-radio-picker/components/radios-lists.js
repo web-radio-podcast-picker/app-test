@@ -73,7 +73,7 @@ class RadiosLists {
             if (list == null) return false
 
             const exItem = list.items.filter(x => x.name == item.name
-                && x.url == radItem.url
+                && x.url == item.url
             )
             if (exItem.length == 0) {
                 list.items.push(item)
@@ -391,6 +391,7 @@ class RadiosLists {
 
                             // ------- persists in memory store ---------
                             memoryItemsStore.put(srcItem)
+                            propertiesStore.savePropsToDb(srcItem)
                         }
                         else {
                             logger.warn('skip item not in db: ' + srcItem.name)

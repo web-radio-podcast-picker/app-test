@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.43',
+            version: '1.3.44',
             verDate: '11/16/2025',
-            description: 'fix some import/export bugs (cache+db synchro)'
+            description: 'fix add fav + fix import update caches + fix reset item set to update cache anyway even if no save'
         }
     },
 

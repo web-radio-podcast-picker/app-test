@@ -144,6 +144,9 @@ class DataStore {
         memoryItemsStore.put(item)
         if (skipSave !== true)
             propertiesStore.savePropsToDb(item)
+        else
+            // just update cache
+            propertiesStore.save(item)
     }
 
     #dbcSaveProperties() {
