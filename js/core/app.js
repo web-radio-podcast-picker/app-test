@@ -355,7 +355,7 @@ app = {
         if (channel.pause || oscilloscope.pause) return
         try {
             if (settings.net.enforceHttps)
-                url = url.replace('http://', 'https://')
+                url = !url ? '' : url.replace('http://', 'https://') // case : url is null
             channel.mediaSource.audio.src = url
             channel.mediaSource.url = url
             // --> events Metadata loaded + can play

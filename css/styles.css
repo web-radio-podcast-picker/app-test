@@ -292,6 +292,7 @@ div.channel-opts-pane span.unit {
     justify-content: right;
     grid-row: 1;
     grid-column: 1;
+    justify-self: right;
 }
 
 .channel-menu-pane-grid {

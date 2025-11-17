@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.45',
+            version: '1.3.47',
             verDate: '11/16/2025',
-            description: 'switch pane button on right of top left bar'
+            description: 'fix case bug if epi url is null in enforce https'
         }
     },
 
