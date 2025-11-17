@@ -40,11 +40,37 @@ class RadListBuilder {
 
         // radio name
         var xcl = rdItem?.epi ? 'wrp-list-item-text-container-epi' : ''
-        if (rdItem?.pdc && !rdItem?.epi && (listName == Pdc_List_Epi || listId == RadioList_List)) {
-            // pdc index
-            xcl += 'wrp-list-item-text-container-pdc'
-            str = '<img name="pod" src="./img/icons8-podcast-50.png" class="wrp-item-pod-icon">' + str
+
+        // #region item title + type icon
+
+        const iconText = (icon, text) => {
+            var str = '<div class="wrp-rditem-name-container">'
+            str += '<div class="wrp-rditem-icon">' + icon + '</div>'
+            str += '<div class="wrp-rditem-name">' + text + '</div>'
+            str += '</div>'
+            return str
         }
+
+        if (rdItem?.pdc && !rdItem?.epi && (/*listName == Pdc_List_Epi ||*/ listId == RadioList_List)) {
+            // pdc icon
+            xcl += 'wrp-list-item-text-container-pdc'
+            str = iconText(
+                '<img name="pod" src="./img/icons8-podcast-50.png" class="wrp-item-pod-icon">'
+                , str)
+        }
+
+        if (rdItem?.pdc && rdItem?.epi && (listId == RadioList_History || listId == RadioList_List)) {
+            // epi icon
+            str = iconText('<img name="epi" src="./img/icons8-mike-50.png" class="wrp-item-epi-icon">'
+                , str)
+        }
+
+        if (rdItem != null && !rdItem?.pdc && (listId == RadioList_History || listId == RadioList_List)) {
+            // station icon
+            str = iconText('<img name="sta" src="./img/icons8-notes-de-musique-50.png" class="wrp-item-sta-icon">'
+                , str)
+        }
+
         const $textBox = $('<div class="wrp-list-item-text-container ' + xcl + '"></div>')
         const $textBoxSubContainer = $('<div class="wrp-list-item-text-subcontainer"></div>')
 
@@ -52,12 +78,19 @@ class RadListBuilder {
 
         $textBoxSubContainer.append($textBoxText)
 
+        // #endregion
+
+        // #region sub text box (below title)
+
         // TODO: FIX :: listId == listName == null on startup ?!
         // eventually sub text
         if ((listId == RadioList_Podcast
             && (listName == Pdc_List_Pdc
                 || listName == Pdc_List_Epi))
-            || listId == RadioList_List) {
+            || listId == RadioList_List
+            || listId == RadioList_Art  // with nexts allows in stations tabs lists artist,lang,tag
+            || listId == RadioList_Tag
+            || listId == RadioList_Lang) {
             const $subt1 = $('<div class="wrp-list-item-subtext1"></div>')
             const $subt2 = $('<div class="wrp-list-item-subtext2"></div>')
 
@@ -84,8 +117,12 @@ class RadListBuilder {
                 $subt2.addClass('hidden')
         }
 
+        // #endregion
+
         $textBox.append($textBoxSubContainer)
         $item.append($textBox)
+
+        // #region item below box (buttons)
 
         // eventually fav icon
         if ((listId != RadioList_List || listName == RadioList_History)
@@ -98,6 +135,10 @@ class RadListBuilder {
                 $item.append($favIcon)
             }
         }
+
+        // #endregion
+
+        // #region options: item box (eg. count)
 
         if (opts != null) {
 
@@ -112,12 +153,15 @@ class RadListBuilder {
             }
         }
 
+        // #endregion
+
         return { item: item, $item: $item }
     }
 
     updateListItemText($item, text) {
-        const $textBox = $item.find('.wrp-list-item-text-title') //container')
-        $textBox.text(text)
+        //const $textBox = $item.find('.wrp-list-item-text-title') //container')
+        const $text = $item.find('.wrp-rditem-name')
+        $text.text(text)
     }
 
     #setRowStyle(i, $row) {

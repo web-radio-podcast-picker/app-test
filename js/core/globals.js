@@ -33,9 +33,9 @@ const RadioList = 'rad'
 const RadioList_History = 'History'
 const RadioList_List_VisibleName = '- History -'
 
-const PodcastSwitchButtonLabel = '<img name="fav_pdc_but" src="./img/icons8-podcast-50.png" class="wrp-item-pod-head-icon" width="24" height="24" alt="fav_but">'
+const PodcastSwitchButtonLabel = '<img name="fav_pdc_but" src="./img/icons8-disposition-du-tableau-de-bord-32.png" class="wrp-item-pod-head-icon" width="32" height="32" alt="fav_but">'
 const PodcastSwitchButtonId = 'pdc'
-const StationSwitchButtonLabel = '<span class="station-button-switch">Stations</span>'
+const StationSwitchButtonLabel = '<img name="fav_pdc_but" src="./img/icons8-disposition-du-tableau-de-bord-32.png" class="wrp-item-pod-head-icon" width="32" height="32" alt="fav_but">'
 const StationSwitchButtonId = 'sta'
 
 // out of 'lists' pane
@@ -125,6 +125,7 @@ const Class_Hidden = 'hidden'
 
 const StoreKeyName = 'storeKey'
 const StoreObjectKeyName = 'key'
+const StoreWindowPropsKey = 'windowProps'
 
 // -----
 
@@ -133,6 +134,27 @@ const transparentPixel =
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
 
 // -----------
+
+const setVisible = ($e, isVisible) => {
+    classIf($e, 'hidden', !isVisible)
+}
+
+/**
+ * add str in t in not already in
+ * @param {Array} t 
+ * @param {String} str 
+ */
+const addUnique = (t, str) => {
+    if (!t.includes(str))
+        t.push(str)
+}
+
+const classIf = ($e, className, on) => {
+    if (on)
+        $e.addClass(className)
+    else
+        $e.removeClass(className)
+}
 
 const cloneSelection = sel => {
     /*const o = cloneItem({ sel: sel })
@@ -146,7 +168,6 @@ const cloneCleanupSelection = sel => {
     const o = cloneItem({ sel: sel })
     return o.sel
 }
-
 
 // cleanup & clone station/pdc item
 const cloneItem = item => {

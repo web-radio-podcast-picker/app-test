@@ -86,6 +86,8 @@ class UIState {
 
         if (settings.debug.debug)
             logger.log('currentTab=' + JSON.stringify(t))
+
+        viewManager.onStationTabChanged.fire(this.currentTab, null)
     }
 
     #setRDList(rdList) {
@@ -148,8 +150,9 @@ class UIState {
     // a playable item (not a group) : radioItem
     // build a RD
     updateCurrentRDItem(radioItem, skipSave) {
-        if (radioItem != null)
-            radioItem.ref = this.radioRef()
+        // @deprecated - migration removeItemRefProperty
+        //if (radioItem != null)
+        //    radioItem.ref = this.radioRef()
         this.currentRDItem = radioItem
         if (skipSave !== true && !this.disableSave)
             settings.dataStore.saveUIState()
@@ -168,8 +171,14 @@ class UIState {
 
     getCurrentUIState() {
 
-        if (this.currentRDItem != null && this.currentRDItem.ref != null)
-            this.currentRDItem.ref.currentRDList.$item = null
+        if (settings.migration.removeItemRefProperty) {
+            /**
+             * @deprecated ref removed - this cleanup in case of
+            */
+            if (this.currentRDItem != null && this.currentRDItem.ref != null)
+                //this.currentRDItem.ref.currentRDList.$item = null
+                delete this.currentRDItem['ref']
+        }
 
         const r = {
             storeKey: 'uiState',

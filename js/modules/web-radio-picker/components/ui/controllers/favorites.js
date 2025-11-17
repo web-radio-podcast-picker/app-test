@@ -93,6 +93,7 @@ class Favorites {
         const $container = $item.find('.wrp-list-item-text-container')
 
         const $text = $container.find('.wrp-list-item-text-title')
+        //const $text = $item.find('.wrp-rditem-name')    // this not exists in a fav list name item
         const value = $text.text() // $container.text()
 
         //$container.text('')
@@ -131,8 +132,10 @@ class Favorites {
             })
 
         const key = $item.attr('data-text')
+
         radiosLists.renameList(key, text)
-        uiState.currentRDList.name = text
+        uiState.currentRDList.name = text   // TODO: notice this + check
+
         $item.attr('data-text', text)
         if (settings.debug.debug) {
             logger.log(`rename list '${key}' to '${text}'`)
@@ -318,6 +321,10 @@ class Favorites {
 
         uiState.updateCurrentRDList(null, true)
 
+        // update radio view        
+        const { loadingRDItem, $loadingRDItem } = radsItems.getLoadingItem()
+        wrpp.setupRadioView(loadingRDItem)
+
         settings.dataStore.saveAll()
     }
 
@@ -346,6 +353,10 @@ class Favorites {
         // update the fav list
         listsBuilder.updateListsItems()
         radListBuilder.clearRadList()
+
+        // update radio view        
+        const { loadingRDItem, $loadingRDItem } = radsItems.getLoadingItem()
+        wrpp.setupRadioView(loadingRDItem)
 
         settings.dataStore.saveAll()
     }

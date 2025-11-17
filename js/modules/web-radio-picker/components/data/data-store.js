@@ -74,7 +74,7 @@ class DataStore {
 
     loadRadiosLists(onLoaded) {
 
-        // local storage
+        // local storage    // TODO: delete this block and all 'localStorage' related stuff
         if (settings.dataStore.useLocalStorage) {
             if (localStorage === undefined) return
             const str = localStorage.getItem(ST_RadiosLists)
@@ -98,6 +98,52 @@ class DataStore {
 
     saveProperties() {
         this.prDebouncer.debounce(() => this.#dbcSaveProperties())
+    }
+
+    /**
+     * clear properties and items caches
+     * clear properties and items db
+     */
+    deleteProperties() {
+        memoryItemsStore.clear()
+        propertiesStore.clear()
+        this.#dbcSaveProperties()
+    }
+
+    /**
+     * - delete properties of item in memory and props cache
+     * - update Db
+     * @param {*} item 
+     * @param {*} skipSave 
+     * @returns 
+     */
+    deleteItemProperties(item, skipSave) {
+        wrpp.checkItemKey(item)
+        const key = item.key
+        if (!key) return
+        memoryItemsStore.delete(item.key)
+        propertiesStore.delete(item.key)
+        if (skipSave !== true)
+            this.#dbcSaveProperties()
+    }
+
+    /**
+     * - delete properties of item in memory and props cache
+     * - update Db
+     * - reload item in stores/caches
+     * @param {*} item 
+     * @param {*} skipSave 
+     * @returns 
+     */
+    resetItemProperties(item, skipSave) {
+        wrpp.checkItemKey(item)
+        const key = item.key
+        if (!key) return
+        memoryItemsStore.delete(item.key)
+        propertiesStore.delete(item.key)
+        memoryItemsStore.put(item)
+        if (skipSave !== true)
+            propertiesStore.savePropsToDb(item)
     }
 
     #dbcSaveProperties() {
@@ -159,6 +205,8 @@ class DataStore {
 
             // db
             radiosLists.init()
+            if (settings.migration.removeItemRefProperty)
+                radiosLists.removeItemRefPropertyFromRadioLists()
             this.db.saveItemsLists(radiosLists.lists)
 
         } catch (err) {

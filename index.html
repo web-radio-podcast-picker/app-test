@@ -85,6 +85,8 @@
     <script src="./js/ext/jquery-3.7.1.min.js?hash=q"></script>
 
     <!-- settings & data -->
+    <script src="./js/modules/web-radio-picker/components/ui/events/dom-events.js?hash=q"></script>
+    <script src="./js/modules/web-radio-picker/components/ui/events/callbacks-delegate.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/signal/debouncer.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/data-store.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/rss-cache.js?hash=q"></script>
@@ -136,6 +138,7 @@
     <script src="./js/modules/web-radio-picker/components/data/podcast-rss-parser.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/data/duration-hms.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/radios-lists.js?hash=q"></script>
+    <script src="./js/modules/web-radio-picker/components/ui/controllers/view-manager.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/ui-state.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/rdmedia-image.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/rads-items.js?hash=q"></script>
@@ -311,10 +314,16 @@
                         <!-- podcasts switch button (Stations/Podcasts)-->
                         <span id="btn_wrp_podcast" data-id="sta"
                             class="gr1 nowrap menu-item menu-item-blue onoff-small-height no-width spc-left">
-                            <span class="station-button-switch">Stations</span>
+                            <span class="station-button-switch">
+                                <img name="fav_pdc_but" src="./img/icons8-disposition-du-tableau-de-bord-32.png"
+                                    class="wrp-item-pod-head-icon" width="32" height="32" alt="fav_but">
+                            </span>
                         </span>
+
+                        <!--
                         <img alt="chevron" src="./img/icons8-right-arrow-24.png" id="wrp_bbar_chevron"
                             class="gr1 right-chevron right-chevron-extended">
+                            -->
 
                         <span id="btn_wrp_tag_list"
                             class="gr1 menu-item menu-item-blue onoff-small-height no-width selected">Tags</span>
@@ -344,16 +353,20 @@
                 <!-- left pane content -->
                 <div id="left-pane" class="gr2 gc1 border-light margin-top gridh100p lim-height">
 
-                    <div id="opts_wrp_tag_list" class="wrp-scroll-pane">
+                    <!-- stations tags -->
+                    <div id="opts_wrp_tag_list" class="below-list-title wrp-scroll-pane">
                     </div>
 
-                    <div id="opts_wrp_art_list" class="wrp-scroll-pane hidden">
+                    <!-- stations artists -->
+                    <div id="opts_wrp_art_list" class="below-list-title wrp-scroll-pane hidden">
                     </div>
 
-                    <div id="opts_wrp_lang_list" class="wrp-scroll-pane hidden">
+                    <!-- stations lang -->
+                    <div id="opts_wrp_lang_list" class="below-list-title wrp-scroll-pane hidden">
                     </div>
 
-                    <div id="opts_wrp_podcast" class="wrp-scroll-pane hidden">
+                    <!-- podcasts panes -->
+                    <div id="opts_wrp_podcast" class="below-list-title wrp-scroll-pane hidden">
 
                         <!-- podcasts lists -->
                         <div id="opts_wrp_podcast_lang" class="wrp-scroll-pane no-vscroll hidden">
@@ -385,13 +398,23 @@
 
                     </div>
 
-                    <div id="opts_wrp_play_list" class="wrp-scroll-pane hidden">
+                    <!-- favorites -->
+                    <div id="opts_wrp_play_list" class="below-list-title wrp-scroll-pane hidden">
                     </div>
 
+                    <!-- list title -->
+                    <div id="wrp_list_title_container">
+                        <div id="wrp_list_icon"></div>
+                        <div id="wrp_list_title"></div>
+                        <div id="wrp_list_path"></div>
+                    </div>
+
+                    <!-- station/epi media view -->
                     <div id="opts_wrp_logo" class="wrp-img-holder hidden">
                         <img id="wrp_img" alt="radio image" src="" class="drag-region gr1 gc1 hidden">
                     </div>
 
+                    <!-- favorite select/create action pane -->
                     <div id="opts_add_favorite_action_pane" class="action_pane hidden">
                         <img src="./img/icons8-arrow-50.png" class="topFavArrow" alt="top arrow" width="32" height="32">
                         <span class="gr1 gc2 addFavText">Pick a list or add one</span>
@@ -399,10 +422,12 @@
                             class="addFavButton wrp-rad-item-icon" alt="add favorite" width="32" height="32">
                     </div>
 
+                    <!-- loading view pane -->
                     <div id="opts_wrp_pane_loading" class="loading-list-pane wrp-scroll-pane hidden">
                         Loading ...
                     </div>
 
+                    <!-- visualizations pane -->
                     <canvas id="cnv_oscillo" class="drag-region gr1 gc1 hidden"></canvas>
                 </div>
             </div>
@@ -561,7 +586,7 @@
                     <div id="wrp_pdc_prv_img_container" class="wrp_pdc_prv_noimg wrp-img-holder">
                         <img id="wrp_pdc_prv_img" alt="channel image" class="drag-region">
                     </div>
-                    <div id="wrp_pdc_st_list" class="wrp-scroll-pane">
+                    <div id="wrp_pdc_st_list" class="wrp-scroll-pane no-drag">
                         <div class="gr1 gc1">
                             <span class="wrp_pdc_prv_row" id="wrp_pdc_prv_name"></span>
                         </div>
@@ -667,6 +692,8 @@
                     <div id="wrp_radio_box">
 
                     </div>
+                    <!-- icon -->
+                    <div id="wrp_radio_icon"></div>
                     <!-- name -->
                     <div id="wrp_radio_name"></div>
                 </div>

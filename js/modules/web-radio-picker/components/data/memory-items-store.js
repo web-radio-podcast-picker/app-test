@@ -23,9 +23,18 @@ class MemoryItemsStore {
         return this.data[key]
     }
 
+    delete(key) {
+        if (!key) return
+        delete this.data[key]
+    }
+
     #checkKey(item) {
         const key = item.key
         if (!key) logger.error('item has no key: ' + item.name)
         return key
+    }
+
+    clear() {
+        this.data = {}
     }
 }

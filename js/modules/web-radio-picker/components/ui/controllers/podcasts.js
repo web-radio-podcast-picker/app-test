@@ -533,11 +533,15 @@ class Podcasts {
     }
 
     setEpiListMediaVisible(isVisible) {
+        if (settings.debug.debug)
+            logger.log('setEpiListMediaVisible: ' + isVisible)
+        viewManager.epiListMediaVisible = isVisible
         if (isVisible) {
             $('#opts_wrp_podcast_epi_media').removeClass('hidden')
         } else {
             $('#opts_wrp_podcast_epi_media').addClass('hidden')
         }
+        viewManager.onEpiMediaViewVisibilityChanged.fire(isVisible)
     }
 
     shouldRestoreEpiVisibleState = false
@@ -600,7 +604,7 @@ class Podcasts {
 
     buildEpiMediaView(item) {
 
-        // TODO: use a rdMediaImage
+        // TODO: use a rdMediaImage? (or else keep the zoom effect)
         const img = item.logo // item.rss.image || item.rss.itunes.image
 
         $('#wrp_pdc_epim_img')[0].src = img == null ?

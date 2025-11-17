@@ -14,15 +14,17 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.38',
-            verDate: '11/15/2025',
-            description: 'add drag region'
+            version: '1.3.43',
+            verDate: '11/16/2025',
+            description: 'fix some import/export bugs (cache+db synchro)'
         }
     },
 
     migration: {
-        // use once
-        fixFavoritesItemsFavLists: false
+        // usage: single shot or recurrent
+        fixFavoritesItemsFavLists: false,
+        // usage: recurrent
+        removeItemRefProperty: true
     },
 
     flags: {

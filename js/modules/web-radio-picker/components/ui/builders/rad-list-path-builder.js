@@ -30,6 +30,18 @@ class RadListPathBuilder {
         return id
     }
 
+    radioViewNameIcon(item) {
+        if (item == null || item === undefined) return ''
+        var icon = '<img name="sta" src="./img/icons8-notes-de-musique-50.png" class="wrp-item-sta-radview-title-icon">'
+        if (item.epi) icon = '<img name="epi" src="./img/icons8-mike-50.png" class="wrp-item-epi-radview-title-icon">'
+        return icon
+    }
+
+    /**
+     * current playing item path
+     * @param {Object} item 
+     * @returns 
+     */
     buildRadioViewTagPath(item) {
         const $p = $('#wrp_radio_box')
         $p[0].innerHTML = ''

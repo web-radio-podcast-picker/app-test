@@ -56,6 +56,10 @@ class PropertiesStore {
         return props
     }
 
+    /**
+     * adds an item props to the store and save it props to db
+     * @param {Object} item 
+     */
     savePropsToDb(item) {
         const props = this.save(item)
         settings.dataStore.savePropertiesSingle(props)
@@ -70,5 +74,14 @@ class PropertiesStore {
 
     check(item) {
         const key = item.key
+    }
+
+    clear() {
+        this.data = {}
+    }
+
+    delete(key) {
+        if (!key) return
+        delete this.data[key]
     }
 }

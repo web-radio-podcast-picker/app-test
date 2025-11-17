@@ -123,6 +123,16 @@ var rssCache = null
  */
 var pdcListCache = null
 
+/**
+ * @type {DomEvents}
+ */
+var domEvents = null
+
+/**
+ * @type {ViewManager}
+ */
+var viewManager = null
+
 //#endregion
 
 // module: web radio picker
@@ -214,6 +224,8 @@ class WebRadioPickerModule extends ModuleBase {
             }
         )
 
+        domEvents = new DomEvents()
+        viewManager = new ViewManager()
         rssCache = new RssCache()
         pdcListCache = new PdcListCache()
         memoryItemsStore = new MemoryItemsStore()
@@ -652,7 +664,9 @@ class WebRadioPickerModule extends ModuleBase {
         const url = rdItem?.url || ''
         const name = rdItem?.name || ''
         $('#wrp_radio_url').text(url)
-        $('#wrp_radio_name').text(name)
+        const icon = radListBuilder.pathBuilder.radioViewNameIcon(rdItem)
+        $('#wrp_radio_icon').html(icon)
+        $('#wrp_radio_name').html(name)
         radListBuilder.pathBuilder.buildRadioViewTagPath(rdItem)
     }
 

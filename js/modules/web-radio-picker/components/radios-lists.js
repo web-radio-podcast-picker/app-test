@@ -31,26 +31,63 @@ class RadiosLists {
         this.lists[StoreKeyName] = 'itemsLists'
     }
 
+    /**
+     * migration: removeItemRefProperty
+     */
+    removeItemRefPropertyFromRadioLists() {
+        logger.log('migration: removeItemRefProperty')
+        for (const listName in this.lists) {
+            if (listName != StoreKeyName) {
+                const list = this.lists[listName]
+                if (list.items) {
+                    list.items.forEach(item => {
+                        if (item.ref) delete item['ref']
+                        if (item.sel?.pdc?.item) delete item.sel.pdc.item['ref']
+                        if (item.sel?.epi?.item) delete item.sel.epi.item['ref']
+                    })
+                }
+            }
+        }
+    }
+
     addList(listId, name, isSystem) {
         if (isSystem === undefined) isSystem = false
         if (!this.lists[name]) {
             this.lists[name] = this.radioList(listId, name, isSystem)
         }
+        settings.dataStore.saveRadiosLists()
         return this.lists[name]
     }
 
-    addToList(listId, name, radItem) {
-        const list = this.getList(name)
-        if (list == null) return false
-        //if (list.items.includes(radItem)) return false // fix for clones
-        const exItem = list.items.filter(x => x.name == radItem.name
-            && x.url == radItem.url
-        )
-        if (exItem.length == 0) {
-            list.items.push(radItem)
-            return true
+    addToList(listId, listName, item) {
+        const added = this.#addFavItem(item, listName)
+        settings.dataStore.saveRadiosLists()
+        return added
+    }
+
+    #addFavItem(item, listName) {
+
+        const add = (item, listName) => {
+            if (item == null || item === undefined) return
+            const list = this.getList(listName)
+            if (list == null) return false
+
+            const exItem = list.items.filter(x => x.name == item.name
+                && x.url == radItem.url
+            )
+            if (exItem.length == 0) {
+                list.items.push(item)
+                addUnique(item.favLists, listName)
+                settings.dataStore.resetItemProperties(item)
+                return true
+            }
+            return false
         }
-        return false
+
+        const added = add(item, listName)
+        add(item.sel?.pdc?.item, listName)
+        add(item.sel?.epi?.item, listName)
+        return added
     }
 
     getList(name) {
@@ -66,30 +103,72 @@ class RadiosLists {
         list.name = name
         // renames list in rad items favs
         list.items.forEach(rad => {
-            this.removeFavFromList(rad, id)
-            rad.favLists.push(name)
+            this.#renameFavItem(rad, id, name)
         })
+
+        settings.dataStore.saveRadiosLists()
+
         return list
+    }
+
+    #renameFavItem(item, oldname, newname) {
+
+        const rmfv = (item, oldname, newname) => {
+            if (item == null || item === undefined) return
+            item.favLists = item.favLists.filter(x => x != oldname)
+            item.favLists.push(newname)
+            settings.dataStore.resetItemProperties(item)
+        }
+        rmfv(item, oldname, newname)
+        rmfv(item.sel?.epi?.item)
+        rmfv(item.sel?.pdc?.item)
     }
 
     emptyList(name) {
         const list = this.lists[name]
         // delete in favs lists
         list.items.forEach(rad => {
-            this.removeFavFromList(rad, name)
+            this.#emptyFavItem(rad, name)
         })
         // empty the favlist
         this.lists[name].items = []
+
+        settings.dataStore.saveRadiosLists()
+    }
+
+    #emptyFavItem(item, name) {
+        const rmfv = (item, name) => {
+            if (item == null || item === undefined) return
+            this.#removeFavFromList(item, name)
+            settings.dataStore.resetItemProperties(item, false)
+        }
+        rmfv(item, name)
+        rmfv(item.sel?.pdc?.item, name)
+        rmfv(item.sel?.epi?.name, name)
     }
 
     deleteList(name) {
+        if (name == StoreKeyName) return
         const list = this.lists[name]
         // delete in favs lists
         list.items.forEach(rad => {
-            this.removeFavFromList(rad, name)
+            this.#deleteFavItem(rad, name)
         })
         // delete the favlist
         delete this.lists[name]
+
+        settings.dataStore.saveRadiosLists()
+    }
+
+    #deleteFavItem(item, name) {
+        const rmfv = (item, name) => {
+            if (item == null || item === undefined) return
+            this.#removeFavFromList(item, name)
+            settings.dataStore.resetItemProperties(item, false)
+        }
+        rmfv(item, name)
+        rmfv(item.sel?.pdc?.item)
+        rmfv(item.sel?.epi?.item)
     }
 
     deleteAllLists() {
@@ -99,40 +178,51 @@ class RadiosLists {
                 this.deleteList(id)
         })
         this.init()
+
+        settings.dataStore.saveRadiosLists()
     }
 
-    removeFavFromList(rdItem, favName) {
-        rdItem.favLists = rdItem.favLists.filter(x => x != favName)
+    #removeFavFromList(rdItem, favName) {
+        const rmfv = (item, favName) =>
+            item.favLists = item.favLists.filter(x => x != favName)
+        rmfv(rdItem, favName)
     }
 
     removeFromList(item, listName) {
-        item.favLists = item.favLists.filter(x => x != listName)
-        const list = this.getList(listName)
-        if (list == null || !list.items) return
-        // compare on name/url to support clones
-        list.items = list.items.filter(x => x.name != item.name
-            && x.url != item.url
-        )
+        this.#removeFavItem(item, listName)
+        settings.dataStore.saveRadiosLists()
+    }
+
+    #removeFavItem(item, listName) {
+
+        const rm = (item, listName) => {
+            if (item == null || item === undefined) return
+            this.#removeFavFromList(item, listName)
+            const list = this.getList(listName)
+            if (list == null || !list.items) return
+            // ℹ️ compare on name/url to support clones
+            list.items = list.items.filter(x => x.name != item.name
+                && x.url != item.url
+            )
+            settings.dataStore.resetItemProperties(item)
+        }
+
+        rm(item, listName)
+        rm(item.sel?.pdc?.item, listName)
+        rm(item.sel?.epi?.item, listName)
     }
 
     removeFromAnyList(item) {
-        for (const listName in this.lists) {
-            const list = this.lists[listName]
+        const lLists = this.lists
+        for (const listName in lLists) {
+            const list = lLists[listName]
             if (listName != RadioList_History && list.items) {
-                const existsIn = list.items.filter(
-                    x => x.name == item.name
-                        && x.url == item.url).length > 0
-                if (existsIn) {
-                    list.items =
-                        list.items.filter(
-                            x => x.name != item.name
-                                && x.url != item.url
-                        )
-                    if (settings.debug.debug)
-                        console.log('remove item "' + item.name + '" from favList: ' + listName)
-                }
+                this.removeFromList(item, listName)
+                settings.dataStore.resetItemProperties(item)
             }
         }
+
+        settings.dataStore.saveRadiosLists()
     }
 
     findItem(listId, itemId) {
@@ -431,6 +521,8 @@ class RadiosLists {
                                     item.favLists.push(name)
                             }
 
+                            console.log(item.favLists.join(','))
+
                             // init properties from local db
                             wrpp.checkItemKey(item)
                             propertiesStore.load(item)
@@ -444,9 +536,12 @@ class RadiosLists {
             }
         })
         this.lists = t
+
+        if (settings.migration.removeItemRefProperty)
+            this.removeItemRefPropertyFromRadioLists()
+
         this.purgeItems()
         this.cleanupHistoryItemsFavorites()
-
     }
 
     cleanupHistoryItemsFavorites() {
@@ -457,7 +552,7 @@ class RadiosLists {
             const t = [...item.favLists]
             t.forEach(favName => {
                 if (!listNames.includes(favName))
-                    this.removeFavFromList(item, favName)
+                    this.#removeFavFromList(item, favName)
             })
         })
     }

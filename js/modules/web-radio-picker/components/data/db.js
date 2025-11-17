@@ -19,7 +19,7 @@ class Db {
     dbReady = false
     #count = 0
     onDbReady = null
-    winPropsKey = 'windowProps'
+    winPropsKey = StoreWindowPropsKey
 
     constructor(onDbReady) {
         this.onDbReady = onDbReady

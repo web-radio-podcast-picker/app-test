@@ -117,7 +117,8 @@ class RadsItems {
         const $butOn = $item.find('img[name="heart_on"]')
         const $butOff = $item.find('img[name="heart_off"]')
         const $text2 = $item.find('.wrp-item-info-text2')
-        const $text = $item.find('.wrp-list-item-text-title') // container')
+        const $text = $item.find('.wrp-rditem-name')
+        //const $text = $item.find('.wrp-list-item-text-title') // container')
         const $statusText = $item.find('.wrp-item-info-text')
 
         // ----
@@ -178,12 +179,14 @@ class RadsItems {
         const isEditable = (!isRdItem && !list?.isSystem && !noList)
         const canEmpty = !isRdItem && isFavList
 
-        // TODO: manage an internal and stored favlists of pdc
+        // TODO: manage an internal and stored favlists of pdc -- class FavLists ?
         const existsInFavorites = isRdItem && rdItem.favLists != null &&
             (rdItem.favLists.length == 0 ? false :
                 (rdItem.favLists.length == 1 && rdItem.favLists[0] != RadioList_History)
                 || rdItem.favLists.length > 1)
         const favName = rdItem != null ? (favorites.getFavName(rdItem) || '') : ''
+
+        // #region icons
 
         // remove favorite
         const butHeartOnVis = existsInFavorites ? '' : 'hidden'
@@ -206,8 +209,12 @@ class RadsItems {
             `<img name="empty" src="./img/icons8-delete-all-50.png" width="32" height="32" alt="empty" class="wrp-rad-item-icon">`
             : ''
 
+        // #endregion
+
         $item.addClass('wrp-list-item-foldable')
         const subitHidden = unfolded ? '' : 'hidden'
+
+        // #region progress bar (timeline)
 
         var timeLineBox = ''
         if (rdItem?.epi) {
@@ -219,6 +226,11 @@ class RadsItems {
         const text2 = !isRdItem ? '' :
             `<div class="wrp-item-info-text3">${timeLineBox}</div>`
             + `<span class="wrp-item-info-text2">${favName}</span>`
+
+        // #endregion
+
+        // #region bottom box (below item name)
+
         const $subit = $(
             `<div class="wrp-list-item-sub ${subitHidden} ${subXClass}">
 <span class="wrp-item-info-text"></span>
@@ -227,6 +239,11 @@ ${text2}
 ${butRemove}${butHeartOn}${butHeartOff}${butEmpty}${butEdit}
 </div>
 </div>`)
+
+        // #endregion
+
+        // #region bottom box buttons
+
         var $butOn = null
         var $butOff = null
 
@@ -276,11 +293,9 @@ ${butRemove}${butHeartOn}${butHeartOff}${butEmpty}${butEdit}
                         favorites.emptyFavoriteList($item.attr('data-text'))
                 })
 
+        // #endregion
+
         $item.append($subit)
-
-        if (opts != null) {
-
-        }
     }
 
     setButtonStatus($item, buttonName, enabled) {

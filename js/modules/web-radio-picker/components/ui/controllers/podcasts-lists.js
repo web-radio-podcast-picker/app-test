@@ -10,6 +10,8 @@ class PodcastsLists {
 
     listIdToPaneId = {}
 
+    onEpiListOpening = []
+
     constructor(podcasts) {
         this.podcasts = podcasts
         this.listIdToPaneId[Pdc_List_Lang] = 'opts_wrp_podcast_lang'
@@ -224,8 +226,8 @@ class PodcastsLists {
         podcasts.buildEpiMediaView(item)
 
         // epi item
+        // restore the playing epi if any
 
-        //const epiItem = self.podcasts.selection.epi?.item
         const epiItem = uiState.currentRDItem
 
         const paneId = 'opts_wrp_podcast_epi'

@@ -65,6 +65,8 @@ class TabsController {
                     podcasts.selection,
                     listId
                 )
+
+                viewManager.onPodcastTabChanged.fire(uiState.currentTab, listId)
             }
         })
 
@@ -75,7 +77,92 @@ class TabsController {
                 this.onInfTabChanged($c)
             }
         })
+
+        viewManager.onStationTabChanged
+            .add((tab, listId) =>
+                this.onStationPodcastTabChanged(tab, listId))
+        viewManager.onPodcastTabChanged
+            .add((tab, listId) =>
+                this.onStationPodcastTabChanged(tab, listId))
     }
+
+    getListIconStation() {
+        return '<img name="sta" src="./img/icons8-notes-de-musique-50.png" class="wrp-item-sta-list-title-icon">'
+    }
+
+    getListIconPodcast() {
+        return '<img name="pod" src="./img/icons8-podcast-50.png" class="wrp-item-pod-list-title-icon">'
+    }
+
+    getListIconFav() {
+        return '<img name="fav" src="./img/icons8-heart-outline-48.png" class="wrp-item-fav-list-title-icon">'
+    }
+
+    onStationPodcastTabChanged(tab, listId) {
+        if (tab == null || tab === undefined) return
+        const lid = tab.listId
+        var name = null
+        var icon = ''
+        $('#wrp_list_path').html('')
+
+        if (this.stationsListsIds.includes(lid)) {
+            name = 'Stations'
+            icon = this.getListIconStation()
+        }
+
+        if (lid == RadioList_Podcast) {
+            name = 'Podcasts'
+            icon = this.getListIconPodcast()
+            this.setupListTitlePdcPath(tab, listId)
+        }
+
+        if (lid == RadioList_List) {
+            name = 'Favoris'
+            icon = this.getListIconFav()
+        }
+
+        if (name != null)
+            $('#wrp_list_title').html(name)
+        if (icon != null)
+            $('#wrp_list_icon').html(icon)
+
+        setVisible($('#wrp_list_title_container'), !viewManager.epiListMediaVisible)
+        classIf($('#opts_wrp_podcast'), 'below-list-title', !viewManager.epiListMediaVisible)
+    }
+
+    setupListTitlePdcPath(tab, listId) {
+        const sel = podcasts.selection
+        var txt = ''
+        const sep = ' > '
+        const sep2 = '> '
+        const t = []
+        if (sel.lang?.item) {
+            t.push(sel.lang.item.name)
+        }
+        if (sel.tag?.item) {
+            t.push(firstCharToUpper(sel.tag.item.name))
+        }
+        if (sel.letter?.item) {
+            t.push(sel.letter.item.name)
+        }
+        /*if (sel.pdc?.item) {
+            t.push(sel.pdc.item.name)
+        }*/
+        if (t.length > 0) {
+            txt = t.join(sep)
+            if (txt.length > 0)
+                txt = sep2 + txt
+        }
+        $('#wrp_list_path').html(txt)
+    }
+
+    stationsListsIds = [
+        RadioList_Tag,
+        RadioList_Lang,
+        RadioList_Art,
+        //RadioList_List,
+        //RadioList_Viz
+    ]
 
     tabControlToPaneId($tab) {
         return $tab.attr('id').replace('btn_', 'opts_')
