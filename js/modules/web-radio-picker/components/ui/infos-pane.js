@@ -62,13 +62,13 @@ class InfosPane {
             settings.app.distro.version + ' ' + settings.app.distro.verDate)
 
         const ea = cdveApp()
-        if (ea) {
+        /*if (ea) {
             w('dependencies',
                 'cordova-' + cordova.platformId + '@' + cordova.version
                 + ', node: ' + ea.dependencies.node
                 + ', chrome: ' + ea.dependencies.chrome
                 + ', electron: ' + ea.dependencies.electron)
-        }
+        }*/
 
         if (appinf != '?')
             val(appinf)
