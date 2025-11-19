@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.47',
-            verDate: '11/16/2025',
-            description: 'fix case bug if epi url is null in enforce https'
+            version: '1.3.48',
+            verDate: '11/19/2025',
+            description: 'not always on top by default'
         }
     },
 
