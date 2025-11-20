@@ -345,6 +345,9 @@ app = {
     playChannelMedia(channel) {
         if (channel.pause || oscilloscope.pause) return
         oscilloscope.setOut(channel, true)
+        if (uiState.defaultVolume == null || uiState.defaultVolume === undefined)
+            uiState.defaultVolume = 1
+        volume.setVolume(uiState.defaultVolume)
         channel.mediaSource.play()
             .catch(err => {
                 ui.showError(err)

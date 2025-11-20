@@ -120,6 +120,27 @@ class RadListBuilder {
         // #endregion
 
         $textBox.append($textBoxSubContainer)
+
+        // sub controls
+        if (rdItem?.epi) {
+            const $subCtrlsBox = $('<div class="wrp-list-item-sub-ctrl-box hidden"></div>')
+
+            const $btJump = $('<img name="jump_start" src="./img/icons8-go-to-start-32.png" width="24" height="24" alt="forward 30s" class="wrp-rad-item-icon-small">')
+            const $btFwd = $('<img name="forward_30s" src="./img/icons8-forward-30-30.png" width="24" height="24" alt="forward 30s" class="wrp-rad-item-icon-small">')
+
+            $btJump.on('click', () => {
+                wrpp.jumpStart()
+            })
+
+            $btFwd.on('click', () => {
+                wrpp.forward30()
+            })
+
+            $subCtrlsBox.append($btJump)
+            $subCtrlsBox.append($btFwd)
+            $textBox.append($subCtrlsBox)
+        }
+
         $item.append($textBox)
 
         // #region item below box (buttons)

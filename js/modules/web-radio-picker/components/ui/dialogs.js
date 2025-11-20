@@ -6,6 +6,7 @@
 
 const Id_Popup_Info = 'info_popup'
 const Id_Dialog_Confirm = 'confirm_dialog'
+const Id_Dialog_Volume = 'volume_dialog'
 
 class Dialogs {
 
@@ -51,9 +52,24 @@ class Dialogs {
         this.showPopup(opts)
     }
 
-    dialogConfirm(text, text2, then) {
+    dialogConfirm(text, text2, then, id) {
         return {
-            id: Id_Dialog_Confirm,
+            id: id || Id_Dialog_Confirm,
+            text: text,
+            text2: text2,
+            clText: 'dialog-text',
+            clText2: 'dialog-text2',
+            hasErrorPane: false,
+            then: then,
+            enableCloseOnClick: false,
+            noAutoHide: true,
+            freezeUI: true
+        }
+    }
+
+    dialogClose(text, text2, then, id) {
+        return {
+            id: id,
             text: text,
             text2: text2,
             clText: 'dialog-text',
@@ -86,8 +102,7 @@ class Dialogs {
     }
 
     showDialogConfirm(opts) {
-        opts = this.dialogOpts(opts)
-        opts.id = Id_Dialog_Confirm
+        //opts = this.dialogOpts(opts)
 
         const $dial = $('#' + opts.id)
         if (!$dial.hasClass('dialog-confirm-initialized')) {
@@ -113,10 +128,11 @@ class Dialogs {
 
         const $popup = $('#' + opts.id)
         if (!$popup.hasClass('popup-initialized')) {
-            $popup.on('click', () => {
-                if (window.opts.enableCloseOnClick)
-                    this.hideInfoPopup()
-            })
+            if (!opts.disablePopupClick)
+                $popup.on('click', () => {
+                    if (window.opts.enableCloseOnClick)
+                        this.hideInfoPopup()
+                })
             $popup.addClass('popup-initialized')
         }
 

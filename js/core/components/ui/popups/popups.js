@@ -10,6 +10,13 @@ class Popups {
 
     popups = {}
 
+    pauseDragElements = [
+        'opts_wrp_logo',
+        'cnv_oscillo',
+        'wrp_img',
+        'bt_bar'
+    ]
+
     // @TODO: NOT USED
     setPopupInputWidget($ctrl, inputWidget) {
         const $popup = $ctrl.closest('.popup')
@@ -52,10 +59,26 @@ class Popups {
 
     showPopup(controlId, popupId, align, appearFunc) {
         this.togglePopup(controlId, popupId, true, align, appearFunc, null)
+        this.pauseDrag()
     }
 
     hidePopup(popupId, hideFunc) {
         this.togglePopup(null, popupId, false, null, null, hideFunc)
+        this.restoreDrag()
+    }
+
+    pauseDrag() {
+        this.pauseDragElements.forEach(id => {
+            $('#' + id).removeClass('drag-region')
+                .addClass('no-drag')
+        })
+    }
+
+    restoreDrag() {
+        this.pauseDragElements.forEach(id => {
+            $('#' + id).addClass('drag-region')
+                .removeClass('no-drag')
+        })
     }
 
     togglePopup(controlId, popupId, showState, align, appearFunc, hideFunc) {
@@ -100,8 +123,12 @@ class Popups {
 
         if (newvis) this.updatePopupPositionAndSize(controlId, $popup, align)
 
-        if (!popup.visible)
+        if (!popup.visible) {
             ui.inputWidgets.closeInputWidget()
+            this.restoreDrag()
+        }
+        else
+            this.pauseDrag()
     }
 
     updatePopupPositionAndSize(controlId, $popup, align) {

@@ -80,10 +80,18 @@ oscilloscope = {
     setOut(channel, on) {
         try {
             if (channel != null && channel.analyzer != null) {
-                if (on)
-                    channel.analyzer.connect(channel.audioContext.destination)
-                else
-                    channel.analyzer.disconnect(channel.audioContext.destination)
+                if (on) {
+                    if (settings.features.constraints.isIPhone)
+                        channel.analyzer.connect(channel.audioContext.destination)
+                    else
+                        channel.gain.connect(channel.audioContext.destination)
+                }
+                else {
+                    if (settings.features.constraints.isIPhone)
+                        channel.analyzer.disconnect(channel.audioContext.destination)
+                    else
+                        channel.gain.disconnect(channel.audioContext.destination)
+                }
                 channel.outConnected = on
             }
         } catch (err) {
@@ -160,8 +168,15 @@ oscilloscope = {
 
             // source -> gain -> analyzer   [ -> channel.audioContext.destination ]
 
-            channel.streamSource.connect(channel.gain)
-            channel.gain.connect(channel.analyzer)
+            if (settings.features.constraints.isIPhone) {
+                channel.streamSource.connect(channel.gain)
+                channel.gain.connect(channel.analyzer)
+            }
+            else {
+                channel.streamSource.connect(channel.analyzer)
+                channel.analyzer.connect(channel.gain)
+            }
+
             channel.getSamplesTask = new GetSamplesTask()
                 .init(channel)
 

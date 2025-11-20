@@ -393,10 +393,20 @@ ui = {
     // #region ------------- ELECTRON SPECIFIC --------------
 
     onWindowPropsChanged(wp) {
+        if (wp==null || wp===undefined) return
         if (settings.debug.debug)
             console.log('windows props changed: ', wp)
+        if (!settings.dataStore.db)
+        {
+            console.warn('skip coz db not ready')
+            return
+        }
         settings.dataStore.db.saveWindowProps(wp)
-        //if !cdveApp() return
+    },
+
+    onAlwaysOnTopChanged(data){
+        if (settings.debug.debug)
+            console.log('onAlwaysOnTopChanged: ', data)
     }
 
     // #endregion

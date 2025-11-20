@@ -522,7 +522,7 @@ class RadiosLists {
                                     item.favLists.push(name)
                             }
 
-                            console.log(item.favLists.join(','))
+                            //console.log(item.favLists.join(','))
 
                             // init properties from local db
                             wrpp.checkItemKey(item)

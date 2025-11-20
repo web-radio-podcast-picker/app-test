@@ -160,7 +160,7 @@ You should have received a copy of the GNU General Public License along with thi
             // becomes hidden
             this.infoPaneVisible = false
 
-            if (uiState.currentTab.listId == RadioList_Podcast) {
+            if (uiState.currentTab?.listId == RadioList_Podcast) {
                 if (!this.lastEpiListVisibleState)
                     podcasts.setPdcPreviewVisible(
                         this.lastPdcPreviewVisibleState,

@@ -115,7 +115,7 @@ find license and copyright informations in files /COPYRIGHT and /LICENCE
     display: grid;
     grid-row: 1;
     margin-bottom: 2px;
-    grid-template-rows: 48px 48px 48px 48px 48px 48px;
+    grid-template-rows: 48px 48px 48px 48px 48px 48px 48px;
     overflow: clip;
     align-items: center;
 }
@@ -221,7 +221,13 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     height: 32px;
 }
 
-.wrp-rad-item-icon:hover {
+.wrp-rad-item-icon-small {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+.wrp-rad-item-icon:hover,.wrp-rad-item-icon-small:hover {
     background-color: #44AAff;
 }
 
@@ -321,6 +327,17 @@ div.wrp-list-epi-item-sub > span.wrp-item-info-text {
     padding-top: 0.3em;
     display: grid;
     grid-template-columns: auto auto;
+}
+
+div.item-selected 
+div.wrp-list-item-sub-ctrl-box {
+    /*border: red solid 1px;*/
+    position: relative;
+    top: -2.1em;
+    height: 0px;
+    text-align: right;
+    left: 1.4em;
+    display: block !important;
 }
 
 .wrp-list-item.item-selected > div.wrp-list-item-subtext-container {
@@ -656,6 +673,11 @@ div#btn_wrp_infos.selected > img {
 }
 
 .icon-exit {
+    padding: 4px !important;
+    margin-top: 2px;
+}
+
+.icon-vol {
     padding: 4px !important;
     margin-top: 2px;
 }
@@ -1095,4 +1117,25 @@ h1 {
     grid-column: 2;
     align-content: center;
     align-self: center;
+}
+
+/** volume dial **/
+
+.volume-container {
+    /*border: gray solid 1px;*/
+    width: 10em;
+    margin-bottom: 1.5em;
+    height: 0px;
+}
+
+.volume-hbar {
+    height: 1px;
+    border-top: white solid 1px;
+}
+
+.volume-circle {
+    position: relative;
+    top: -12px;
+    cursor: pointer;
+    margin-left: -6px;
 }

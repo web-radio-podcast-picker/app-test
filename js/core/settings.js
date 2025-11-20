@@ -6,7 +6,7 @@
 
 // app settings
 
-window.settings = {
+const settings = {
 
     app: {
         kernel: {
@@ -14,9 +14,9 @@ window.settings = {
             verDate: '8/23/2025'
         },
         wrp: {
-            version: '1.3.48',
-            verDate: '11/19/2025',
-            description: 'not always on top by default'
+            version: '1.3.56',
+            verDate: '11/20/2025',
+            description: 'fix volume save + add rdItem sub controls buttons + fix save/restore volume + set icon mute if vol = 0 + enable jump start + forward 30'
         }
     },
 
@@ -24,7 +24,7 @@ window.settings = {
         // usage: single shot or recurrent
         fixFavoritesItemsFavLists: false,
         // usage: recurrent
-        removeItemRefProperty: true
+        removeItemRefProperty: false
     },
 
     flags: {
@@ -252,7 +252,14 @@ window.settings = {
     }
 }
 
-settings.dataStore = new DataStore()
+if (typeof window != 'undefined') {
+    window.settings = settings
+    settings.dataStore = new DataStore()
+    if (settings.debug.info)
+        console.log('Settings initialized:', settings)
+}
 
-if (settings.debug.info)
-    console.log('Settings initialized:', settings)
+if (typeof module != 'undefined') {
+    console.log('export module settings')
+    module.exports = settings
+}

@@ -195,7 +195,8 @@ class UIState {
                 name: this.currentTab?.tabId || null
             },
             currentRDItem: this.currentRDItem,
-            podcastSelection: podcasts.selection
+            podcastSelection: podcasts.selection,
+            volume: volume.getVolume()
         }
 
         const str =
@@ -226,10 +227,16 @@ class UIState {
         if (state.currentRDItem != null)
             this.#setRDItem(state.currentRDItem)
 
+        const vol = state.volume >= 0 ? state.volume : 1
+        volume.setVolume(vol)   // not before playing (!)
+        this.defaultVolume = vol
+        volume.updateVolumeIcon(vol)
+
         if (settings.debug.debug) {
             console.log('restore UI state: ')
             console.log(state)
-            console.log(this)
+            //console.log(this)
+            console.log('volume=' + volume)
             if (settings.debug.globalObj)
                 window.state = state
         }

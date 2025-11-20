@@ -78,9 +78,6 @@
 
     <!-- #region scripts -->
 
-    <!-- cordova -->
-    <script src="cordova.js"></script>
-
     <!-- dependencies -->
     <script src="./js/ext/jquery-3.7.1.min.js?hash=q"></script>
 
@@ -148,6 +145,7 @@
     <script src="./js/modules/web-radio-picker/components/ui/controllers/podcasts-lists.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/controllers/podcasts.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/controllers/play-history.js?hash=q"></script>
+    <script src="./js/modules/web-radio-picker/components/ui/controllers/volume.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/builders/lists-builder.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/builders/rad-list-path-builder.js?hash=q"></script>
     <script src="./js/modules/web-radio-picker/components/ui/builders/rad-list-builder.js?hash=q"></script>
@@ -286,6 +284,24 @@
         <div class="dialog-bbar-container">
             <span class="dialog-btn-yes menu-item menu-item-blue onoff-small-height no-width">Yes</span>
             <span class="dialog-btn-no menu-item menu-item-blue onoff-small-height no-width">No</span>
+        </div>
+    </div>
+
+    <!-- #endregion -->
+
+    <!-- #region volume dialog -->
+
+    <div id="volume_dialog" class="popup-container popup hidden no-drag">
+        <span class="dialog-text no-drag"></span>
+        <span class="dialog-text2 center no-drag"></span>
+        <div class="volume-container no-drag">
+            <div class="volume-hbar no-drag"></div>
+            <div class="volume-plot no-drag">
+                <img class="volume-circle no-drag" src="./img/icons8-circle-24.png" alt="volume-slider">
+            </div>
+        </div>
+        <div class="dialog-bbar-container no-drag">
+            <span class="dialog-btn-no menu-item menu-item-blue onoff-small-height no-width no-drag">Close</span>
         </div>
     </div>
 
@@ -492,11 +508,15 @@
                         <img class="bt-bar-text-but" src="./img/wave-42.png" alt="display">
                     </span>
                 </div>
-                <div class="gr5 gc1 bt-bar-but-cnt clickable" id="btn_wrp_infos">
+                <div class="gr5 gc1 bt-bar-but-cnt clickable no-drag" id="btn_wrp_vol">
+                    <img id="btn_wrp_vol_icon" class="hover-icon icon-vol bt-bar-img-but bt-bar-img-small-but"
+                        src="./img/icons8-volume-moyen-50.png" alt="volume">
+                </div>
+                <div class="gr6 gc1 bt-bar-but-cnt clickable" id="btn_wrp_infos">
                     <img class="hover-icon icon-settings bt-bar-img-but bt-bar-img-small-but"
                         src="./img/settings-42.png" alt="settings">
                 </div>
-                <div class="hidden gr6 gc1 bt-bar-but-cnt clickable" id="btn_wrp_exit">
+                <div class="hidden gr7 gc1 bt-bar-but-cnt clickable" id="btn_wrp_exit">
                     <img class="hover-icon-red icon-exit bt-bar-img-but bt-bar-img-small-but"
                         src="./img/icons8-fermer-la-fenêtre-50.png" alt="exit">
                 </div>

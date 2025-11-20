@@ -133,6 +133,12 @@ var domEvents = null
  */
 var viewManager = null
 
+/**
+ * @type {Volume}
+ */
+var volume = null
+
+
 //#endregion
 
 // module: web radio picker
@@ -226,6 +232,7 @@ class WebRadioPickerModule extends ModuleBase {
 
         domEvents = new DomEvents()
         viewManager = new ViewManager()
+        volume = new Volume()
         rssCache = new RssCache()
         pdcListCache = new PdcListCache()
         memoryItemsStore = new MemoryItemsStore()
@@ -361,27 +368,15 @@ class WebRadioPickerModule extends ModuleBase {
 
         // initial datas & ui state
 
-        // TODO: remove local storage init
-        const firstInit = settings.dataStore.initUIStateStorage(
-            () => {
-                // first launch init
-                if (settings.debug.info)
-                    logger.log('initializing first launch')
-                uiState.updateCurrentTab('btn_wrp_tag_list')
-                radListBuilder.updateCurrentRDList(
-                    uiState.RDList(
-                        RadioList_Tag,
-                        null,
-                        $('#btn_wrp_tag_list')
-                    ))
-            }
-        )
-
         if (settings.sys.electron)
             $('#btn_wrp_exit').removeClass('hidden')
 
         $('#btn_wrp_exit').on('click', () => {
             window.close()
+        })
+
+        $('#btn_wrp_vol').on('click', () => {
+            volume.openDial()
         })
 
         $('.channel-menu-pane').addClass('drag-region')
@@ -394,7 +389,7 @@ class WebRadioPickerModule extends ModuleBase {
         $('#btn_wrp_exit').addClass('no-drag')
 
         this.clearRadioView()
-        this.initApp(firstInit)
+        this.initApp()
     }
 
     initApp(firstInit) {
@@ -449,6 +444,24 @@ class WebRadioPickerModule extends ModuleBase {
 
     updateBindings() {
         ui.bindings.updateBindingTarget('wrp_list_count')
+    }
+
+    // #endregion
+
+    // #region controls
+
+    jumpStart() {
+        if (!audio) return
+        audio.currentTime = 0
+        if (oscilloscope.pause)
+            app.toggleOPause(() => { })
+    }
+
+    forward30() {
+        if (!audio) return
+        audio.currentTime += 30
+        if (oscilloscope.pause)
+            app.toggleOPause(() => { })
     }
 
     // #endregion
